@@ -17,7 +17,7 @@ echo ">>>Install package "libguestfs-tools" for customising the downloaded image
 apt update -y && apt install libguestfs-tools -y &&
 
 echo ">>>Install qemu-guest-agent to update image<<<"
-virt-customize -a $updatedIsoFileName --install qemu-guest-agent
+virt-customize -a $updatedIsoFileName --install qemu-guest-agent &&
 
 echo ">>>Update the root password in image<<<"
 virt-customize -a $updatedIsoFileName --root-password password:$vmRootPassword &&

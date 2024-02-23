@@ -21,20 +21,23 @@ apt update -y && apt install libguestfs-tools -y &&
 echo ">>>Installing qemu-guest-agent to update image<<<" &&
 virt-customize -a $isoFileName --install qemu-guest-agent &&
 
-echo ">>>Update the root password in image<<<"
-virt-customize -a $isoFileName --root-password password:$vmRootPassword &&
+echo ">>>Updating the root password in image<<<"
+virt-customize -a $isoFileName --root-password password:$vmRootPassword
 
 # [Optional step] - create a new user and import your local machine's ssh key, so that you can access this vm without password
-echo ">>> creating a new user and import your local machines ssh public key to this image<<<"
-virt-customize -a $isoFileName --run-command "useradd $vmNewUser" && 
-virt-customize -a $isoFileName --run-command "mkdir -p /home/$vmNewUser/.ssh" && 
+if [ -n "$vmNewUser" ]; then
+    echo ">>> creating a new user and import your local machines ssh public key to this image<<<"
+    virt-customize -a $isoFileName --run-command "useradd $vmNewUser" && 
+    virt-customize -a $isoFileName --run-command "mkdir -p /home/$vmNewUser/.ssh" && 
 
-## inject your local ssh key directly from local folder ##
-#virt-customize -a $isoFileName --ssh-inject $vmNewUser:file:$HOME/.ssh/id_rsa.pub &&
-## OR inject your local ssh key directly as string ##
-virt-customize -a $isoFileName --ssh-inject "$vmNewUser:string:ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPWmuxBWj5GebJtC5sp4kfUGdodLswXVxj9Vrzauf63B kannanmohanklm@gmail.com" &&
+    ## inject your local ssh key directly from local folder ##
+    #virt-customize -a $isoFileName --ssh-inject $vmNewUser:file:$HOME/.ssh/id_rsa.pub &&
+    ## OR inject your local ssh key directly as string ##
+    virt-customize -a $isoFileName --ssh-inject "$vmNewUser:string:ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPWmuxBWj5GebJtC5sp4kfUGdodLswXVxj9Vrzauf63B kannanmohanklm@gmail.com" &&
 
-virt-customize -a $isoFileName --run-command "chown -R $vmNewUser:$vmNewUser /home/$vmNewUser" &&
+    virt-customize -a $isoFileName --run-command "chown -R $vmNewUser:$vmNewUser /home/$vmNewUser"
+fi
+
 
 #echo ">>>Update the machine-id in image<<<"
 #virt-customize -a $isoFileName --run-command "echo -n > /etc/machine-id"

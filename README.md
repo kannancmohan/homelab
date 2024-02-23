@@ -1,5 +1,6 @@
 # Proxmox homelab setup
 Project to automatically create the following vm's in proxmox server 
+
 | VM            | Cores         | Memory| Disk|
 | ------------- |:-------------:| -----:| -----:|
 | master        | 2             | 2048  | 50G   |
@@ -10,6 +11,12 @@ Project to automatically create the following vm's in proxmox server
 * A running proxmox server. check [proxmox installation steps](proxmox_installation.md)
 * ssh access to the proxmox server
 
+## The automation steps 
+1. Automatically create a VM in proxmox and converting it to a template
+2. Automatically create the desired vm using the template 
+
+## Steps to Build 
+
 ## Objectiv:
 1. Download ubuntu cloud image server image 
 2. Modify the downloaded image to include addition configuration
@@ -17,3 +24,5 @@ Project to automatically create the following vm's in proxmox server
     2. Update root password
     3. [Optional] Create a new user and import local ssh key
 4. Create a new vm in proxmox 
+5. Create a vm template in proxmox
+

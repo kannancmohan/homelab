@@ -25,4 +25,10 @@ qm set $vmId --agent enabled=1 &&
 # Resize disk
 qm resize $vmId scsi0 +$vmDiskSize &&
 
-echo ">>>Created vm:$vmName out of image" $isoFileName "<<<"
+echo ">>>Created vm:$vmName out of image" $isoFileName "<<<" &&
+
+
+### Create a new vm template ###
+echo ">>>Creating template using vm " $vmName "<<<"
+qm template $vmId
+echo ">>>created a new template using vm " $vmName "<<<"

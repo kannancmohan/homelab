@@ -8,6 +8,7 @@ Project to automatically create the following vm's in proxmox server
 
 ## Prerequisite:
 * A running proxmox server. check [proxmox installation steps](proxmox_installation.md)
+* ssh access to the proxmox server
 
 ## Objectiv:
 1. Download ubuntu cloud image server image 

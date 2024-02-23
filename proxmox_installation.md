@@ -5,7 +5,7 @@
 |------------|----------------------------------------------------------------------------|
 |CPU         | 64bit (Intel EMT64 or AMD64)                                               |
 |Mother board| Intel VT/AMD-V capable CPU/motherboard for KVM full virtualization support |
-|RAM         | 1 GB plus additional RAM needed for guests                                 |
+|RAM         | 1 GB + additional RAM needed for guests                                    |
 |Hard disk   | proxmox itself need around 8gb + additinal for guest                       |
 |Network     | 1 network card                                                             |
 
@@ -17,8 +17,7 @@
     https://www.proxmox.com/en/downloads/proxmox-virtual-environment
 2. Create a bootable usb using the above image file
 
-    Mac users can use balena-etcher to burn a bootable usb
-
+    Mac users can use balena-etcher to burn bootable usb
 3. Boot the system using the above bootable usb
 
     Restart the machine and hold F11(usually its F11) or F12 to access the boot menu
@@ -37,7 +36,6 @@
 
     > [!NOTE]
     > Make sure to use an Ip address that is not taken. Login to outer ui to check which all ip's are taken
-
 5. After installing proxmox, login to proxmox webui and install updates available for the node.
 
     5.1 Login to proxmox web-ui(https://192.168.0.50:8006)

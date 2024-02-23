@@ -4,6 +4,7 @@ executionDir="/var/lib/vz/template/iso/" # nodes(proxmox) storage folder
 updatedIsoFileName="updated-jammy-server-cloudimg-amd64.img"
 isoFileUrl="https://cloud-images.ubuntu.com/jammy/current/jammy-server-cloudimg-amd64.img"
 vmRootPassword="pwd@123"
+vmNewUser=vmuser
 
 echo ">>>Preparing ubuntu cloud image" $isoFileUrl "<<<"
 
@@ -25,18 +26,19 @@ virt-customize -a $updatedIsoFileName --install qemu-guest-agent &&
 echo ">>>Update the root password in image<<<"
 virt-customize -a $updatedIsoFileName --root-password password:$vmRootPassword &&
 
+# [Optional step] - create a new user and import your local machine's ssh key, so that you can access this vm without password
+echo ">>> creating a new user and import your local machines ssh public key to this image<<<"
+virt-customize -a $updatedIsoFileName --run-command "useradd $vmNewUser" && 
+virt-customize -a $updatedIsoFileName --run-command "mkdir -p /home/$vmNewUser/.ssh" && 
+
+## inject your local ssh key directly from local folder ##
+#virt-customize -a $updatedIsoFileName --ssh-inject $vmNewUser:file:$HOME/.ssh/id_rsa.pub &&
+## OR inject your local ssh key directly as string ##
+virt-customize -a $updatedIsoFileName --ssh-inject "$vmNewUser:string:ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPWmuxBWj5GebJtC5sp4kfUGdodLswXVxj9Vrzauf63B kannanmohanklm@gmail.com" &&
+
+virt-customize -a $updatedIsoFileName --run-command "chown -R $vmNewUser:$vmNewUser /home/$vmNewUser" &&
+
 #echo ">>>Update the machine-id in image<<<"
 #virt-customize -a $updatedIsoFileName --run-command "echo -n > /etc/machine-id"
-
-
-# not quite working yet. skip this and continue
-#sudo virt-customize -a focal-server-cloudimg-amd64.img --run-command 'useradd austin'
-#sudo virt-customize -a focal-server-cloudimg-amd64.img --run-command 'mkdir -p /home/austin/.ssh'
-#sudo virt-customize -a focal-server-cloudimg-amd64.img --ssh-inject austin:file:/home/austin/.ssh/id_rsa.pub
-#sudo virt-customize -a focal-server-cloudimg-amd64.img --run-command 'chown -R austin:austin /home/austin'
-
-# OR 
-#sudo virt-sysprep -a CentOS-7-x86_64-GenericCloud.qcow2 --run-command 'useradd vivek' --ssh-inject vivek:file:/home/vivek/.ssh/id_rsa.pub
-
 
 echo ">>>Updated image:$updatedIsoFileName available in $executionDir <<<"

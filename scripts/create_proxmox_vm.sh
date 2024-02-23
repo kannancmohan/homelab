@@ -1,16 +1,9 @@
 #!/bin/bash
+##### MAKE SURE TO RUN THIS SCRIPT WIHT ROOT PRIVILEGE #####
 
-executionDir="/var/lib/vz/template/iso/" # nodes(proxmox) storage folder
-isoFileName="updated-jammy-server-cloudimg-amd64.img"
-vmId=9000
-vmName=ubuntu-jammy-server
-vmMemeory=2048
-vmCore=2
-vmDiskSize=50G
-localDisk=local-lvm
+. $(dirname "$0")/config.sh
 
-
-echo ">>>Creating vm out of image" $updatedIsoFileName "<<<"
+echo ">>>Creating vm out of image" $isoFileName "<<<"
 
 # CD to proxmox image storage folder 
 cd $executionDir &&
@@ -32,4 +25,4 @@ qm set $vmId --agent enabled=1 &&
 # Resize disk
 qm resize $vmId scsi0 +$vmDiskSize &&
 
-echo ">>>Created vm:$vmName out of image" $updatedIsoFileName "<<<"
+echo ">>>Created vm:$vmName out of image" $isoFileName "<<<"

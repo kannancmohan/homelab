@@ -1,5 +1,5 @@
 #!/bin/bash
-##### MAKE SURE TO RUN THIS SCRIPT WIHT ROOT PRIVILEGE #####
+##### MAKE SURE TO RUN THIS SCRIPT WITH ROOT PRIVILEGE #####
 
 . $(dirname "$0")/config.sh
 

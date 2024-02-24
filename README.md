@@ -10,6 +10,7 @@ Project to automatically create the following vm's in proxmox server
 ## Prerequisite:
 * A running proxmox server. check [proxmox installation steps](proxmox_installation.md)
 * ssh access to the proxmox server
+* terraform installed in local/development machine . check [official site](https://developer.hashicorp.com/terraform/tutorials/aws-get-started/install-cli) 
 
 ## The automation process 
 1. Automatically create a VM in proxmox and converting it to a template
@@ -24,7 +25,7 @@ Project to automatically create the following vm's in proxmox server
 
     1.2 Create a new vm in proxmox and convert it to a vm template 
 
-2. Automatically create a terraform user in proxmox and generate api token credentials
+2. Automatically create a terraform user in proxmox and generate api-token credentials
 
     2.1 create a new role for terraform in proxmox
 

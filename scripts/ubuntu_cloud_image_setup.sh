@@ -21,8 +21,10 @@ apt update -y && apt install libguestfs-tools -y &&
 echo ">>>Installing qemu-guest-agent to update image<<<" &&
 virt-customize -a $isoFileName --install qemu-guest-agent &&
 
-echo ">>>Updating the root password in image<<<"
-virt-customize -a $isoFileName --root-password password:$vmRootPassword
+if [ -n "$vmRootPassword" ]; then
+    echo ">>>Updating the root password in image<<<"
+    virt-customize -a $isoFileName --root-password password:$vmRootPassword
+fi
 
 # [Optional step] - create a new user and import your local machine's ssh key, so that you can access this vm without password
 if [ -n "$vmNewUser" ]; then

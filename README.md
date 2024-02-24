@@ -1,4 +1,4 @@
-# Proxmox homelab setup
+# Proxmox Homelab Setup
 Project to automatically create the following vm's in proxmox server 
 
 | VM            | Cores         | Memory| Disk|

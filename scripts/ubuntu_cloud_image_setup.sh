@@ -35,8 +35,7 @@ if [ -n "$vmNewUser" ]; then
     ## inject your local ssh key directly from local folder ##
     #virt-customize -a $isoFileName --ssh-inject $vmNewUser:file:$HOME/.ssh/id_rsa.pub &&
     ## OR inject your local ssh key directly as string ##
-    virt-customize -a $isoFileName --ssh-inject "$vmNewUser:string:ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPWmuxBWj5GebJtC5sp4kfUGdodLswXVxj9Vrzauf63B kannanmohanklm@gmail.com" &&
-
+    virt-customize -a $isoFileName --ssh-inject "$vmNewUser:string:$localSshKey" &&
     virt-customize -a $isoFileName --run-command "chown -R $vmNewUser:$vmNewUser /home/$vmNewUser"
 fi
 

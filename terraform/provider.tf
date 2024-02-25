@@ -1,24 +1,24 @@
 # Proxmox Provider
 terraform {
 
-    required_version = ">= 0.13.0"
+  required_version = ">= 0.13.0"
 
-    required_providers {
-        proxmox = {
-            source = "telmate/proxmox"
-            version = ">= 2.9.14"
-        }
+  required_providers {
+    proxmox = {
+      source  = "telmate/proxmox"
+      version = ">= 2.9.14"
     }
+  }
 }
 
 provider "proxmox" {
 
-    pm_api_url = var.proxmox_api_url
-    # pm_api_token_id and pm_api_token_secret is set via environment variables
-    #pm_api_token_id = var.proxmox_api_token_id
-    #pm_api_token_secret = var.proxmox_api_token_secret
+  pm_api_url = var.proxmox_api_url
+  # pm_api_token_id and pm_api_token_secret is set via environment variables
+  #pm_api_token_id = var.proxmox_api_token_id
+  #pm_api_token_secret = var.proxmox_api_token_secret
 
-    # (Optional) Skip TLS Verification
-    # pm_tls_insecure = true
+  # (Optional) Skip TLS Verification
+  # pm_tls_insecure = true
 
 }

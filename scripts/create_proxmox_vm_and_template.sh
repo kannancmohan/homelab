@@ -22,7 +22,7 @@ qm set $vmId --ide2 $localDisk:cloudinit &&
 qm set $vmId --serial0 socket --vga serial0 &&
 # Turn on guest agent
 qm set $vmId --agent enabled=1 &&
-# Resize disk
+# Resize disk. The '+' indicated to add addition size specified to your scsi0 disk. #[TBC]
 qm resize $vmId scsi0 +$vmDiskSize &&
 
 echo ">>>Created vm:$vmName out of image" $isoFileName "<<<" &&

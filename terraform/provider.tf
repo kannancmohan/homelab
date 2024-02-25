@@ -1,7 +1,4 @@
 # Proxmox Provider
-# ---
-# Initial Provider Configuration for Proxmox
-
 terraform {
 
     required_version = ">= 0.13.0"
@@ -12,18 +9,6 @@ terraform {
             version = ">= 2.9.14"
         }
     }
-}
-
-variable "proxmox_api_url" {
-    type = string
-}
-
-variable "proxmox_api_token_id" {
-    type = string
-}
-
-variable "proxmox_api_token_secret" {
-    type = string
 }
 
 provider "proxmox" {

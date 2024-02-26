@@ -30,7 +30,7 @@ variable "worker_vm_bootdisk" {
   default = "scsi0"
 }
 variable "worker_vm_disk_size" {
-  default = "10G"
+  default = 10
 }
 variable "worker_vm_disk_type" {
   default = "scsi"

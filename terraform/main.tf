@@ -1,5 +1,3 @@
-# Proxmox Full-Clone
-# ---
 # Create a new VM from a clone
 
 resource "proxmox_vm_qemu" "worker-vm" {
@@ -9,7 +7,7 @@ resource "proxmox_vm_qemu" "worker-vm" {
   name        = "worker-vm-${count.index + 1}" #count.index starts at 0, so + 1 means this VM will be named test-vm-1 in proxmox
   desc        = "Worker vm"
   target_node = var.proxmox_node
-  #vmid = "100"
+  vmid        = "100${count.index + 1}"
 
   ## VM CPU and Memory Settings
   cores   = var.worker_vm_core_count
@@ -19,29 +17,40 @@ resource "proxmox_vm_qemu" "worker-vm" {
 
   ## VM OS Settings
   clone   = var.vm_template_name
-  agent   = 1
+  agent   = 0
   os_type = "cloud-init" #VM Cloud-Init Settings
+  onboot  = true         # start this vm after the PVE node starts
 
   # Basic VM settings - these setting are already done in vm template, so it might no be necessary to define here [TBC]
-  #scsihw = var.worker_vm_scsihw # The SCSI controller to emulate
-  #bootdisk = var.worker_vm_bootdisk #Enable booting from specified disk
+  scsihw                  = var.worker_vm_scsihw   # The SCSI controller to emulate
+  bootdisk                = var.worker_vm_bootdisk #Enable booting from specified disk
+  cloudinit_cdrom_storage = var.worker_vm_disk_storage
 
-  # VM Advanced General Settings
-  onboot = true # start thhis vm after the PVE node starts
-
-  disk {
-    size    = var.worker_vm_disk_size
-    type    = var.worker_vm_disk_type
-    storage = var.worker_vm_disk_storage
-    #iothread = 1
-    #discard = "on"
+  disks {
+    scsi {
+      scsi0 {
+        disk {
+          storage = var.worker_vm_disk_storage
+          size    = var.worker_vm_disk_size
+        }
+      }
+    }
   }
+
+  # update values via cloud init
+  ipconfig0 = "ip=${var.worker_vm_ipconfig_ip_prefix}${count.index + 1}/${var.worker_vm_ipconfig_ip_subnet_mask},gw=${var.worker_vm_ipconfig_gateway_ip}"
+  ciuser    = "ubuntu"
+  sshkeys   = <<EOF
+${var.local_machine_ssh_key}
+    EOF 
+
 
   # VM Network Settings
-  network {
-    bridge = var.worker_vm_network_bridge
-    model  = var.worker_vm_network_model
-  }
+  # network {
+  #   bridge = var.worker_vm_network_bridge
+  #   model  = var.worker_vm_network_model
+  # }
+
 
   # Configure the display device
   #vga {
@@ -54,13 +63,6 @@ resource "proxmox_vm_qemu" "worker-vm" {
   # OR
   # ipconfig0 = "ip=dhcp"
   # OR 
-  ipconfig0 = "ip=${var.worker_vm_ipconfig_ip_prefix}${count.index + 1}/${var.worker_vm_ipconfig_ip_subnet_mask},gw=${var.worker_vm_ipconfig_gateway_ip}"
+  #ipconfig0 = "ip=${var.worker_vm_ipconfig_ip_prefix}${count.index + 1}/${var.worker_vm_ipconfig_ip_subnet_mask},gw=${var.worker_vm_ipconfig_gateway_ip}"
 
-  # (Optional) Default User
-  # ciuser = "your-username" #Override the default cloud-init user for provisioning.
-
-  # (Optional) Add your local/developmet machines SSH KEY. This way you can access this vm without password
-  sshkeys = <<EOF
-    ${var.local_machine_ssh_key}
-    EOF
 }

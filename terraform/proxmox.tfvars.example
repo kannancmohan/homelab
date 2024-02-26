@@ -3,6 +3,7 @@ proxmox_api_url = "https://192.168.0.50:8006/api2/json" # Your Proxmox IP Addres
 local_machine_ssh_key             = "your ssh public key"
 proxmox_node                      = "node1-home-network"
 vm_template_name                  = "ubuntu-jammy-server"
+worker_vm_count                   = 1
 worker_vm_core_count              = 1
 worker_vm_memory                  = 1024
 worker_vm_scsihw                  = "virtio-scsi-pci"

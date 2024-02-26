@@ -15,6 +15,12 @@ variable "proxmox_node" {
 variable "vm_template_name" {
   type = string
 }
+
+# Worker node variables
+variable "worker_vm_count" {
+  type = number
+  description = "No of worker vm's to create"
+}
 variable "worker_vm_core_count" {
   type = number
 }

@@ -10,7 +10,12 @@ Project to automatically create the following vm's in proxmox server
 ## Prerequisite:
 * A running proxmox server. check [proxmox installation steps](proxmox_installation.md)
 * ssh access to the proxmox server
+* Enable snippet storage in proxmox server(Datacenter >> Storage >> select your storage(eg:local)>>click edit and include snippet)
 * terraform installed in local/development machine . check [official site](https://developer.hashicorp.com/terraform/tutorials/aws-get-started/install-cli) 
+* create a new user called "terraform" in proxmox - use this '[script](scripts/create_terraform_role_and_user.sh)'
+    This user is required for the terraform provider
+* Adding sudo privilege for the above user, so that the provider can seamlessly provision . check https://registry.terraform.io/providers/bpg/proxmox/latest/docs#ssh-user
+
 
 ## The automation process 
 1. Automatically create a VM in proxmox and converting it to a template

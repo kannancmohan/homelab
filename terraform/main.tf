@@ -5,7 +5,7 @@ resource "proxmox_vm_qemu" "worker-vm" {
   count       = var.worker_vm_count            # creates this no of vm's
   name        = "worker-vm-${count.index + 1}" #count.index starts at 0, so + 1 means this VM will be named test-vm-1 in proxmox
   desc        = "Worker vm"
-  target_node = var.proxmox_node
+  target_node = var.proxmox_node_name
   vmid        = "100${count.index + 1}"
 
   ## VM CPU and Memory Settings

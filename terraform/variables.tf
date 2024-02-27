@@ -9,7 +9,7 @@ variable "local_machine_ssh_key" {
   type        = string
   description = "The ssh public key of your local development machine"
 }
-variable "proxmox_node" {
+variable "proxmox_node_name" {
   type = string
 }
 variable "vm_template_name" {

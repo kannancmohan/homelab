@@ -1,7 +1,6 @@
 # variable's specific to provider
-variable "proxmox_api_endpoint" {
-  type        = string
-  description = "Proxmox cluster API endpoint https://proxmox-01.my-domain.net:8006"
+variable "proxmox_server_endpoint" {
+  type = string
 }
 
 # project variables
@@ -15,5 +14,8 @@ variable "proxmox_node_name" {
   type = string
 }
 variable "proxmox_node_iso_datastore_id" {
+  type = string
+}
+variable "vm_default_user_pwd" {
   type = string
 }

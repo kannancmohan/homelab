@@ -9,15 +9,16 @@ locals {
 
 
 resource "proxmox_virtual_environment_download_file" "ubuntu_qcow2_img" {
-  content_type = "iso"
-  datastore_id = "local" #the proxmox datastore if where iso are stored
-  node_name    = var.proxmox_node_name
-  url          = var.cloud_image_iso_url
-  #checksum     = var.cloud_image_iso_checksum
+  content_type        = "iso"
+  datastore_id        = "local" #the proxmox datastore if where iso are stored
+  node_name           = var.proxmox_node_name
+  url                 = var.cloud_image_iso_url
+  checksum            = var.cloud_image_iso_checksum
+  checksum_algorithm  = "sha256"
   overwrite_unmanaged = true
 }
 
-resource "proxmox_virtual_environment_file" "ubuntu_cloud_init" {
+resource "proxmox_virtual_environment_file" "ubuntu_cloud_init_user_config" {
   content_type = "snippets"
   datastore_id = "local"
   node_name    = var.proxmox_node_name
@@ -25,32 +26,49 @@ resource "proxmox_virtual_environment_file" "ubuntu_cloud_init" {
   source_raw {
     data = <<EOF
 #cloud-config
-# chpasswd:
-#   list: |
-#     ubuntu:ubuntu    
-#   expire: false
+chpasswd:
+  list: |
+    ubuntu:example    
+  expire: false
 packages:
   - qemu-guest-agent
-#timezone: Europe/Oslo
-
-# users:
-#   - default
-#   - name: ubuntu
-#     groups: sudo
-#     shell: /bin/bash
-#     ssh-authorized-keys:
-#       - ${trimspace("ssh-rsa <sha356> user@mail.com")}
-#     sudo: ALL=(ALL) NOPASSWD:ALL
-
+timezone: Europe/Berlin
+users:
+  - default
+  - name: ubuntu
+    groups: sudo
+    shell: /bin/bash
+    ssh-authorized-keys:
+      - ${trimspace("ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPWmuxBWj5GebJtC5sp4kfUGdodLswXVxj9Vrzauf63B kannanmohanklm@gmail.com")}
+    sudo: ALL=(ALL) NOPASSWD:ALL
 power_state:
     delay: now
     mode: reboot
     message: Rebooting after cloud-init completion
     condition: true
-
 EOF
 
     file_name = "ubuntu.cloud-config.yaml"
+  }
+}
+
+resource "proxmox_virtual_environment_file" "ubuntu_cloud_init_vendor_config" {
+  content_type = "snippets"
+  datastore_id = "local"
+  node_name    = var.proxmox_node_name
+
+  source_raw {
+    data = <<EOF
+#cloud-config
+runcmd:
+    - apt update
+    - apt install -y qemu-guest-agent
+    - systemctl enable qemu-guest-agent
+    - systemctl start qemu-guest-agent
+    - echo "done" > /tmp/vendor-cloud-init-done
+    EOF
+
+    file_name = "terraform-provider-proxmox-example-vendor-config.yaml"
   }
 }
 
@@ -63,8 +81,6 @@ resource "proxmox_virtual_environment_vm" "ubuntu_vm_template" {
 
   // use auto-generated vm_id, so comment it out
   #vm_id     = "100${count.index + 1}"
-  #machine = "q35"
-  #bios        = "ovmf"
 
   agent {
     # read 'Qemu guest agent' section, change to true only when ready
@@ -81,59 +97,20 @@ resource "proxmox_virtual_environment_vm" "ubuntu_vm_template" {
     dedicated = 1024
   }
 
-  # smbios {
-  #   manufacturer = "Terraform"
-  #   product      = "Terraform Provider Proxmox"
-  #   version      = "0.0.1"
-  # }
-
-  startup {
-    order      = "3"
-    up_delay   = "60"
-    down_delay = "60"
-  }
-
-  #The efi disk device (required if bios is set to ovmf)
-  # efi_disk {
-  #   datastore_id = local.datastore_id
-  #   file_format  = "raw"
-  #   type         = "4m"
-  # }
-
-  # tpm_state {
-  #   datastore_id = local.datastore_id
-  #   version      = "v2.0"
-  # }
-
-  #  disk {
-  #    datastore_id = local.datastore_id
-  #    file_id      = proxmox_virtual_environment_download_file.ubuntu_qcow2_img.id
-  #    interface    = "virtio0"
-  #    iothread     = true
-  #  }
-
-  # disk {
-  #   datastore_id = "local-lvm"
-  #   file_id      = proxmox_virtual_environment_file.ubuntu_qcow2_img.id
-  #   interface    = "scsi0"
+  # startup {
+  #   order      = "3"
+  #   up_delay   = "60"
+  #   down_delay = "60"
   # }
 
   disk {
     datastore_id = local.datastore_id
     file_id      = proxmox_virtual_environment_download_file.ubuntu_qcow2_img.id
     interface    = "scsi0"
-    #interface = "virtio0"
-    discard   = "on"
+    discard      = "on"
     cache        = "writeback"
     ssd          = true
   }
-
-  #  disk {
-  #    datastore_id = "nfs"
-  #    interface    = "scsi1"
-  #    discard      = "ignore"
-  #    file_format  = "raw"
-  #  }
 
   initialization {
     datastore_id = local.datastore_id
@@ -152,29 +129,18 @@ resource "proxmox_virtual_environment_vm" "ubuntu_vm_template" {
     #   #}
     # }
 
-    user_data_file_id = proxmox_virtual_environment_file.ubuntu_cloud_init.id
-    #vendor_data_file_id = proxmox_virtual_environment_file.vendor_config.id
+    user_data_file_id   = proxmox_virtual_environment_file.ubuntu_cloud_init_user_config.id
+    vendor_data_file_id = proxmox_virtual_environment_file.ubuntu_cloud_init_vendor_config.id
     #meta_data_file_id   = proxmox_virtual_environment_file.meta_config.id
   }
 
-  # network_device {
-  #   mtu    = 1450
-  #   queues = 2
-  # }
-
-  # network_device {
-  #   vlan_id = 1024
-  # }
   network_device {
     bridge = "vmbr0"
-    #vlan_id = "216"
   }
 
   operating_system {
     type = "l26" #Linux Kernel 2.6 - 5.X.
   }
-
-  #pool_id = proxmox_virtual_environment_pool.example.id
 
   serial_device {}
 

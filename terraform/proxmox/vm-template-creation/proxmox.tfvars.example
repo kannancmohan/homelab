@@ -1,5 +1,6 @@
-proxmox_api_endpoint          = "https://192.168.0.50:8006" # Your Proxmox IP Address
-cloud_image_iso_url           = "https://cloud-images.ubuntu.com/jammy/current/jammy-server-cloudimg-amd64.img"
+proxmox_server_endpoint       = "https://192.168.0.50:8006" # Your Proxmox IP Address
+cloud_image_iso_url           = "https://cloud-images.ubuntu.com/jammy/20240227/jammy-server-cloudimg-amd64.img"
 cloud_image_iso_checksum      = "b566d0eb52b8fd51195cc25ba6bb138f9a9924a29ed4b48a41d7a371f77f5030"
 proxmox_node_name             = "node1-home-network"
 proxmox_node_iso_datastore_id = "local"
+vm_default_user_pwd           = "ubuntu"

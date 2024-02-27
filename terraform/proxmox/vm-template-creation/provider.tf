@@ -8,7 +8,7 @@ terraform {
 }
 
 provider "proxmox" {
-  endpoint = var.proxmox_api_endpoint
+  endpoint = var.proxmox_server_endpoint
 
   ## api_token value is set using environment variable PROXMOX_VE_API_TOKEN
   #api_token = var.proxmox_api_token

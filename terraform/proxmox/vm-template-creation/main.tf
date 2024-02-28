@@ -28,11 +28,9 @@ resource "proxmox_virtual_environment_file" "ubuntu_cloud_init_user_config" {
 #cloud-config
 chpasswd:
   list: |
-    ubuntu:example    
+    ubuntu:example
   expire: false
-packages:
-  - qemu-guest-agent
-timezone: Europe/Berlin
+hostname: terraform-provider-proxmox-example
 users:
   - default
   - name: ubuntu
@@ -41,14 +39,9 @@ users:
     ssh-authorized-keys:
       - ${trimspace("ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPWmuxBWj5GebJtC5sp4kfUGdodLswXVxj9Vrzauf63B kannanmohanklm@gmail.com")}
     sudo: ALL=(ALL) NOPASSWD:ALL
-power_state:
-    delay: now
-    mode: reboot
-    message: Rebooting after cloud-init completion
-    condition: true
-EOF
+    EOF
 
-    file_name = "ubuntu.cloud-config.yaml"
+    file_name = "ubuntu.cloud-init-user-config.yaml"
   }
 }
 
@@ -68,7 +61,7 @@ runcmd:
     - echo "done" > /tmp/vendor-cloud-init-done
     EOF
 
-    file_name = "terraform-provider-proxmox-example-vendor-config.yaml"
+    file_name = "ubuntu.cloud-init-vendor-config.yaml"
   }
 }
 
@@ -97,28 +90,55 @@ resource "proxmox_virtual_environment_vm" "ubuntu_vm_template" {
     dedicated = 1024
   }
 
-  # startup {
-  #   order      = "3"
-  #   up_delay   = "60"
-  #   down_delay = "60"
+  startup {
+    order      = "3"
+    up_delay   = "60"
+    down_delay = "60"
+  }
+
+  # disk {
+  #   datastore_id = local.datastore_id
+  #   file_id      = proxmox_virtual_environment_download_file.ubuntu_qcow2_img.id
+  #   interface    = "scsi0"
+  #   discard      = "on"
+  #   #cache        = "writeback"
+  #   ssd  = true
+  #   size = 8
+  #   #file_format = "raw"
+  #   iothread = true
   # }
 
   disk {
-    datastore_id = local.datastore_id
+    datastore_id = "local-lvm"
     file_id      = proxmox_virtual_environment_download_file.ubuntu_qcow2_img.id
     interface    = "scsi0"
-    discard      = "on"
-    cache        = "writeback"
     ssd          = true
+    file_format  = "raw"
+    discard      = "on"
+    size         = 8
   }
 
+  #The cloud-init configuration
   initialization {
     datastore_id = local.datastore_id
-    #interface    = "scsi4"
+    interface    = "scsi4"
 
     # dns {
     #   servers = ["1.1.1.1", "8.8.8.8"]
     # }
+
+    # ip_config {
+    #   ipv4 {
+    #     address = "192.168.0.45/24"
+    #     gateway = "192.168.0.1"
+    #   }
+    # }
+
+    ip_config {
+      ipv4 {
+        address = "dhcp"
+      }
+    }
 
     # ip_config {
     #   ipv4 {

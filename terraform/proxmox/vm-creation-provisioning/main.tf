@@ -1,13 +1,3 @@
-
-# data "proxmox_virtual_environment_datastores" "proxmox_node" {
-#   node_name = var.proxmox_node_name
-# }
-
-# locals {
-#   datastore_id = element(data.proxmox_virtual_environment_datastores.proxmox_node.datastore_ids, index(data.proxmox_virtual_environment_datastores.proxmox_node.datastore_ids, var))
-# }
-
-
 resource "proxmox_virtual_environment_download_file" "ubuntu-qcow2-img" {
   content_type        = "iso"
   datastore_id        = var.proxmox_node_iso_datastore_id #the proxmox datastore if where iso are stored
@@ -15,7 +5,7 @@ resource "proxmox_virtual_environment_download_file" "ubuntu-qcow2-img" {
   url                 = var.cloud_image_iso_url
   checksum            = var.cloud_image_iso_checksum
   checksum_algorithm  = "sha256"
-  overwrite_unmanaged = true #file with the same name already exists in the datastore, it will be deleted and the new file will be downloaded. If false and the file already exists, an error will be returned
+  overwrite_unmanaged = true #if file with the same name already exists in the datastore, it will be deleted and the new file will be downloaded. If false and the file already exists, an error will be returned
 }
 
 resource "proxmox_virtual_environment_file" "ubuntu-cloud-init-user-config" {
@@ -67,7 +57,7 @@ runcmd:
 
 resource "proxmox_virtual_environment_vm" "worker-ubuntu-vm" {
 
-  count       = 1
+  count       = 2
   vm_id       = "${var.worker_vm_id_prefix}${count.index + 1}"
   name        = "${var.worker_vm_name}-${count.index + 1}"
   description = "Ubuntu Worker VM managed by Terraform"

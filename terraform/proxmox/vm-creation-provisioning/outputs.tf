@@ -17,3 +17,13 @@ output "worker_vm_info" {
     }
   ]
 }
+
+output "controlplane_vm_info" {
+  value = [
+    for host in proxmox_virtual_environment_vm.controlplane-ubuntu-vm : {
+      "vm-id" : host.vm_id,
+      "name" : host.name,
+      #"ip": host.initialization.ip_config.ipv4.address
+    }
+  ]
+}

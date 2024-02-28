@@ -15,5 +15,15 @@ worker_vm_id_prefix           = 600
 worker_vm_ip_prefix           = "192.168.0.6"
 worker_vm_gateway_ip          = "192.168.0.1"
 worker_vm_ubuntu_user_pwd     = "ubuntu"
+worker_vm_count               = 2
 worker_vm_cores               = 1
 worker_vm_memory              = 2048
+
+# controlplane vm variables
+cp_vm_name            = "controlplane-ubuntu-vm"
+cp_vm_id_prefix       = 700
+cp_vm_ip_prefix       = "192.168.0.7"
+cp_vm_gateway_ip      = "192.168.0.1"
+cp_vm_count           = 1
+cp_vm_cores           = 2
+cp_vm_memory          = 4096

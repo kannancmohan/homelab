@@ -83,7 +83,7 @@ resource "proxmox_virtual_environment_vm" "controlplane-ubuntu-vm" {
   }
 
   startup {
-    order      = "3"  #define the general startup order.
+    order      = "2"  #define the general startup order.
     up_delay   = "60" #delay in seconds before the next VM is started
     down_delay = "60" #delay in seconds before the next VM is shut down
   }
@@ -99,7 +99,7 @@ resource "proxmox_virtual_environment_vm" "controlplane-ubuntu-vm" {
     ssd          = true #TBC
     file_format  = "raw"
     discard      = "on" #Whether to pass discard/trim requests to the underlying storage
-    size         = 8
+    size         = var.cp_vm_disk_size
     #cache = "writeback" # Write to the host cache, but write back to the guest when possible
     #iothread = true #Whether to use iothreads for this disk
   }
@@ -185,7 +185,7 @@ resource "proxmox_virtual_environment_vm" "worker-ubuntu-vm" {
     ssd          = true #TBC
     file_format  = "raw"
     discard      = "on" #Whether to pass discard/trim requests to the underlying storage
-    size         = 8
+    size         = var.worker_vm_disk_size
     #cache = "writeback" # Write to the host cache, but write back to the guest when possible
     #iothread = true #Whether to use iothreads for this disk
   }

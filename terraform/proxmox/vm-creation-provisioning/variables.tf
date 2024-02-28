@@ -54,6 +54,10 @@ variable "worker_vm_cores" {
 variable "worker_vm_memory" {
   type = number
 }
+variable "worker_vm_disk_size" {
+  type        = number
+  description = "Disk size in GB"
+}
 
 # controlplane vm variables
 variable "cp_vm_name" {
@@ -77,4 +81,8 @@ variable "cp_vm_cores" {
 }
 variable "cp_vm_memory" {
   type = number
+}
+variable "cp_vm_disk_size" {
+  type        = number
+  description = "Disk size in GB"
 }

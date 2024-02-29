@@ -18,12 +18,12 @@ resource "proxmox_virtual_environment_file" "ubuntu-cloud-init-user-config" {
 #cloud-config
 chpasswd:
   list: |
-    ubuntu:${var.worker_vm_ubuntu_user_pwd}
+    ${var.vm_default_user_name}:${var.vm_default_user_pwd}
   expire: false
 hostname: ${var.worker_vm_name}
 users:
   - default
-  - name: ubuntu
+  - name: ${var.vm_default_user_name}
     groups: sudo
     shell: /bin/bash
     ssh-authorized-keys:
@@ -139,6 +139,21 @@ resource "proxmox_virtual_environment_vm" "controlplane-ubuntu-vm" {
   serial_device {}
   reboot = true # Reboot the VM after initial creation
 
+  # TODO check if there is any other option to update hostname
+  provisioner "remote-exec" {
+    inline = [
+      "echo 'Updating hostname!'",
+      "sudo hostnamectl set-hostname ${self.name}"
+    ]
+    connection {
+      type     = "ssh"
+      user     = var.vm_default_user_name
+      password = var.vm_default_user_pwd
+      #host     = element(element(self.ipv4_addresses, index(self.network_interface_names, "eth0")), 0)
+      host = "${var.cp_vm_ip_prefix}${count.index + 1}"
+    }
+  }
+
 }
 
 resource "proxmox_virtual_environment_vm" "worker-ubuntu-vm" {
@@ -225,4 +240,18 @@ resource "proxmox_virtual_environment_vm" "worker-ubuntu-vm" {
   serial_device {}
   reboot = true # Reboot the VM after initial creation
 
+  # TODO check if there is any other option to update hostname
+  provisioner "remote-exec" {
+    inline = [
+      "echo 'Updating hostname!'",
+      "sudo hostnamectl set-hostname ${self.name}"
+    ]
+    connection {
+      type     = "ssh"
+      user     = var.vm_default_user_name
+      password = var.vm_default_user_pwd
+      #host     = element(element(self.ipv4_addresses, index(self.network_interface_names, "eth0")), 0)
+      host = "${var.worker_vm_ip_prefix}${count.index + 1}"
+    }
+  }
 }

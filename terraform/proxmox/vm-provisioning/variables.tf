@@ -19,13 +19,19 @@ variable "cloud_image_iso_url" {
 variable "cloud_image_iso_checksum" {
   type = string
 }
-variable "vm_default_user_pwd" {
-  type = string
-}
 variable "local_machine_ssh_key" {
   type        = string
   description = "The ssh public key of your local development machine"
 }
+variable "vm_default_user_name" {
+  type        = string
+  description = "The default use in vm"
+}
+variable "vm_default_user_pwd" {
+  type        = string
+  description = "The default use password in vm"
+}
+
 
 
 # worker vm variables
@@ -39,9 +45,6 @@ variable "worker_vm_ip_prefix" {
   type = string
 }
 variable "worker_vm_gateway_ip" {
-  type = string
-}
-variable "worker_vm_ubuntu_user_pwd" {
   type = string
 }
 variable "worker_vm_count" {

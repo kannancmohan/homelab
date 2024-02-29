@@ -12,6 +12,14 @@ Automatically provision 3 vm's in proxmox with the following configuration
 
 ## Getting Started
 
+### Tools Version
+| Tools                             | Version       |
+| --------------------------------- |:-------------:|
+| Proxmox VE                        | 8.1.4         |
+| Terraform                         | 1.7.4         |
+| Terraform provider 'bpg/proxmox'  | 0.47.0        |
+| OS for vm                         | Ubuntu 22.04  |
+
 ### Prerequisite:
 * A running proxmox server. check [proxmox installation steps](proxmox_installation.md)
 * ssh access to the proxmox server

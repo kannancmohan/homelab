@@ -20,7 +20,8 @@ chpasswd:
   list: |
     ${var.vm_default_user_name}:${var.vm_default_user_pwd}
   expire: false
-hostname: ${var.worker_vm_name}
+#hostname: ${var.worker_vm_name}
+preserve_hostname: true
 users:
   - default
   - name: ${var.vm_default_user_name}

@@ -47,6 +47,20 @@ Automatically provision 3 vm's in proxmox with the following configuration
     log into the proxmox server and add the snippet option to the list 
     Datacenter >> Storage >> select your storage(eg:local)>>click edit and include snippet in the dropdown named 'Content'
 
+3. [Optional] Update your local/development machines '~/.ssh/config' file to skip ssh strong checks on local ip's
+
+```
+Host 192.168.*.*
+  #suppresses warnings about spoofing and stops the long pause when there's no host file
+  CheckHostIP no
+  #skip prompt about connecting anyway if the authenticity of the remote machine is in question
+  StrictHostKeyChecking no
+  #removes the annoying message about adding the host to the list of known hosts
+  #LogLevel=quiet
+  #stops the creation of a known_hosts file
+  UserKnownHostsFile=/dev/null
+```
+
 ### Executing the provisioning 
 
 * CD to terraform/proxmox/vm-provisioning and run 'terraform init' command

@@ -1,0 +1,17 @@
+---
+- name: Update all host
+  hosts: all
+  #remote_user: ubuntu
+  roles:
+  - common
+
+- name: Update control plane hosts
+  hosts: k8s-cp-hosts
+  #remote_user: ubuntu
+  roles:
+  - k8s-cp
+
+- hosts: Update worker hosts
+  #remote_user: ubuntu
+  roles:
+  - k8s-worker

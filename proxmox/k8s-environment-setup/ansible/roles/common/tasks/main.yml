@@ -1,0 +1,7 @@
+- name: Get uptime information
+  shell: /usr/bin/uptime
+  register: result
+
+- name: Print return information from the previous task
+  debug:
+    var: result

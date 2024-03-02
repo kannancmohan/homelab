@@ -1,8 +1,7 @@
 - name: Get uptime information
-  ansible.builtin.shell: /usr/bin/uptime
+  shell: /usr/bin/uptime
   register: result
 
 - name: Print return information from the previous task
-  ansible.builtin.debug:
+  debug:
     var: result
-    verbosity: 2

@@ -11,7 +11,8 @@
   roles:
   - k8s-cp
 
-- hosts: Update worker hosts
+- name: Update worker hosts
+  hosts: k8s-worker-hosts
   #remote_user: ubuntu
   roles:
   - k8s-worker

@@ -1,5 +1,6 @@
 - name: Get hostname information
-  shell: hostname
+  command: hostname
+  changed_when: false
   register: result
 
 - name: Print return information from the previous task

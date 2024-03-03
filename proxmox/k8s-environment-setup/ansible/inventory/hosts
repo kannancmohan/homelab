@@ -1,11 +1,11 @@
-#By default ansible creates two groups 'all' and 'ungrouped'. The all group contains every host. The ungrouped group contains all hosts that don’t have another group aside from all
+# By default ansible creates two groups 'all' and 'ungrouped'. The all group contains every host. The ungrouped group contains all hosts that don’t have another group aside from all
 
-# control plane group
-[k8s-cp-hosts]
+#  control plane group
+[k8s_cp_hosts]
 192.168.0.61 k8s_host_name=controlplane-ubuntu-vm-1
 
-# worker group
-[k8s-worker-hosts]
+#  worker group
+[k8s_worker_hosts]
 192.168.0.71 k8s_host_name=worker-ubuntu-vm-1
 192.168.0.72 k8s_host_name=worker-ubuntu-vm-2
 
@@ -19,10 +19,10 @@
 [all:vars]
 ansible_user=ubuntu
 
-# Variables that will be applied to all hosts in group k8s-cp-hosts
-[k8s-cp-hosts:vars]
+# Variables that will be applied to all hosts in group k8s_cp_hosts
+[k8s_cp_hosts:vars]
 k8s_node_name=master-node
 
-# Variables that will be applied to all hosts in group k8s-worker-hosts
-[k8s-worker-hosts:vars]
+# Variables that will be applied to all hosts in group k8s_worker_hosts
+[k8s_worker_hosts:vars]
 k8s_node_name=worker-node

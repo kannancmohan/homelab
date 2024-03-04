@@ -1,6 +1,7 @@
 # node variables
-variable "proxmox_server_endpoint" {
+variable "proxmox_api_endpoint" {
   type = string
+  description = "set the value for this variable using environment variable TF_VAR_proxmox_api_endpoint"
 }
 variable "proxmox_node_name" {
   type = string

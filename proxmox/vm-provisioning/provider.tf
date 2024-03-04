@@ -1,5 +1,6 @@
 provider "proxmox" {
-  endpoint = var.proxmox_server_endpoint
+  # make sure to set value for variable 'proxmox_api_endpoint' as environment variable using "TF_VAR_proxmox_api_endpoint=your-api-endpoint"
+  endpoint = var.proxmox_api_endpoint
 
   ## api_token value is set using environment variable PROXMOX_VE_API_TOKEN
   #api_token = var.proxmox_api_token

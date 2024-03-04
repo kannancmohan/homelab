@@ -28,7 +28,7 @@ Automatically provision 3 vm's in proxmox with the following configuration
 ### Installing
 1. Setup new user in proxmox for the terraform [provider](https://registry.terraform.io/providers/bpg/proxmox)
 
-    1.1 Execute the [script](scripts/create_terraform_role_and_user.sh) in proxmox server using root user or with a sudo user . 
+    1.1 Execute the [script](scripts/create_role_and_user_in_proxmox.sh) in proxmox server using a sudo user . 
 
     Alternately you could use the proxmox gui to create a user with necessary role mentioned [here](https://registry.terraform.io/providers/bpg/proxmox/latest/docs#api-token-authentication)
 
@@ -63,7 +63,7 @@ Host 192.168.*.*
 
 ### Executing the provisioning 
 
-* CD to terraform/proxmox/vm-provisioning and run 'terraform init' command
+* CD to proxmox/vm-provisioning and run 'terraform init' command
 ```
 terraform init
 ```
@@ -88,5 +88,3 @@ terraform apply
 ## Acknowledgments
 
 * [Inspiration](https://blog.andreasm.io/2024/01/15/proxmox-with-opentofu-kubespray-and-kubernetes/)
-
-

@@ -2,17 +2,17 @@
 plugin: community.general.proxmox
 
 validate_certs: false  # only do this when you trust the network!
-## set url value via environment variable PROXMOX_URL
-#url: https://192.168.0.50:8006
+## set proxmox server url. This value could also be set using variable PROXMOX_URL
+url: "{{ lookup('env','PROXMOX_VE_API_ENDPOINT') }}"
 
-## set user value via environment variable PROXMOX_USER
-#user: terraform@pve
+## set api-token user. This value could also be set using variable PROXMOX_USER
+user: "{{ lookup('env','PROXMOX_VE_API_USER') }}"
 
-## set user value via environment variable PROXMOX_TOKEN_ID
-#token_id: provider
+## set api-token id. This value could also be set using variable  PROXMOX_TOKEN_ID
+token_id: "{{ lookup('env','PROXMOX_VE_API_USER_TOKEN_ID') }}"
 
-## set token_secret value via environment variable TOKEN_SECRET
-#token_secret:
+## set token_secret . This value could also be set using variable TOKEN_SECRET
+token_secret: "{{ lookup('env','PROXMOX_VE_API_USER_TOKEN_SECRET') }}"
 
 want_facts: true
 

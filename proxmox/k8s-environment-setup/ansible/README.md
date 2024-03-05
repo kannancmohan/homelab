@@ -37,6 +37,15 @@ ansible-playbook environment-setup-playbook.yml
 ```
 ansible-playbook -l k8s-worker-hosts  environment-setup-playbook.yml
 ```
+### [Optional] view inventory details
+
+```
+ansible-inventory -i inventories/development/proxmox-inventory.proxmox.yml --list
+```
+OR
+```
+ansible-inventory -i inventories/development/proxmox-inventory.proxmox.yml --graph
+```
 
 ### [Optional] Linting and syntax check
 

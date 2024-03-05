@@ -1,6 +1,6 @@
 ---
 - name: Update all host
-  hosts: all
+  hosts: all,!proxmox_nodes
   #  remote_user: ubuntu
   roles:
     - common

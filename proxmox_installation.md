@@ -29,7 +29,7 @@
     Sample configuration 
     |               |                        |
     | ------------- |:----------------------:|
-    | Host name     | node1-home-network.io  |
+    | Host name     | node1-home-network     |
     | Ip address    | 192.168.0.50           |
     | Gateway       | 192.168.0.1            |
     | DNS           | 192.168.0.1            |

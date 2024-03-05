@@ -62,7 +62,7 @@ resource "proxmox_virtual_environment_vm" "controlplane-ubuntu-vm" {
   vm_id       = "${var.cp_vm_id_prefix}${count.index + 1}"
   name        = "${var.cp_vm_name}-${count.index + 1}"
   description = "Ubuntu Controlplane VM managed by Terraform"
-  tags        = ["terraform", "ubuntu", "k8s", "controlplane"]
+  tags        = var.cp_vm_tags
   node_name   = var.proxmox_node_name
 
   cpu {
@@ -163,7 +163,7 @@ resource "proxmox_virtual_environment_vm" "worker-ubuntu-vm" {
   vm_id       = "${var.worker_vm_id_prefix}${count.index + 1}"
   name        = "${var.worker_vm_name}-${count.index + 1}"
   description = "Ubuntu Worker VM managed by Terraform"
-  tags        = ["terraform", "ubuntu", "k8s", "worker"]
+  tags        = var.worker_vm_tags
   node_name   = var.proxmox_node_name
 
   cpu {

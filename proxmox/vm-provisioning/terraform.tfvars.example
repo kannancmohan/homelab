@@ -18,6 +18,7 @@ worker_vm_count               = 2
 worker_vm_cores               = 1
 worker_vm_memory              = 2048
 worker_vm_disk_size           = 15
+worker_vm_tags                = ["terraform", "ubuntu", "k8s", "worker"]
 
 # controlplane vm variables
 cp_vm_name            = "controlplane-ubuntu-vm"
@@ -28,3 +29,4 @@ cp_vm_count           = 1
 cp_vm_cores           = 2
 cp_vm_memory          = 4096
 cp_vm_disk_size       = 25
+cp_vm_tags            = ["terraform", "ubuntu", "k8s", "controlplane"]

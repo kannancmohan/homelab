@@ -62,6 +62,10 @@ variable "worker_vm_disk_size" {
   type        = number
   description = "Disk size in GB"
 }
+variable "worker_vm_tags" {
+  type    = list(string)
+  default = ["terraform", "ubuntu", "k8s", "worker"]
+}
 
 # controlplane vm variables
 variable "cp_vm_name" {
@@ -89,4 +93,8 @@ variable "cp_vm_memory" {
 variable "cp_vm_disk_size" {
   type        = number
   description = "Disk size in GB"
+}
+variable "cp_vm_tags" {
+  type    = list(string)
+  default = ["terraform", "ubuntu", "k8s", "controlplane"]
 }

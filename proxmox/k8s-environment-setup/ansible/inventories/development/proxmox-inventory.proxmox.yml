@@ -14,6 +14,7 @@ token_id: "{{ lookup('env','PROXMOX_VE_API_USER_TOKEN_ID') }}"
 ## set token_secret . This value could also be set using variable TOKEN_SECRET
 token_secret: "{{ lookup('env','PROXMOX_VE_API_USER_TOKEN_SECRET') }}"
 
+# Need to set want_facts to true so that filters and groups can work with meta data of the host
 want_facts: true
 
 ## filter out the host based on tags

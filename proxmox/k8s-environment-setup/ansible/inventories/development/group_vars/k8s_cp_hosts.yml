@@ -1,2 +1,4 @@
 ---
 k8s_node_name: master-node
+host_name_prefix: controlplane-ubuntu-vm-
+

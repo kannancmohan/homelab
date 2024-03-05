@@ -1,8 +1,32 @@
-- name: Get hostname information
-  command: hostname
-  changed_when: false
-  register: result
+---
+- name: Update apt packages
+  become: true
+  apt:
+    update_cache: true
+    cache_valid_time: 86400 #  One day
 
-- name: Print return information from the previous task
-  debug:
-    var: result
+- name: Set hostname
+  become: true
+  ansible.builtin.hostname:
+    name: "{{ host_name_prefix + ansible_host.split('.')[-1][-2:] }}"
+  notify: Reboot host
+
+- name: Disable SWAP
+  become: true
+  command: swapoff -a
+
+- name: Disable SWAP in fstab
+  become: true
+  lineinfile:
+    path: /etc/fstab
+    regexp: 'swap'
+    state: absent
+    backup: true
+  notify: Reboot host
+
+- name: check ports are open
+  ansible.builtin.meta: noop
+- name: Enable iptables Bridged Traffic
+  ansible.builtin.meta: noop
+- name: Set Environment Variables
+  ansible.builtin.meta: noop

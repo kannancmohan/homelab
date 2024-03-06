@@ -1,5 +1,6 @@
 ---
 - name: Reboot host
-  become: true
   ansible.builtin.reboot:
-  
+
+- name: Reload sysctl
+  command: sysctl --system

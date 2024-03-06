@@ -1,22 +1,18 @@
 ---
 - name: Update apt packages
-  become: true
   apt:
     update_cache: true
     cache_valid_time: 86400 #  One day
 
 - name: Set hostname
-  become: true
   ansible.builtin.hostname:
     name: "{{ host_name_prefix + ansible_host.split('.')[-1][-2:] }}"
-  notify: Reboot host
 
 - name: Disable SWAP
-  become: true
   command: swapoff -a
+  changed_when: false
 
 - name: Disable SWAP in fstab
-  become: true
   lineinfile:
     path: /etc/fstab
     regexp: 'swap'
@@ -24,9 +20,58 @@
     backup: true
   notify: Reboot host
 
-- name: check ports are open
-  ansible.builtin.meta: noop
-- name: Enable iptables Bridged Traffic
-  ansible.builtin.meta: noop
-- name: Set Environment Variables
-  ansible.builtin.meta: noop
+- name: Add the overlay kernel module
+  community.general.modprobe:
+    name: overlay
+    state: present
+    persistent: present #  adds module to /etc/modules-load.d/ and params to /etc/modprobe.d/ so that the module will be loaded on reboot
+
+- name: Add the br_netfilter kernel module
+  community.general.modprobe:
+    name: br_netfilter
+    state: present
+    persistent: present #  adds module to /etc/modules-load.d/ and params to /etc/modprobe.d/ so that the module will be loaded on reboot
+
+- name: Let iptables see bridged traffic
+  copy:
+    content: |
+      net.bridge.bridge-nf-call-ip6tables = 1
+      net.bridge.bridge-nf-call-iptables = 1
+    dest: /etc/sysctl.d/k8s.conf
+  notify: Reload sysctl #  Apply the iptables changes without need of reboot
+
+- name: Add kube-repo key
+  ansible.builtin.apt_key:
+    url: "https://pkgs.k8s.io/core:/stable:/v1.29/deb/Release.key"
+    keyring: "/etc/apt/keyrings/kubernetes-apt-keyring.gpg"
+    state: present
+
+- name: Ensure the presence of apt-repo for kubernetes packages
+  ansible.builtin.apt_repository:
+    repo: "deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.29/deb/ /"
+    filename: "/etc/apt/sources.list.d/kubernetes.list"
+    state: present
+
+- name: Ensure required packages for kubetools are installed
+  ansible.builtin.apt:
+    name:
+      - apt-transport-https
+      - curl
+    state: present
+
+- name: Install Kubernetes components
+  apt:
+    name: "{{ item }}"
+    state: present
+    update_cache: true
+  with_items:
+    - kubelet
+    - kubeadm
+    - kubectl
+
+- name: Enable kubelet
+  ansible.builtin.systemd:
+    name: kubelet
+    state: started
+    enabled: true
+  notify: Reboot host

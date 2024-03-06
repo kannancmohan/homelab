@@ -30,12 +30,12 @@ ansible  all -m ping
 ```
 2. 
 ```
-ansible-playbook environment-setup-playbook.yml
+ansible-playbook main-playbook.yml
 ```
 
 3. Run only a subset of host . In this example we are playbook only for host group 'k8s-worker-hosts'
 ```
-ansible-playbook -l k8s-worker-hosts  environment-setup-playbook.yml
+ansible-playbook -l k8s-worker-hosts  main-playbook.yml
 ```
 ### [Optional] view inventory details
 
@@ -47,6 +47,13 @@ OR
 ansible-inventory -i inventories/development/proxmox-inventory.proxmox.yml --graph
 ```
 
+### [Optional] view ansible facts
+
+eg: to view facts for host group 'all'
+```
+ansible all  -m setup
+```
+
 ### [Optional] Linting and syntax check
 
 1. yaml lint (need to install yamllint 'brew install yamllint')
@@ -56,9 +63,9 @@ ansible-inventory -i inventories/development/proxmox-inventory.proxmox.yml --gra
     ```
 2. syntax check
     ```
-	ansible-playbook environment-setup-playbook.yml --syntax-check
+	ansible-playbook main-playbook.yml --syntax-check
     ```
 3. ansible lint (need to install yamllint 'brew install ansible-lint')
     ```
-	ansible-lint environment-setup-playbook.yml
+	ansible-lint main-playbook.yml
     ```

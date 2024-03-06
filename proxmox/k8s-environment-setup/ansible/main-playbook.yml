@@ -3,7 +3,8 @@
   hosts: all,!proxmox_nodes
   #  remote_user: ubuntu
   roles:
-    - common
+    - role: common
+      become: true
 
 - name: Update control plane hosts
   hosts: k8s_cp_hosts

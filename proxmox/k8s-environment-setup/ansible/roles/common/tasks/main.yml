@@ -42,14 +42,14 @@
 
 - name: Add kube-repo key
   ansible.builtin.apt_key:
-    url: "https://pkgs.k8s.io/core:/stable:/v1.29/deb/Release.key"
-    keyring: "/etc/apt/keyrings/kubernetes-apt-keyring.gpg"
+    url: "{{ k8s.ubuntu.k8s_repo_key }}"
+    keyring: "{{ k8s.ubuntu.k8s_repo_keyring }}"
     state: present
 
 - name: Ensure the presence of apt-repo for kubernetes packages
   ansible.builtin.apt_repository:
-    repo: "deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.29/deb/ /"
-    filename: "/etc/apt/sources.list.d/kubernetes.list"
+    repo: "{{ k8s.ubuntu.k8s_repo }}"
+    filename: "{{ k8s.ubuntu.k8s_repo_file }}"
     state: present
 
 - name: Ensure required packages for kubetools are installed
@@ -64,10 +64,7 @@
     name: "{{ item }}"
     state: present
     update_cache: true
-  with_items:
-    - kubelet
-    - kubeadm
-    - kubectl
+  with_items: "{{ k8s.ubuntu.k8s_packages }}"
 
 - name: Enable kubelet
   ansible.builtin.systemd:

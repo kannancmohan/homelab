@@ -74,15 +74,9 @@ Automatically provision 3 vm's in proxmox with the following configuration
 
 ### Executing the provisioning 
 
-* CD to proxmox/vm-provisioning and run 'terraform init' command
-```
-terraform init
-```
+1. Execute terraform script for provision the vm's . 
 
-* Run 'terraform plan' and 'terraform apply'command to provision the vm's
-```
-terraform apply
-```
+check execution steps mentioned [here](/proxmox/vm-provisioning/README.md#executing-the-provisioning) 
 
 ## Authors
 

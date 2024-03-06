@@ -1,5 +1,5 @@
 #!/bin/bash
-##### This script to generate new folder with necessary proxmox files. #####
+##### This script is useful for generating a project with  necessary terraform files #####
 #### NOTE: Execute this script from directory where you want to create a new terraform project#####
 
 # provide your project name

@@ -1,14 +1,5 @@
 ---
-k8s:
+#  vars folder contain variables which needs to be set by user
+common_versions:
   k8s_version: "1.29"
   container_runtime: crio
-
-  ubuntu:
-    k8s_repo: deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v{{ vars["k8s"]["k8s_version"] }}/deb/ /
-    k8s_repo_file: /etc/apt/sources.list.d/kubernetes.list
-    k8s_repo_key: https://pkgs.k8s.io/core:/stable:/v{{ vars["k8s"]["k8s_version"] }}/deb/Release.key
-    k8s_repo_keyring: /etc/apt/keyrings/kubernetes-apt-keyring.gpg
-    k8s_packages:
-      - kubelet
-      - kubeadm
-      - kubectl

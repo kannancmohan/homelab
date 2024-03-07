@@ -1,5 +1,8 @@
 ---
 #  defaults folder contain variables which users need not alter
+common_os:
+  ubuntu:
+    version: "22.04"
 common_k8s:
   ubuntu:
     k8s_repo: deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v{{ common_versions.k8s_version }}/deb/ /
@@ -10,3 +13,12 @@ common_k8s:
       - kubelet
       - kubeadm
       - kubectl
+      # - "kubelet={{ common_versions.k8s_full_version }}-00"
+      # - "kubeadm={{ common_versions.k8s_full_version }}-00"
+      # - "kubectl={{ common_versions.k8s_full_version }}-00"
+common_crio:
+  ubuntu:
+    crio_repo: deb [signed-by=/etc/apt/keyrings/cri-o-apt-keyring.gpg] https://pkgs.k8s.io/addons:/cri-o:/stable:/v{{ common_versions.k8s_version }}/deb/ /
+    crio_repo_file: /etc/apt/sources.list.d/cri-o.list
+    crio_repo_key: https://pkgs.k8s.io/addons:/cri-o:/stable:/v{{ common_versions.k8s_version }}/deb/Release.key
+    crio_repo_keyring: /etc/apt/keyrings/cri-o-apt-keyring.gpg

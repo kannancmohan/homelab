@@ -2,4 +2,4 @@
 #  vars folder contain variables which needs to be set by user
 common_versions:
   k8s_version: "1.29"
-  container_runtime: crio
+  k8s_full_version: "1.29.2"

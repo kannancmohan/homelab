@@ -1,9 +1,15 @@
 ---
+# - name: Upgrade all packages
+#   ansible.builtin.package:
+#     name: "*"
+#     state: latest
+
 - name: Update apt packages
   apt:
     update_cache: true
     cache_valid_time: 86400 #  One day
-- name: Ensure some common packages are installed
+
+- name: Ensure common packages are installed
   apt:
     name:
       - apt-transport-https
@@ -16,6 +22,7 @@
 - name: Set hostname
   ansible.builtin.hostname:
     name: "{{ host_name_prefix + ansible_host.split('.')[-1][-2:] }}"
+  notify: Reboot host
 
 - name: Disable SWAP
   command: swapoff -a
@@ -46,6 +53,7 @@
     content: |
       net.bridge.bridge-nf-call-ip6tables = 1
       net.bridge.bridge-nf-call-iptables = 1
+      net.ipv4.ip_forward = 1
     dest: /etc/sysctl.d/k8s.conf
   notify: Reload sysctl #  Apply the iptables changes without need of reboot
 
@@ -98,6 +106,9 @@
     update_cache: true
     allow_downgrade: true
   with_items: "{{ common_k8s.ubuntu.k8s_packages }}"
+
+# - name: Update node-ip in KUBELET_EXTRA_ARGS mentioned here #  https://devopscube.com/setup-kubernetes-cluster-kubeadm/
+#   meta: noop
 
 - name: Enable kubelet
   ansible.builtin.systemd:

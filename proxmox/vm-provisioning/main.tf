@@ -23,6 +23,7 @@ chpasswd:
   expire: false
 #hostname: ${var.worker_vm_name}
 preserve_hostname: true
+timezone: Europe/Berlin
 write_files:
   - path: /etc/environment
     content: |

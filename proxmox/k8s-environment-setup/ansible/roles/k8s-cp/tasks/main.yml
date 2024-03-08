@@ -2,6 +2,27 @@
 - name: Generate cluster token and certificate key
   run_once: true
   block:
+    - name: Check if kubernetes is  already running in host by checking if pods are available
+      kubernetes.core.k8s_info:
+        kind: Pod
+        namespace: kube-system
+        #kubeconfig: # by default it will attempt to load the default configuration file from ~/.kube/config
+      register: pod_result
+      ignore_errors: true
+
+    - name: Print return information from the previous task
+      debug:
+        var: pod_result
+
+    - name: Set a flag if k8s is already running
+      ansible.builtin.set_fact:
+        k8s_already_installed: "{{ pod_result.api_found is defined and pod_result.api_found == true }}"
+      #when: "{{ pod_result.api_found is defined and pod_result.api_found == true }}"
+
+    - name: Print k8s_already_installed value
+      debug:
+        var: k8s_already_installed
+
     - name: Generate cluster token # noqa no-changed-when
       ansible.builtin.command: kubeadm token generate
       register: kubetoken_generated
@@ -28,7 +49,11 @@
   become: true
   block:
     - name: Start kubeadm install # noqa no-changed-when # noqa command-instead-of-shell
-      ansible.builtin.shell: "kubeadm init --apiserver-advertise-address={{ ansible_host }}  --apiserver-cert-extra-sans={{ ansible_host }}  --pod-network-cidr=10.1.0.0/16 --node-name {{ ansible_hostname }}"
+      ansible.builtin.shell: >
+        kubeadm init --apiserver-advertise-address={{ ansible_host }}
+        --apiserver-cert-extra-sans={{ ansible_host }}
+        --pod-network-cidr={{ common_k8s_cp.pod_cidr }}
+        --node-name {{ ansible_hostname }}
       register: install_result
       failed_when: install_result.rc != 0 or install_result.stderr != ''
 
@@ -53,7 +78,7 @@
         state: directory
         mode: "0755"
 
-    - name: Copy kubeconfig
+    - name: Copy kubeconfig to user's home
       ansible.builtin.copy:
         src: /etc/kubernetes/admin.conf
         dest: "/home/{{ ansible_user_id }}/.kube/config"
@@ -61,7 +86,7 @@
         owner: "{{ ansible_user_id }}"
         group: "{{ ansible_user_id }}"
         mode: "0755"
-
+    # TODO set the env variable K8S_AUTH_KUBECONFIG so that ansible k8s modules could authenticate without explicitly specifying kubeconfig param
     - name: Fetch kubeconfig file
       ansible.builtin.slurp:
         src: /etc/kubernetes/admin.conf
@@ -74,3 +99,5 @@
     - name: Set a flag if cluster setup is successful
       ansible.builtin.set_fact:
         k8s_installed: true
+
+  when: k8s_already_installed is not defined or k8s_already_installed != true

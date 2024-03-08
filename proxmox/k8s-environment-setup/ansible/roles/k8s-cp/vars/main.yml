@@ -1,0 +1,4 @@
+---
+#  vars folder contain variables which needs to be set by user
+common_k8s_cp:
+  pod_cidr: "10.1.0.0/16"

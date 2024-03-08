@@ -33,9 +33,9 @@ ansible  all -m ping
 ansible-playbook main-playbook.yml
 ```
 
-3. Run only a subset of host . In this example we are playbook only for host group 'k8s-worker-hosts'
+3. Run only a subset of host . In this example we are playbook only for host group 'k8s_worker_hosts'
 ```
-ansible-playbook -l k8s-worker-hosts  main-playbook.yml
+ansible-playbook -l k8s_worker_hosts  main-playbook.yml
 ```
 ### [Optional] view inventory details
 

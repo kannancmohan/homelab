@@ -2,5 +2,5 @@
 - name: Reboot host
   ansible.builtin.reboot:
 
-- name: Reload sysctl
-  command: sysctl --system
+# - name: Reload sysctl
+#   command: sysctl --system

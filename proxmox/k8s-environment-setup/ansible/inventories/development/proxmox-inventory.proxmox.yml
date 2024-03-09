@@ -17,7 +17,7 @@ token_secret: "{{ lookup('env','PROXMOX_VE_API_USER_TOKEN_SECRET') }}"
 # Need to set want_facts to true so that filters and groups can work with meta data of the host
 want_facts: true
 
-## filter out the host based on tags
+## filter out the host based on custom proxmox tags
 filters:
   - proxmox_status == "running"
   - "proxmox_tags_parsed is defined and 'k8s' in proxmox_tags_parsed"

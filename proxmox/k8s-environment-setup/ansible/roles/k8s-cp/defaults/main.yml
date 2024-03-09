@@ -1,0 +1,6 @@
+---
+#  defaults folder contain variables which users need not alter
+common_cni_plugins:
+  calico:
+    calico_operator: https://raw.githubusercontent.com/projectcalico/calico/v3.27.0/manifests/tigera-operator.yaml
+    calico_crd: https://raw.githubusercontent.com/projectcalico/calico/v3.27.0/manifests/custom-resources.yaml

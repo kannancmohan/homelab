@@ -26,6 +26,7 @@ common_k8s:
     ansible_k8s_pip_packages:
       - kubernetes
       - PyYAML
+      - jsonpatch
 common_crio:
   ubuntu:
     crio_repo: deb [signed-by=/etc/apt/keyrings/cri-o-apt-keyring.gpg] https://pkgs.k8s.io/addons:/cri-o:/stable:/v{{ common_versions.k8s_version }}/deb/ /

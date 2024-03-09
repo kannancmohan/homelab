@@ -6,13 +6,14 @@
     #kubeconfig: # by default it will attempt to load the default configuration file from ~/.kube/config
   register: pod_result
   ignore_errors: true
+
 - name: Set a flag if k8s is already running
   ansible.builtin.set_fact:
     k8s_already_installed: "{{ pod_result.api_found is defined and pod_result.api_found == true }}"
 
 - name: Generate cluster token and certificate key
   run_once: true
-  when: k8s_already_installed is not defined or k8s_already_installed != true
+  when: k8s_already_installed is not defined or not k8s_already_installed
   block:
 
     - name: Generate cluster token # noqa no-changed-when
@@ -36,10 +37,11 @@
     #     src: templates/kubeadm-config.yaml.j2
     #     dest: /tmp/kubeadm-config.yaml
     #     mode: "0755"
+
 - name: Setup kubeadmin in master node
   run_once: true
   become: true
-  when: k8s_already_installed is not defined or k8s_already_installed != true
+  when: k8s_already_installed is not defined or not k8s_already_installed
   block:
     - name: Start kubeadm install # noqa no-changed-when # noqa command-instead-of-shell
       ansible.builtin.shell: >
@@ -79,6 +81,7 @@
         owner: "{{ ansible_user_id }}"
         group: "{{ ansible_user_id }}"
         mode: "0755"
+
     # TODO set the env variable K8S_AUTH_KUBECONFIG so that ansible k8s modules could authenticate without explicitly specifying kubeconfig param
     - name: Fetch kubeconfig file
       ansible.builtin.slurp:
@@ -89,6 +92,35 @@
       ansible.builtin.set_fact:
         kubeconfig: "{{ kube_master['content'] | b64decode }}"
 
-    - name: Set a flag if cluster setup is successful
-      ansible.builtin.set_fact:
-        k8s_installed: true
+    - name: Wait for kubernetes port 6443 to become open on the host
+      ansible.builtin.wait_for:
+        port: 6443
+        delay: 5 # don't start checking for 5 seconds
+        timeout: 60 # time out in 1 min
+
+    - name: Download Calico manifest.
+      ansible.builtin.get_url:
+        url: "{{ item.url }}"
+        dest: "{{ item.name }}"
+        mode: "0664"
+      loop:
+        - name: /home/{{ ansible_user_id }}/calico-operator.yaml
+          url: "{{ common_cni_plugins.calico.calico_operator }}"
+        - name: /home/{{ ansible_user_id }}/calico-crd.yaml
+          url: "{{ common_cni_plugins.calico.calico_crd }}"
+
+    - name: Apply custom CIDR to calico installation manifest
+      ansible.builtin.replace:
+        path: /home/{{ ansible_user_id }}/calico-crd.yaml
+        regexp: 192.168.0.0\/16
+        replace: "{{ common_k8s_cp.pod_cidr }}"
+
+    - name: Apply calico manifests to the cluster.
+      kubernetes.core.k8s:
+        state: present
+        src: "{{ item }}"
+        # kubeconfig: "{{ workspace_directory.base_path }}/clusters/{{ k8s.cluster_name | default('k8s-test', true) }}/admin.kubeconfig"
+        wait: true #  wait for certain resource kinds to end up in the desired state.
+      loop:
+        - /home/{{ ansible_user_id }}/calico-operator.yaml
+        - /home/{{ ansible_user_id }}/calico-crd.yaml

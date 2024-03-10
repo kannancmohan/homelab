@@ -8,6 +8,7 @@ proxmox_node_default_datastore_id  = "local-lvm"
 local_machine_ssh_key         = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPWmuxBWj5GebJtC5sp4kfUGdodLswXVxj9Vrzauf63B kannanmohanklm@gmail.com"
 vm_default_user_name          = "ubuntu"
 vm_default_user_pwd           = "pwd@123"
+vm_timezone                   = "Europe/Berlin"
 
 # worker vm variables
 worker_vm_name                = "worker-ubuntu-vm"

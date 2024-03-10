@@ -32,7 +32,11 @@ variable "vm_default_user_pwd" {
   type        = string
   description = "The default use password in vm"
 }
-
+variable "vm_timezone" {
+  type        = string
+  default     = "Europe/Berlin"
+  description = "The timezone for the vm"
+}
 
 
 # worker vm variables

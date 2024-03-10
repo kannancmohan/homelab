@@ -12,20 +12,12 @@ Automatically provision 3 vm's in proxmox with the following configuration
 
 ## Getting Started
 
-### Tools Version
-| Tools                             | Version       |
-| --------------------------------- |:-------------:|
-| Proxmox VE                        | 8.1.4         |
-| Terraform                         | 1.7.4         |
-| Terraform provider 'bpg/proxmox'  | 0.47.0        |
-| OS for vm                         | Ubuntu 22.04  |
-
 ### Prerequisite:
 * A running proxmox server. check [proxmox installation steps](proxmox_installation.md)
 * ssh access to the proxmox server
 * terraform installed in local/development machine. check [official site](https://developer.hashicorp.com/terraform/tutorials/aws-get-started/install-cli) 
 
-### Project setup //TODO add steps for environment variable 
+### Project setup
 1. Setup new user in proxmox for the terraform [provider](https://registry.terraform.io/providers/bpg/proxmox)
 
     1.1 Execute the [script](scripts/create_role_and_user_in_proxmox.sh) in proxmox server using a sudo user . 
@@ -34,11 +26,19 @@ Automatically provision 3 vm's in proxmox with the following configuration
 
     Alternately you could use the proxmox gui to create a user with necessary role mentioned [here](https://registry.terraform.io/providers/bpg/proxmox/latest/docs#api-token-authentication)
 
-    1.2 set environment variable PROXMOX_VE_API_TOKEN using the api-token from above step
+    1.2 set environment variable using the api-token from above step
 
     eg:
     ```
-    export PROXMOX_VE_API_TOKEN="provisioner@pve!provider=c97a9b12-80b6-4193-8baa-9991a23084d9"
+        export PROXMOX_VE_API_ENDPOINT="https://192.168.0.50:8006"
+        export PROXMOX_VE_API_USER="test@pve"
+        export PROXMOX_VE_API_USER_TOKEN_ID="<token-id-from-previous-step>"
+        export PROXMOX_VE_API_USER_TOKEN_SECRET="<token-secret-from-previous-step>"
+        export PROXMOX_VE_API_USER_FULL_TOKEN_ID="$PROXMOX_VE_API_USER!$PROXMOX_VE_API_USER_TOKEN_ID"
+        ## for setting values to terraform variable
+        export TF_VAR_proxmox_api_endpoint="$PROXMOX_VE_API_ENDPOINT"
+        ## used by bpg/proxmox terraform provider
+        export PROXMOX_VE_API_TOKEN="$PROXMOX_VE_API_USER_FULL_TOKEN_ID=$PROXMOX_VE_API_USER_TOKEN_SECRET"
     ```
 
     1.3 Configure ssh connection for terraform provider
@@ -50,7 +50,7 @@ Automatically provision 3 vm's in proxmox with the following configuration
     ```
     ssh-copy-id -i  ~/.ssh/id_ed25519.pub root@192.168.0.50
     ```
-    When using a non-root user for the SSH connection, the user must have the sudo privilege on the target node without requiring a password. Check the steps mentioned [here](https://registry.terraform.io/providers/bpg/proxmox/latest/docs#ssh-user)
+    When using a non-root user for the SSH connection, the user must have the sudo privilege on the target node. Check the steps mentioned [here](https://registry.terraform.io/providers/bpg/proxmox/latest/docs#ssh-user)
 
 2. Enable snippet storage in proxmox server
     log into the proxmox server and add the snippet option to the list 
@@ -72,11 +72,11 @@ Automatically provision 3 vm's in proxmox with the following configuration
     UserKnownHostsFile=/dev/null
     ```
 
-### Executing the provisioning 
+### Steps to run
 
-1. Execute terraform script for provision the vm's . 
+1. To provision the vm, check steps mentioned [here](/proxmox/vm-provisioning/README.md#executing-the-provisioning) 
 
-check execution steps mentioned [here](/proxmox/vm-provisioning/README.md#executing-the-provisioning) 
+2. To configure vm, check steps mentioned [here](/proxmox/k8s-environment-setup/ansible/README.md#steps-to-execute) 
 
 ## Authors
 

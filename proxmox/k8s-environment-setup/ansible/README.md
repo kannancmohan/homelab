@@ -28,7 +28,7 @@
 ```
 ansible  all -m ping
 ```
-2. 
+2. To configure vm's
 ```
 ansible-playbook main-playbook.yml
 ```

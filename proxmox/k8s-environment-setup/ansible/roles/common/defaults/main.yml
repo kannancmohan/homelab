@@ -19,7 +19,7 @@ common_k8s:
     k8s_packages:
       - kubelet
       - kubeadm
-      - kubectl
+      - kubectl # TODO workers nodes doesn't need kubectl
       # - "kubelet={{ common_versions.k8s_full_version }}-00"
       # - "kubeadm={{ common_versions.k8s_full_version }}-00"
       # - "kubectl={{ common_versions.k8s_full_version }}-00"

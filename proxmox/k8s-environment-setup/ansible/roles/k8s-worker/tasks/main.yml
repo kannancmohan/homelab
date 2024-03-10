@@ -1,5 +1,5 @@
 ---
-- name: Check if kubernetes is  already running in host by checking if pods are available
+- name: Get list of nodes in k8s cluster
   kubernetes.core.k8s_info:
     kind: Node
   delegate_to: "{{hostvars[groups['k8s_cp_hosts'][0]]['ansible_host']}}" # executing this from control plane node
@@ -12,30 +12,37 @@
   ansible.builtin.set_fact:
     k8s_nodes_list: "{{ node_result | community.general.json_query('resources[*].metadata.name') | list }}"
 
-- debug: msg=“result--->{{ k8s_nodes_list}}“
-
 - name: Generate cluster token and certificate key
   when: ansible_hostname not in k8s_nodes_list
-  become: true
   block:
 
     - name: Generate k8s join command
       ansible.builtin.command: kubeadm token create --print-join-command
       register: join_command_result
       delegate_to: "{{hostvars[groups['k8s_cp_hosts'][0]]['ansible_host']}}" # executing this from control plane node
-      remote_user: "{{ ansible_user }}"
+      #remote_user: "{{ ansible_user }}"
       run_once: true
 
     - name: Join worker nodes in cluster
       when: join_command_result.stdout_lines is defined
       ansible.builtin.command: "{{ join_command_result.stdout_lines[0] }}"
-    
-    - name: Set label to worker node
-      meta: noop
+      become: true
 
-    - name: Mark node as joined
-      ansible.builtin.set_fact:
-        k8s_joined: true
+    # - name: Mark node as joined
+    #   ansible.builtin.set_fact:
+    #     k8s_joined: true
+
+    - name: Label worker node
+      kubernetes.core.k8s_json_patch:
+        kind: Node
+        name: "{{ ansible_hostname }}"
+        patch:
+          - op: add
+            path: /metadata/labels/node-role.kubernetes.io~1worker
+            value: ""
+      #remote_user: "{{ ansible_user }}"
+      delegate_to: "{{hostvars[groups['k8s_cp_hosts'][0]]['ansible_host']}}" # executing this from control plane node
 
     - name: Reboot host
       ansible.builtin.reboot:
+      become: true

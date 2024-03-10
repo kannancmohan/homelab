@@ -7,7 +7,7 @@
   register: pod_result
   ignore_errors: true
 
-- name: Set a flag if k8s is already running
+- name: Set a flag to indicate if k8s cluster is already running or not
   ansible.builtin.set_fact:
     k8s_already_installed: "{{ pod_result.api_found is defined and pod_result.api_found == true }}"
 
@@ -25,11 +25,6 @@
         --node-name {{ ansible_hostname }}
       register: install_result
       failed_when: install_result.rc != 0 or install_result.stderr != ''
-
-    - name: Result of kubeadm installation
-      debug:
-        var: install_result
-      # become: true
 
     # - name: Get information on generated certificate
     #   community.crypto.x509_certificate_info:
@@ -94,7 +89,7 @@
       kubernetes.core.k8s:
         state: present
         src: "{{ item }}"
-        kubeconfig: /etc/kubernetes/admin.conf
+        kubeconfig: /etc/kubernetes/admin.conf # directly passing kubeconfig as this task was complaining about missing configuration
         wait: true #  wait for certain resource kinds to end up in the desired state.
       loop:
         - /home/{{ ansible_user_id }}/calico-operator.yaml

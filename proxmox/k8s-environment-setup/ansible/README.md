@@ -54,6 +54,12 @@ eg: to view facts for host group 'all'
 ansible all  -m setup
 ```
 
+### [Optional] view all tasks in playbook
+
+```
+ansible-playbook main-playbook.yml --list-tasks
+```
+
 ### [Optional] Linting and syntax check
 
 1. yaml lint (need to install yamllint 'brew install yamllint')

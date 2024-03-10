@@ -3,7 +3,7 @@
   kubernetes.core.k8s_info:
     kind: Pod
     namespace: kube-system
-    #kubeconfig: # by default it will attempt to load the default configuration file from ~/.kube/config
+    # kubeconfig: # by default it will attempt to load the default configuration file from ~/.kube/config
   register: pod_result
   ignore_errors: true
 

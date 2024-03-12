@@ -8,6 +8,13 @@
 | Terraform provider 'bpg/proxmox'  | 0.47.0        |
 | OS for vm                         | Ubuntu 22.04  |
 
+### Prerequisite
+Make sure the following environment variables are set. 
+```
+export TF_VAR_proxmox_api_endpoint="<your-proxmox-server-api-endpoint>"
+export PROXMOX_VE_API_TOKEN="<proxmox-user-token-id>=<proxmox-user-token-secret>"
+```
+
 ### Executing the provisioning 
 
 1. Initialize terraform(one time setup)

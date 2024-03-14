@@ -30,6 +30,7 @@ resource "proxmox_virtual_environment_vm" "proxmox_vm" {
     interface = "scsi0"
     discard   = "on"
     size      = var.vm_disk_size
+    ssd       = var.vm_disk_ssd_enabled
   }
 
   initialization {
@@ -51,8 +52,8 @@ resource "proxmox_virtual_environment_vm" "proxmox_vm" {
     #   username = "ubuntu"
     # }
 
-    user_data_file_id   = var.cloudinit_user_data_file_id
-    vendor_data_file_id = var.cloudinit_vendor_data_file_id
+    user_data_file_id   = var.vm_cloudinit_user_data_file_id
+    vendor_data_file_id = var.vm_cloudinit_vendor_data_file_id
     # meta_data_file_id   = proxmox_virtual_environment_file.ubuntu_cloud_init_metada_ta_config.id
     # network_data_file_id = proxmox_virtual_environment_file.ubuntu_cloud_init_network_config.id
   }

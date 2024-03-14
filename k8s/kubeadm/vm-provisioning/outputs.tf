@@ -8,22 +8,10 @@ output "ubuntu_cloud_init_vendor_conf_file_name" {
   value = proxmox_virtual_environment_file.ubuntu-cloud-init-vendor-config.file_name
 }
 
-output "worker_vm_info" {
-  value = [
-    for host in proxmox_virtual_environment_vm.worker-ubuntu-vm : {
-      "vm-id" : host.vm_id,
-      "name" : host.name,
-      #"ip": host.initialization.ip_config.ipv4.address
-    }
-  ]
+output "controlplane_vm_info" {
+  value = module.controlplane
 }
 
-output "controlplane_vm_info" {
-  value = [
-    for host in proxmox_virtual_environment_vm.controlplane-ubuntu-vm : {
-      "vm-id" : host.vm_id,
-      "name" : host.name,
-      #"ip": host.initialization.ip_config.ipv4.address
-    }
-  ]
+output "worker_vm_info" {
+  value = module.worker
 }

@@ -45,6 +45,10 @@ variable "vm_disk_size" {
   type    = string
   default = "10"
 }
+variable "vm_disk_ssd_enabled" {
+  type    = bool
+  default = false
+}
 variable "vm_cidr" {
   type    = string
 }
@@ -63,11 +67,11 @@ variable "vm_reboot" {
   type    = bool
   default = false
 }
-variable "cloudinit_user_data_file_id" {
+variable "vm_cloudinit_user_data_file_id" {
   type        = string
   default = null
 }
-variable "cloudinit_vendor_data_file_id" {
+variable "vm_cloudinit_vendor_data_file_id" {
   type        = string
   default = null
 }

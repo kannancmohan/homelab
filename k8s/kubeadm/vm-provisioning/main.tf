@@ -63,172 +63,44 @@ runcmd:
   }
 }
 
-resource "proxmox_virtual_environment_vm" "controlplane-ubuntu-vm" {
-
-  count       = var.cp_vm_count
-  vm_id       = "${var.cp_vm_id_prefix}${count.index + 1}"
-  name        = "${var.cp_vm_name}-${count.index + 1}"
-  description = "Ubuntu Controlplane VM managed by Terraform"
-  tags        = var.cp_vm_tags
-  node_name   = var.proxmox_node_name
-
-  cpu {
-    cores = var.cp_vm_cores
-    #If you don’t care about live migration or have a homogeneous cluster where all nodes have the same CPU and same microcode version, set the CPU type to host, as in theory this will give your guests maximum performance
-    type = "host" # default is "qemu64" . check https://registry.terraform.io/providers/bpg/proxmox/latest/docs/resources/virtual_environment_vm#type
-    #numa  = true
-    #limit = 64 # Limit of CPU usage, 0...128. (defaults to 0 -- no limit)
-  }
-
-  memory {
-    dedicated = var.cp_vm_memory
-  }
-
-  #The QEMU agent configuration
-  agent {
-    # read 'Qemu guest agent' section, change to true only when ready
-    enabled = true
-  }
-
-  startup {
-    order      = "2"  #define the general startup order.
-    up_delay   = "60" #delay in seconds before the next VM is started
-    down_delay = "60" #delay in seconds before the next VM is shut down
-  }
-
-  network_device {
-    bridge = "vmbr0"
-  }
-
-  disk {
-    datastore_id = var.proxmox_node_default_datastore_id
-    file_id      = proxmox_virtual_environment_download_file.ubuntu-qcow2-img.id
-    interface    = "scsi0"
-    ssd          = true #TBC
-    file_format  = "raw"
-    discard      = "on" #Whether to pass discard/trim requests to the underlying storage
-    size         = var.cp_vm_disk_size
-    #cache = "writeback" # Write to the host cache, but write back to the guest when possible
-    #iothread = true #Whether to use iothreads for this disk
-  }
-
-  #The cloud-init configuration
-  initialization {
-    datastore_id = var.proxmox_node_default_datastore_id
-    #interface    = "scsi0"
-
-    # dns {
-    #   servers = ["1.1.1.1", "8.8.8.8"]
-    # }
-
-    ip_config {
-      ipv4 {
-        address = "${var.cp_vm_ip_prefix}${count.index + 1}/24"
-        gateway = var.cp_vm_gateway_ip
-      }
-    }
-
-    # user_account {
-    #   keys     = [trimspace("")]
-    #   password = ""
-    #   username = "ubuntu"
-    # }
-
-    user_data_file_id   = proxmox_virtual_environment_file.ubuntu-cloud-init-user-config.id
-    vendor_data_file_id = proxmox_virtual_environment_file.ubuntu-cloud-init-vendor-config.id
-    #meta_data_file_id   = proxmox_virtual_environment_file.ubuntu_cloud_init_metada_ta_config.id
-    #network_data_file_id = proxmox_virtual_environment_file.ubuntu_cloud_init_network_config.id
-  }
-
-  operating_system {
-    type = "l26" #Linux Kernel 2.6 - 5.X.
-  }
-
-  serial_device {}
-  reboot = true # Reboot the VM after initial creation
+module "controlplane" {
+  source                           = "../../terraform_modules/proxmox_vm"
+  count                            = var.cp_vm_count
+  vm_id                            = "${var.cp_vm_id_prefix}${count.index + 1}"
+  vm_name                          = "${var.cp_vm_name}-${count.index + 1}"
+  vm_node                          = var.proxmox_node_name
+  vm_description                   = "k8s controlplane provisioned by terraform"
+  vm_cidr                          = "${var.cp_vm_ip_prefix}${count.index + 1}/24"
+  vm_gateway_ip                    = var.cp_vm_gateway_ip
+  vm_cpu_cores                     = var.cp_vm_cores
+  vm_memory                        = var.cp_vm_memory
+  vm_disk_file_id                  = proxmox_virtual_environment_download_file.ubuntu-qcow2-img.id
+  vm_disk_size                     = var.cp_vm_disk_size
+  vm_disk_ssd_enabled              = true
+  vm_tags                          = var.cp_vm_tags
+  vm_agent_enabled                 = true
+  vm_cloudinit_user_data_file_id   = proxmox_virtual_environment_file.ubuntu-cloud-init-user-config.id
+  vm_cloudinit_vendor_data_file_id = proxmox_virtual_environment_file.ubuntu-cloud-init-vendor-config.id
+  vm_reboot                        = true
 }
 
-resource "proxmox_virtual_environment_vm" "worker-ubuntu-vm" {
-
-  count       = var.worker_vm_count
-  vm_id       = "${var.worker_vm_id_prefix}${count.index + 1}"
-  name        = "${var.worker_vm_name}-${count.index + 1}"
-  description = "Ubuntu Worker VM managed by Terraform"
-  tags        = var.worker_vm_tags
-  node_name   = var.proxmox_node_name
-
-  cpu {
-    cores = var.worker_vm_cores
-    #If you don’t care about live migration or have a homogeneous cluster where all nodes have the same CPU and same microcode version, set the CPU type to host, as in theory this will give your guests maximum performance
-    type = "host" # default is "qemu64" . check https://registry.terraform.io/providers/bpg/proxmox/latest/docs/resources/virtual_environment_vm#type
-    #numa  = true
-    #limit = 64 # Limit of CPU usage, 0...128. (defaults to 0 -- no limit)
-  }
-
-  memory {
-    dedicated = var.worker_vm_memory
-  }
-
-  #The QEMU agent configuration
-  agent {
-    # read 'Qemu guest agent' section, change to true only when ready
-    enabled = true
-  }
-
-  startup {
-    order      = "3"  #define the general startup order.
-    up_delay   = "60" #delay in seconds before the next VM is started
-    down_delay = "60" #delay in seconds before the next VM is shut down
-  }
-
-  network_device {
-    bridge = "vmbr0"
-  }
-
-  disk {
-    datastore_id = var.proxmox_node_default_datastore_id
-    file_id      = proxmox_virtual_environment_download_file.ubuntu-qcow2-img.id
-    interface    = "scsi0"
-    ssd          = true #TBC
-    file_format  = "raw"
-    discard      = "on" #Whether to pass discard/trim requests to the underlying storage
-    size         = var.worker_vm_disk_size
-    #cache = "writeback" # Write to the host cache, but write back to the guest when possible
-    #iothread = true #Whether to use iothreads for this disk
-  }
-
-  #The cloud-init configuration
-  initialization {
-    datastore_id = var.proxmox_node_default_datastore_id
-    #interface    = "scsi0"
-
-    # dns {
-    #   servers = ["1.1.1.1", "8.8.8.8"]
-    # }
-
-    ip_config {
-      ipv4 {
-        address = "${var.worker_vm_ip_prefix}${count.index + 1}/24"
-        gateway = var.worker_vm_gateway_ip
-      }
-    }
-
-    # user_account {
-    #   keys     = [trimspace("")]
-    #   password = ""
-    #   username = "ubuntu"
-    # }
-
-    user_data_file_id   = proxmox_virtual_environment_file.ubuntu-cloud-init-user-config.id
-    vendor_data_file_id = proxmox_virtual_environment_file.ubuntu-cloud-init-vendor-config.id
-    #meta_data_file_id   = proxmox_virtual_environment_file.ubuntu_cloud_init_metada_ta_config.id
-    #network_data_file_id = proxmox_virtual_environment_file.ubuntu_cloud_init_network_config.id
-  }
-
-  operating_system {
-    type = "l26" #Linux Kernel 2.6 - 5.X.
-  }
-
-  serial_device {}
-  reboot = true # Reboot the VM after initial creation
+module "worker" {
+  source                           = "../../terraform_modules/proxmox_vm"
+  count                            = var.worker_vm_count
+  vm_id                            = "${var.worker_vm_id_prefix}${count.index + 1}"
+  vm_name                          = "${var.worker_vm_name}-${count.index + 1}"
+  vm_node                          = var.proxmox_node_name
+  vm_description                   = "k8s worker provisioned by terraform"
+  vm_cidr                          = "${var.worker_vm_ip_prefix}${count.index + 1}/24"
+  vm_gateway_ip                    = var.worker_vm_gateway_ip
+  vm_cpu_cores                     = var.worker_vm_cores
+  vm_memory                        = var.worker_vm_memory
+  vm_disk_file_id                  = proxmox_virtual_environment_download_file.ubuntu-qcow2-img.id
+  vm_disk_size                     = var.worker_vm_disk_size
+  vm_disk_ssd_enabled              = true
+  vm_tags                          = var.worker_vm_tags
+  vm_agent_enabled                 = true
+  vm_cloudinit_user_data_file_id   = proxmox_virtual_environment_file.ubuntu-cloud-init-user-config.id
+  vm_cloudinit_vendor_data_file_id = proxmox_virtual_environment_file.ubuntu-cloud-init-vendor-config.id
+  vm_reboot                        = true
 }

@@ -39,7 +39,7 @@ resource "talos_machine_configuration_apply" "controlplane" {
     item.name => item
   }
 
-  depends_on = [proxmox_virtual_environment_vm.controlplane]
+  depends_on = [module.controlplane]
 
   endpoint                    = each.value.address
   node                        = each.value.name
@@ -63,7 +63,7 @@ resource "talos_machine_configuration_apply" "worker" {
     item.name => item
   }
 
-  depends_on = [proxmox_virtual_environment_vm.worker]
+  depends_on = [module.worker]
 
   endpoint                    = each.value.address
   node                        = each.value.name

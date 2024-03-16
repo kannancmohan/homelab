@@ -1,0 +1,18 @@
+---
+- name: all host
+  hosts: all,!proxmox_nodes
+  roles:
+    - role: common
+      become: true
+
+- name: control plane hosts
+  hosts: k3s_cp_hosts
+  roles:
+  - role: k3s-cp
+    become: true
+
+- name: worker hosts
+  hosts: k3s_worker_hosts
+  roles:
+  - role: k3s-worker
+    become: true

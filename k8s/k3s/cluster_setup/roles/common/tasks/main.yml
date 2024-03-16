@@ -1,0 +1,35 @@
+---
+# - name: Install K3S required package
+#   ansible.builtin.apt:
+#     update_cache: true
+#     pkg:
+#       - policycoreutils
+#     state: present
+
+- name: Run pre-configuration tasks
+  include_tasks: pre_configuration.yml
+
+# - name: Check if K3S is already installed
+#   ansible.builtin.shell:
+#     cmd: 'test -f /usr/local/bin/k3s'
+#   register: k3s_installed
+#   failed_when: false
+
+# - name: Download K3s installation script
+#   ansible.builtin.uri:
+#     url: 'https://get.k3s.io'
+#     method: GET
+#     return_content: yes
+#     dest: '/tmp/k3s_install.sh'
+#   when: k3s_installed.rc != 0
+
+# - name: Get K3s installation script
+#   get_url:
+#     url: https://get.k3s.io
+#     dest: /tmp/k3s_install.sh
+#     mode: '0766'
+
+# - name: Import K3S Token
+#   ansible.builtin.include_vars:
+#     file: k3s-secrets.yml.vault
+#   when: k3s_installed.rc != 0

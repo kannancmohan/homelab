@@ -1,0 +1,7 @@
+---
+- name: Ensure a primary k3s control node is defined if multiple masters are found
+  ansible.builtin.set_fact:
+    k3s_primary_control_node: true
+  when:
+    # - groups['k3s_cp_hosts'] | length > 1
+    - inventory_hostname == groups['k3s_cp_hosts'][0]

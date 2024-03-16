@@ -1,0 +1,31 @@
+cloud_image_iso_url               = "https://cloud-images.ubuntu.com/jammy/current/jammy-server-cloudimg-amd64.img"
+cloud_image_iso_checksum          = "1d465eadfecffd6dc4e7be02df925519e18df432d846c8001eb8bd3d1124373c"
+proxmox_node_name                 = "node1-home-network"
+proxmox_node_iso_datastore_id     = "local"
+proxmox_node_default_datastore_id = "local-lvm"
+
+# project variables
+local_machine_ssh_key = "ssh-ed25519 <>>"
+vm_default_user_name  = "ubuntu"
+vm_default_user_pwd   = "pwd@123"
+vm_timezone           = "Europe/Berlin"
+
+# worker vm variables
+worker_vm_name       = "worker-ubuntu-vm"
+worker_vm_id_prefix  = 300
+worker_vm_ip_prefix  = "192.168.0.3"
+worker_vm_gateway_ip = "192.168.0.1"
+worker_vm_count      = 2
+worker_vm_cores      = 1
+worker_vm_memory     = 2048
+worker_vm_disk_size  = 15
+
+# controlplane vm variables
+cp_vm_name       = "controlplane-ubuntu-vm"
+cp_vm_id_prefix  = 200
+cp_vm_ip_prefix  = "192.168.0.2"
+cp_vm_gateway_ip = "192.168.0.1"
+cp_vm_count      = 1
+cp_vm_cores      = 2
+cp_vm_memory     = 4096
+cp_vm_disk_size  = 25

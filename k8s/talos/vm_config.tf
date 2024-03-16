@@ -90,6 +90,12 @@ data "talos_cluster_kubeconfig" "kubeconfig" {
   node                 = tolist(local.controlplanes)[0].address
 }
 
+# resource "local_sensitive_file" "kubeconfig" {
+#   content = talos_cluster_kubeconfig.kubeconfig.kube_config
+#   filename = "/root/.kube/config"
+#   file_permission = "0755"
+# }
+
 output "kubeconfig" {
   value     = data.talos_cluster_kubeconfig.kubeconfig.kubeconfig_raw
   sensitive = true

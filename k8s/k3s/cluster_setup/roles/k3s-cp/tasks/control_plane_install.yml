@@ -6,7 +6,7 @@
     mode: '0766'
 
 - name: Install K3s in control plane
-  command: "/tmp/k3s_install.sh server"
+  command: "/tmp/k3s_install.sh server --token {{ lookup('env','K3S_TOKEN') }}"
   environment:
     INSTALL_K3S_VERSION: "{{ k3s_version }}"
   changed_when: true

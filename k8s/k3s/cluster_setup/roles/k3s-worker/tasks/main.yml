@@ -1,7 +1,4 @@
 ---
-# - name: Run pre-configuration tasks
-#   include_tasks: pre_configuration.yml
-
 - name: Get K3s installation script
   get_url:
     url: https://get.k3s.io
@@ -9,7 +6,10 @@
     mode: '0766'
 
 - name: Install K3s on worker
-  command: "/tmp/k3s_install.sh agent --token {{ lookup('env','K3S_TOKEN') }} --server https://{{ hostvars[groups['k3s_cp_hosts'][0]].ansible_host }}:6443"
+  # command: "/tmp/k3s_install.sh agent --token {{ lookup('env','K3S_TOKEN') }} --server https://{{ hostvars[groups['k3s_cp_hosts'][0]].ansible_host }}:6443"
+  command: "/tmp/k3s_install.sh agent"
   environment:
     INSTALL_K3S_VERSION: "{{ k3s_version }}"
+    K3S_TOKEN: "{{ lookup('env','K3S_TOKEN') }}"
+    K3S_URL: "https://{{ hostvars[groups['k3s_cp_hosts'][0]].ansible_host }}:6443"
   changed_when: true

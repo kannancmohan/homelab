@@ -16,6 +16,8 @@
       include_tasks: control_plane_install.yml
     - name: Wait for primary control plane to be ready
       include_tasks: wait_for_control_plane.yml
+    - name: Write kubeconfig to localhost
+      include_tasks: write_kubeconfig_to_local.yml
 
 - name: Install secondary control plane
   when:
@@ -26,20 +28,3 @@
       include_tasks: wait_for_primary_master.yml
     - name: Install k3s in secondary control plane
       include_tasks: wait_for_primary_control_plane.yml
-
-# Note that the node_type variable is set in the inventory file
-# - name: Execute K3s installation script [Initial Master Node]
-#   ansible.builtin.shell:
-#     cmd: "sh /tmp/k3s_install.sh --token {{ lookup('env','K3S_TOKEN') }} --disable=traefik --flannel-backend=vxlan --cluster-init"
-#   args:
-#     executable: /bin/bash
-#   when: k3s_installed.rc != 0
-
-# - name: Execute K3s installation script [Master Nodes]
-#   ansible.builtin.shell:
-#     cmd: 'sh /tmp/k3s_install.sh --token {{ lookup('env','K3S_TOKEN') }} --disable=traefik --flannel-backend=vxlan --server https://{{ hostvars["k3s-m1"]["ansible_default_ipv4"]["address"] }}:6443'
-#   vars:
-#     k3s_token: '{{ k3s_token }}'
-#   args:
-#     executable: /bin/bash
-#   when: k3s_installed.rc != 0

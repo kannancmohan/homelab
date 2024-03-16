@@ -28,8 +28,3 @@
 #     url: https://get.k3s.io
 #     dest: /tmp/k3s_install.sh
 #     mode: '0766'
-
-# - name: Import K3S Token
-#   ansible.builtin.include_vars:
-#     file: k3s-secrets.yml.vault
-#   when: k3s_installed.rc != 0

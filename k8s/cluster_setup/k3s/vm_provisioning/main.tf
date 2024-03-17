@@ -1,11 +1,11 @@
 resource "proxmox_virtual_environment_download_file" "ubuntu-qcow2-img" {
-  content_type       = "iso"
-  datastore_id       = var.proxmox_node_iso_datastore_id #the proxmox datastore if where iso are stored
-  node_name          = var.proxmox_node_name
-  url                = var.cloud_image_iso_url
+  content_type = "iso"
+  datastore_id = var.proxmox_node_iso_datastore_id #the proxmox datastore if where iso are stored
+  node_name    = var.proxmox_node_name
+  url          = var.cloud_image_iso_url
   # checksum           = var.cloud_image_iso_checksum
   # checksum_algorithm = "sha256"
-  overwrite          = true
+  overwrite = true
   #overwrite_unmanaged = true #if file with the same name already exists in the datastore, it will be deleted and the new file will be downloaded. If false and the file already exists, an error will be returned
 }
 
@@ -64,7 +64,7 @@ runcmd:
 }
 
 module "controlplane" {
-  source                           = "../../../proxmox/vm_provisioning/terraform_module"
+  source                           = "../../../../proxmox/vm_provisioning/terraform_module"
   count                            = var.cp_vm_count
   vm_id                            = "${var.cp_vm_id_prefix}${count.index + 1}"
   vm_name                          = "${var.cp_vm_name}-${count.index + 1}"
@@ -85,7 +85,7 @@ module "controlplane" {
 }
 
 module "worker" {
-  source                           = "../../../proxmox/vm_provisioning/terraform_module"
+  source                           = "../../../../proxmox/vm_provisioning/terraform_module"
   count                            = var.worker_vm_count
   vm_id                            = "${var.worker_vm_id_prefix}${count.index + 1}"
   vm_name                          = "${var.worker_vm_name}-${count.index + 1}"

@@ -5,6 +5,14 @@
     dest: /tmp/k3s_install.sh
     mode: '0766'
 
+- name: Check that the control plane is available to accept connections
+  ansible.builtin.wait_for:
+    port: '6443'
+    host: "{{ hostvars[groups['k3s_cp_hosts'][0]].ansible_host }}"
+    delay: 5
+    sleep: 5
+    timeout: 300
+
 - name: Install K3s on worker
   # command: "/tmp/k3s_install.sh agent --token {{ lookup('env','K3S_TOKEN') }} --server https://{{ hostvars[groups['k3s_cp_hosts'][0]].ansible_host }}:6443"
   command: "/tmp/k3s_install.sh agent"

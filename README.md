@@ -1,7 +1,30 @@
 # Proxmox Homelab Setup
 Project to automatically create virtual machine's in proxmox server.
 
-## Description
+## Technology Stack
+| Automation      |               |
+|---------------- |:-------------:| 
+| Terraform       |               | 
+| Ansibel         |               | 
+
+| K8s             |               |
+|---------------- |:-------------:| 
+| k3s             |               | 
+| Talos           |               | 
+
+| CI/CD           |               |
+|---------------- |:-------------:| 
+| ArgoCD          |               | 
+
+| Hypervisor      |               |
+|---------------- |:-------------:| 
+| Proxmox VE      |               |
+
+| Observability   |               |
+|---------------- |:-------------:| 
+|                 |               |
+
+# Description
 Automatically provision 3 vm's in proxmox with the following configuration
 
 | VM            | Cores         | Memory| Disk|

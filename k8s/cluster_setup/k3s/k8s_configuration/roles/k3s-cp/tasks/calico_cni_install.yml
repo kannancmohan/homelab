@@ -1,0 +1,16 @@
+---
+- name: "Install calico cni plugin's operator in cp"
+  ansible.builtin.shell: >
+    kubectl create -f
+    https://raw.githubusercontent.com/projectcalico/calico/v3.27.2/manifests/tigera-operator.yaml
+    --kubeconfig /etc/rancher/k3s/k3s.yaml
+  register: calico_operator_result
+  failed_when: calico_operator_result.rc != 0 or calico_operator_result.stderr != ''
+
+- name: "Install calico cni plugin's custom resources in cp"
+  ansible.builtin.shell: >
+    kubectl create -f
+    https://raw.githubusercontent.com/projectcalico/calico/v3.27.2/manifests/custom-resources.yaml
+    --kubeconfig /etc/rancher/k3s/k3s.yaml
+  register: calico_install_result
+  failed_when: calico_install_result.rc != 0 or calico_install_result.stderr != ''

@@ -8,14 +8,19 @@
 - name: Run pre-configuration tasks
   include_tasks: pre_configuration.yml
 
-- name: Install primary control plane 
+- name: Install primary control plane
   when:
     - k3s_primary_control_node
   block:
     - name: Install k3s in primary control plane
       include_tasks: control_plane_install.yml
-    - name: Wait for primary control plane to be ready
-      include_tasks: wait_for_control_plane.yml
+    - name: Conditionally install calico cni-plugin
+      include_tasks: calico_cni_install.yml
+      when: 
+        - lookup('env','INSTALL_CALICO') is defined
+        - lookup('env','INSTALL_CALICO')
+    # - name: Wait for primary control plane to be ready
+    #   include_tasks: wait_for_control_plane.yml
     - name: Write kubeconfig to localhost
       include_tasks: write_kubeconfig_to_local.yml
 
@@ -25,6 +30,6 @@
   # throttle: 1
   block:
     - name: Wait for primary control plane to be ready
-      include_tasks: wait_for_primary_master.yml
-    - name: Install k3s in secondary control plane
       include_tasks: wait_for_primary_control_plane.yml
+    - name: Install k3s in secondary control plane
+      include_tasks: control_plane_install.yml

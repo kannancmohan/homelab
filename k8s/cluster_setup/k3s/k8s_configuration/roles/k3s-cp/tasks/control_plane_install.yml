@@ -9,7 +9,7 @@
   # command: "/tmp/k3s_install.sh server --token {{ lookup('env','K3S_TOKEN') }}"
   command: "/tmp/k3s_install.sh server"
   environment:
-    INSTALL_K3S_VERSION: "{{ k3s_version }}"
+    INSTALL_K3S_VERSION: "{{ lookup('env','K3S_VERSION') or k3s_version }}"
     K3S_TOKEN: "{{ lookup('env','K3S_TOKEN') }}"
     # uncomment this to not deploy components or delete already deployed components(valid items: coredns, servicelb, traefik, local-storage, metrics-server)
     # INSTALL_K3S_EXEC: "--disable metrics-server" # disabling metrics-server

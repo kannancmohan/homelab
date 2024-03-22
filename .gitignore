@@ -45,3 +45,6 @@ terraform.rc
 
 ####### VS CODE ########
 **/.vscode/
+
+### helm
+**/charts/*.tgz

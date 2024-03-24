@@ -1,7 +1,7 @@
 resource "proxmox_virtual_environment_vm" "proxmox_vm" {
   node_name = var.vm_node
-  vm_id    = var.vm_id
-  name        = var.vm_name
+  vm_id     = var.vm_id
+  name      = var.vm_name
   #pool_id   = proxmox_virtual_environment_pool.proxmox_resource_pool.id
   description = var.vm_description
   tags        = var.vm_tags
@@ -74,11 +74,11 @@ resource "proxmox_virtual_environment_vm" "proxmox_vm" {
   #     command = "./bin/manage_nodes remove ${self.name}"
   #   }
 
-  # startup {
-  #   order      = "2"  #define the general startup order.
-  #   up_delay   = "60" #delay in seconds before the next VM is started
-  #   down_delay = "60" #delay in seconds before the next VM is shut down
-  # }
+  startup {
+    order      = var.vm_startup_order      # define the general startup order.
+    up_delay   = var.vm_startup_up_delay   # delay in seconds before the next VM is started
+    down_delay = var.vm_startup_down_delay # delay in seconds before the next VM is shut down
+  }
 
   lifecycle {
     ignore_changes = [disk[0].file_id, tags]

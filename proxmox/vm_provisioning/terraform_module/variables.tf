@@ -1,12 +1,12 @@
 # vm variables
 variable "vm_node" {
-  type    = string
+  type = string
 }
 variable "vm_id" {
-  type    = number
+  type = number
 }
 variable "vm_name" {
-  type    = string
+  type = string
 }
 variable "vm_description" {
   default = "VM Managed by terraform"
@@ -31,15 +31,15 @@ variable "vm_memory" {
   default = 1024
 }
 variable "vm_network_device" {
-  type        = string
-  default     = "vmbr0"
+  type    = string
+  default = "vmbr0"
 }
 variable "vm_disk_datastore_id" {
-  type        = string
-  default     = "local-lvm"
+  type    = string
+  default = "local-lvm"
 }
 variable "vm_disk_file_id" {
-  type        = string
+  type = string
 }
 variable "vm_disk_size" {
   type    = string
@@ -50,10 +50,10 @@ variable "vm_disk_ssd_enabled" {
   default = false
 }
 variable "vm_cidr" {
-  type    = string
+  type = string
 }
 variable "vm_gateway_ip" {
-  type    = string
+  type = string
 }
 variable "vm_agent_enabled" {
   type    = bool
@@ -68,10 +68,25 @@ variable "vm_reboot" {
   default = false
 }
 variable "vm_cloudinit_user_data_file_id" {
-  type        = string
+  type    = string
   default = null
 }
 variable "vm_cloudinit_vendor_data_file_id" {
-  type        = string
+  type    = string
   default = null
+}
+variable "vm_startup_order" {
+  type        = string
+  default     = 0
+  description = "define the general startup order"
+}
+variable "vm_startup_up_delay" {
+  type        = string
+  default     = 0
+  description = "delay in seconds before the next VM is started"
+}
+variable "vm_startup_down_delay" {
+  type        = string
+  default     = 0
+  description = "delay in seconds before the next VM is shut down"
 }

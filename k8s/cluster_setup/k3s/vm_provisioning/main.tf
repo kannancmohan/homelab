@@ -81,6 +81,7 @@ module "controlplane" {
   vm_agent_enabled                 = true
   vm_cloudinit_user_data_file_id   = proxmox_virtual_environment_file.ubuntu-cloud-init-user-config.id
   vm_cloudinit_vendor_data_file_id = proxmox_virtual_environment_file.ubuntu-cloud-init-vendor-config.id
+  vm_startup_order                 = "1"
   # vm_reboot                        = true
 }
 
@@ -102,5 +103,6 @@ module "worker" {
   vm_agent_enabled                 = true
   vm_cloudinit_user_data_file_id   = proxmox_virtual_environment_file.ubuntu-cloud-init-user-config.id
   vm_cloudinit_vendor_data_file_id = proxmox_virtual_environment_file.ubuntu-cloud-init-vendor-config.id
+  vm_startup_order                 = "2"
   # vm_reboot                        = true
 }

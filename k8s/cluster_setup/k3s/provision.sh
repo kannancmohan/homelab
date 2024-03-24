@@ -4,7 +4,7 @@
 export K3S_VERSION="v1.28.7+k3s1"
 
 ## set the following for enabling calico cni instead of ootb flannel
-export INSTALL_CALICO=true
+export INSTALL_CALICO=false
 ## install calico and also disable traefik(ingress-controller)
 if [ "${INSTALL_CALICO}" = true ]; then
     export K3S_CP_ADDITIONAL_CONFIG="--write-kubeconfig-mode 644 --flannel-backend=none --disable-network-policy --disable=traefik"

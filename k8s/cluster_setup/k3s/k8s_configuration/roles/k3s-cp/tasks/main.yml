@@ -17,7 +17,7 @@
     - name: Conditionally install calico cni-plugin
       include_tasks: calico_cni_install.yml
       when: 
-        - lookup('env','INSTALL_CALICO') is defined and lookup('env','INSTALL_CALICO')|bool == true
+        - lookup('env','CNI_PLUGIN') is defined and lookup('env','CNI_PLUGIN') == "calico"
     # - name: Wait for primary control plane to be ready
     #   include_tasks: wait_for_control_plane.yml
     - name: Write kubeconfig to localhost

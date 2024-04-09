@@ -5,7 +5,7 @@ export K3S_VERSION="v1.28.7+k3s1"
 ## set the following to either flannel or calico
 export CNI_PLUGIN="flannel"
 ## set the following to either nginx or traefik
-export INGRESS_CONTROLLER="nginx"
+export INGRESS_CONTROLLER="traefik"
 
 ADDITIONAL_CONFIG="--write-kubeconfig-mode 644"
 

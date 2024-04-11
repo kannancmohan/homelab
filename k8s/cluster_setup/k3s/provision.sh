@@ -6,6 +6,7 @@ export K3S_VERSION="v1.28.7+k3s1"
 export CNI_PLUGIN="flannel"
 ## set the following to either nginx or traefik
 export INGRESS_CONTROLLER="traefik"
+DISABLE_K3S_OOTB_TRAEFIK=true
 
 ADDITIONAL_CONFIG="--write-kubeconfig-mode 644"
 
@@ -15,7 +16,7 @@ if [ "${CNI_PLUGIN}" = "calico" ]; then
 fi
 
 ## if ingress is nginx then disable ootb traefik
-if [ "${INGRESS_CONTROLLER}" = "nginx" ]; then
+if [ "${INGRESS_CONTROLLER}" = "nginx" ] || [ "$DISABLE_K3S_OOTB_TRAEFIK" == true ]; then
     ADDITIONAL_CONFIG="${ADDITIONAL_CONFIG} --disable=traefik"
 fi
 

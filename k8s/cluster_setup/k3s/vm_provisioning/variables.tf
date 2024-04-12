@@ -22,15 +22,15 @@ variable "cloud_image_iso_checksum" {
 }
 variable "local_machine_ssh_key" {
   type        = string
-  description = "The ssh public key of your local development machine"
+  description = "The ssh public key of your local development machine. set the value using environment variable TF_VAR_local_machine_ssh_key"
 }
 variable "vm_default_user_name" {
   type        = string
-  description = "The default use in vm"
+  description = "The default use in vm. set the value using environment variable TF_VAR_vm_default_user_name"
 }
 variable "vm_default_user_pwd" {
   type        = string
-  description = "The default use password in vm"
+  description = "The default use password in vm. set the value using environment variable TF_VAR_vm_default_user_pwd"
 }
 variable "vm_timezone" {
   type        = string

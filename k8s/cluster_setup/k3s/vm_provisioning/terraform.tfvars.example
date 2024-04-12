@@ -5,9 +5,6 @@ proxmox_node_iso_datastore_id     = "local"
 proxmox_node_default_datastore_id = "local-lvm"
 
 # project variables
-local_machine_ssh_key = "ssh-ed25519 <>>"
-vm_default_user_name  = "ubuntu"
-vm_default_user_pwd   = "pwd@123"
 vm_timezone           = "Europe/Berlin"
 
 # worker vm variables

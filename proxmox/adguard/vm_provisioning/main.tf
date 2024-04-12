@@ -78,10 +78,10 @@ module "worker" {
   vm_disk_file_id                  = proxmox_virtual_environment_download_file.ubuntu-qcow2-img.id
   vm_disk_size                     = var.worker_vm_disk_size
   vm_disk_ssd_enabled              = true
-  vm_tags                          = ["iac-tf", "os-ubuntu", "type-dns"]
+  vm_tags                          = ["iac-tf", "os-ubuntu", "service-type-dns", "service-name-adguard"]
   vm_agent_enabled                 = true
   vm_cloudinit_user_data_file_id   = proxmox_virtual_environment_file.ubuntu-cloud-init-user-config.id
   vm_cloudinit_vendor_data_file_id = proxmox_virtual_environment_file.ubuntu-cloud-init-vendor-config.id
   vm_startup_order                 = "1"
-  # vm_reboot                        = true
+  vm_reboot                        = true
 }

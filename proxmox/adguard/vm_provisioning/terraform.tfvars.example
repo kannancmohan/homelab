@@ -1,0 +1,18 @@
+cloud_image_iso_url               = "https://cloud-images.ubuntu.com/jammy/current/jammy-server-cloudimg-amd64.img"
+cloud_image_iso_checksum          = "1d465eadfecffd6dc4e7be02df925519e18df432d846c8001eb8bd3d1124373c"
+proxmox_node_name                 = "node1-home-network"
+proxmox_node_iso_datastore_id     = "local"
+proxmox_node_default_datastore_id = "local-lvm"
+
+# project variables
+vm_timezone = "Europe/Berlin"
+
+# worker vm variables
+worker_vm_name       = "adguard-home-vm"
+worker_vm_id_prefix  = 10
+worker_vm_ip_prefix  = "192.168.0.2"
+worker_vm_gateway_ip = "192.168.0.1"
+worker_vm_count      = 1
+worker_vm_cores      = 1
+worker_vm_memory     = 2048
+worker_vm_disk_size  = 15

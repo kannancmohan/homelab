@@ -39,7 +39,7 @@ users:
     sudo: ALL=(ALL) NOPASSWD:ALL
     EOF
 
-    file_name = "ubuntu-cloud-init-user-config.yaml"
+    file_name = var.ubuntu_cloud_init_user_config_file
   }
 }
 
@@ -59,7 +59,7 @@ runcmd:
     - echo "done" > /tmp/vendor-cloud-init-done
     EOF
 
-    file_name = "ubuntu-cloud-init-vendor-config.yaml"
+    file_name = var.ubuntu_cloud_init_vendor_config_file
   }
 }
 

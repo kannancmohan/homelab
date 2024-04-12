@@ -95,3 +95,13 @@ variable "cp_vm_disk_size" {
   type        = number
   description = "Disk size in GB"
 }
+
+# proxmox cloud-init 
+variable "ubuntu_cloud_init_user_config_file" {
+  type    = string
+  default = "ubuntu-cloud-init-user-config.yaml"
+}
+variable "ubuntu_cloud_init_vendor_config_file" {
+  type    = string
+  default = "ubuntu-cloud-init-vendor-config.yaml"
+}

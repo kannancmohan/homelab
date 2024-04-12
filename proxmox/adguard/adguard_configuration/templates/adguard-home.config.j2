@@ -1,0 +1,13 @@
+# https://github.com/AdguardTeam/AdGuardHome/wiki/Configuration#configuration-file
+http:
+  address: {{ ansible_host }}:80
+  session_ttl: 720h
+users:
+  - name: admin@adguard.com
+    password: $2a$10$oRPU/09Terdo4pBYlCwSz.8S13d.vhjUjxv1uil0OM3IXc7tZOqV6
+dns:
+  bind_hosts:
+    - {{ ansible_host }}
+  port: 53
+  upstream_dns:
+    - https://dns10.quad9.net/dns-query

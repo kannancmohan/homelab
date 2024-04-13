@@ -31,7 +31,7 @@
   - name: Restart systemd-resolved
     command: systemctl reload-or-restart systemd-resolved
 
-  - name: Copy AdGuard config file
+  # - name: Copy AdGuard config file
     ansible.builtin.template:
       src: templates/adguard-home.config.j2
       dest: /var/snap/adguard-home/current/AdGuardHome.yaml

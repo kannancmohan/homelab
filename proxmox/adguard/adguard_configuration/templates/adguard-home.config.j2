@@ -11,8 +11,8 @@ users:
 auth_attempts: 5
 block_auth_min: 15
 http_proxy: ""
-language: ""
-theme: auto
+language: en
+theme: dark
 dns:
   bind_hosts:
     - 0.0.0.0
@@ -87,7 +87,7 @@ tls:
 querylog:
   dir_path: ""
   ignored: []
-  interval: 2160h
+  interval: 720h
   size_memory: 1000
   enabled: true
   file_enabled: true
@@ -180,6 +180,8 @@ filters:
 whitelist_filters: []
 user_rules:
   - '||signaler-pa.clients6.google.com^$important'
+  - '||waa-pa.clients6.google.com^$important'
+  - '||addons-pa.clients6.google.com^$important'
   - ""
 dhcp:
   enabled: false

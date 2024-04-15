@@ -22,6 +22,6 @@ fi
 
 export K3S_CP_ADDITIONAL_CONFIG="$ADDITIONAL_CONFIG"
 
-terraform -chdir=./vm_provisioning apply --auto-approve &&
+terraform -chdir=../vm_provisioning apply --auto-approve &&
 
-ansible-playbook -i ./k8s_configuration/inventories/proxmox-inventory.proxmox.yml ./k8s_configuration/main-playbook.yml
+ansible-playbook -i ../k8s_configuration/inventories/proxmox-inventory.proxmox.yml ../k8s_configuration/main-playbook.yml

@@ -177,11 +177,16 @@ filters:
     url: https://adguardteam.github.io/HostlistsRegistry/assets/filter_39.txt
     name: Dandelion Sprout's Anti Push Notifications
     id: 1713001013
+  - enabled: true
+    url: https://adguardteam.github.io/HostlistsRegistry/assets/filter_33.txt
+    name: Steven Black's List
+    id: 1713028974
 whitelist_filters: []
 user_rules:
   - '||signaler-pa.clients6.google.com^$important'
   - '||waa-pa.clients6.google.com^$important'
   - '||addons-pa.clients6.google.com^$important'
+  - '||a.config.skype.com^$client=''192.168.0.15'''
   - ""
 dhcp:
   enabled: false
@@ -219,7 +224,9 @@ filtering:
   blocking_mode: default
   parental_block_host: family-block.dns.adguard.com
   safebrowsing_block_host: standard-block.dns.adguard.com
-  rewrites: []
+  rewrites:
+    - domain: '*.dev.local'
+      answer: 192.168.0.61
   safebrowsing_cache_size: 1048576
   safesearch_cache_size: 1048576
   parental_cache_size: 1048576

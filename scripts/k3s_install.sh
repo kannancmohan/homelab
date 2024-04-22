@@ -7,8 +7,14 @@ export CNI_PLUGIN="flannel"
 ## set the following to either nginx or traefik
 export INGRESS_CONTROLLER="traefik"
 DISABLE_K3S_OOTB_TRAEFIK=true
+EXPOSE_METRICS=true
 
 ADDITIONAL_CONFIG="--write-kubeconfig-mode 644"
+
+## for exposing metrics which prometheus could scrape
+if [ "$EXPOSE_METRICS" == true ]; then
+    ADDITIONAL_CONFIG="${ADDITIONAL_CONFIG} --etcd-expose-metrics true --kube-proxy-arg metrics-bind-address=0.0.0.0 --kube-controller-manager-arg address=0.0.0.0 --kube-controller-manager-arg bind-address=0.0.0.0 --kube-scheduler-arg bind-address=0.0.0.0 --kube-scheduler-arg address=0.0.0.0"
+fi
 
 ## if cni-plugin is calico then disable ootb flannel
 if [ "${CNI_PLUGIN}" = "calico" ]; then

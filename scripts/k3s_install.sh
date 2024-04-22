@@ -7,7 +7,7 @@ export CNI_PLUGIN="flannel"
 ## set the following to either nginx or traefik
 export INGRESS_CONTROLLER="traefik"
 DISABLE_K3S_OOTB_TRAEFIK=true
-EXPOSE_METRICS=true
+EXPOSE_METRICS=false
 
 ADDITIONAL_CONFIG="--write-kubeconfig-mode 644"
 

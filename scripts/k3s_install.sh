@@ -7,13 +7,17 @@ export CNI_PLUGIN="flannel"
 ## set the following to either nginx or traefik
 export INGRESS_CONTROLLER="traefik"
 DISABLE_K3S_OOTB_TRAEFIK=true
-EXPOSE_METRICS=false
+
 
 ADDITIONAL_CONFIG="--write-kubeconfig-mode 644"
 
-## for exposing metrics which prometheus could scrape
+EXPOSE_METRICS=false
+## TODO for exposing metrics which prometheus could scrape
 if [ "$EXPOSE_METRICS" == true ]; then
-    ADDITIONAL_CONFIG="${ADDITIONAL_CONFIG} --etcd-expose-metrics true --kube-proxy-arg metrics-bind-address=0.0.0.0 --kube-controller-manager-arg address=0.0.0.0 --kube-controller-manager-arg bind-address=0.0.0.0 --kube-scheduler-arg bind-address=0.0.0.0 --kube-scheduler-arg address=0.0.0.0"
+    ADDITIONAL_CONFIG="${ADDITIONAL_CONFIG} --etcd-expose-metrics \
+    --kube-proxy-arg="metrics-bind-address=0.0.0.0" \
+    --kube-controller-manager-arg="address=0.0.0.0" --kube-controller-manager-arg="bind-address=0.0.0.0" \
+    --kube-scheduler-arg="bind-address=0.0.0.0" --kube-scheduler-arg="address=0.0.0.0""
 fi
 
 ## if cni-plugin is calico then disable ootb flannel
@@ -26,6 +30,7 @@ if [ "${INGRESS_CONTROLLER}" = "nginx" ] || [ "$DISABLE_K3S_OOTB_TRAEFIK" == tru
     ADDITIONAL_CONFIG="${ADDITIONAL_CONFIG} --disable=traefik --disable=metrics-server"
 fi
 
+echo $ADDITIONAL_CONFIG
 export K3S_CP_ADDITIONAL_CONFIG="$ADDITIONAL_CONFIG"
 
 terraform -chdir=../k8s/cluster_setup/k3s/vm_provisioning apply --auto-approve &&

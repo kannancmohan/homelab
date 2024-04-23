@@ -9,7 +9,7 @@ export INGRESS_CONTROLLER="traefik"
 DISABLE_K3S_OOTB_TRAEFIK=true
 EXPOSE_METRICS=false
 
-ADDITIONAL_CONFIG="--write-kubeconfig-mode 644 --disable=metrics-server"
+ADDITIONAL_CONFIG="--write-kubeconfig-mode 644"
 
 ## for exposing metrics which prometheus could scrape
 if [ "$EXPOSE_METRICS" == true ]; then
@@ -23,7 +23,7 @@ fi
 
 ## if ingress is nginx then disable ootb traefik
 if [ "${INGRESS_CONTROLLER}" = "nginx" ] || [ "$DISABLE_K3S_OOTB_TRAEFIK" == true ]; then
-    ADDITIONAL_CONFIG="${ADDITIONAL_CONFIG} --disable=traefik"
+    ADDITIONAL_CONFIG="${ADDITIONAL_CONFIG} --disable=traefik --disable=metrics-server"
 fi
 
 export K3S_CP_ADDITIONAL_CONFIG="$ADDITIONAL_CONFIG"

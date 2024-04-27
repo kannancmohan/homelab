@@ -7,22 +7,22 @@ proxmox_node_default_datastore_id = "local-lvm"
 # project variables
 vm_timezone           = "Europe/Berlin"
 
+# controlplane vm variables
+cp_vm_name       = "k3s-cp-vm"
+cp_vm_id_prefix  = 200
+cp_vm_ip_prefix  = "192.168.0.6"
+cp_vm_gateway_ip = "192.168.0.1"
+cp_vm_count      = 1
+cp_vm_cores      = 3
+cp_vm_memory     = 5120
+cp_vm_disk_size  = 25
+
 # worker vm variables
-worker_vm_name       = "worker-ubuntu-vm"
+worker_vm_name       = "k3s-worker-vm"
 worker_vm_id_prefix  = 300
-worker_vm_ip_prefix  = "192.168.0.3"
+worker_vm_ip_prefix  = "192.168.0.8"
 worker_vm_gateway_ip = "192.168.0.1"
 worker_vm_count      = 2
 worker_vm_cores      = 1
-worker_vm_memory     = 2048
+worker_vm_memory     = 3072
 worker_vm_disk_size  = 15
-
-# controlplane vm variables
-cp_vm_name       = "controlplane-ubuntu-vm"
-cp_vm_id_prefix  = 200
-cp_vm_ip_prefix  = "192.168.0.2"
-cp_vm_gateway_ip = "192.168.0.1"
-cp_vm_count      = 1
-cp_vm_cores      = 2
-cp_vm_memory     = 4096
-cp_vm_disk_size  = 25

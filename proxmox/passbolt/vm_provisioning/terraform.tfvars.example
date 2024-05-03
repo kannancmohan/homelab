@@ -1,0 +1,13 @@
+proxmox_node_name                 = "node1-home-network"
+proxmox_node_iso_datastore_id     = "local"
+proxmox_node_default_datastore_id = "local-lvm"
+
+# worker vm variables
+vm_name       = "passbolt-home-vm"
+vm_id         = 122
+vm_ip_addr    = "192.168.0.22"
+vm_gateway_ip = "192.168.0.1"
+vm_cores      = 1
+vm_memory     = 2048
+vm_disk_size  = 10
+vm_tags       = ["iac-tf", "os-ubuntu", "service-type-password", "service-name-passbolt"]

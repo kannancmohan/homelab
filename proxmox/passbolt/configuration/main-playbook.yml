@@ -1,0 +1,45 @@
+---
+- name: Install & Configure Adguard Home
+  hosts: adguard_hosts
+  become: yes
+  gather_facts: false
+  # vars_files:
+  #   - vars/default.yaml
+
+
+  tasks:
+  - name: Set hostname
+    ansible.builtin.hostname:
+      name: "{{ host_name_prefix + ansible_host.split('.')[-1][-2:] }}"
+
+- name: Download passbolt setup script
+  get_url:
+    url: "https://download.passbolt.com/ce/installer/passbolt-repo-setup.ce.sh"
+    dest: "/tmp/passbolt-repo-setup.ce.sh"
+    mode: "0755"
+
+- name: Download passbolt checksum file
+  get_url:
+    url: "https://github.com/passbolt/passbolt-dep-scripts/releases/latest/download/passbolt-ce-SHA512SUM.txt"
+    dest: "/tmp/passbolt-ce-SHA512SUM.txt"
+
+- name: Get stats of the downloaded passbolt script 
+  ansible.builtin.stat:
+    path: /tmp/passbolt-repo-setup.ce.sh
+    checksum_algorithm: sha512
+    get_checksum: yes
+  register: scriptfile_checksum_result
+
+- name: Get stats of checksum file
+  ansible.builtin.stat:
+    path: /tmp/passbolt-ce-SHA512SUM.txt
+    checksum_algorithm: sha512
+    get_checksum: yes
+  register: checksum_result
+
+- name: Assert if checksum is valid
+  ansible.builtin.assert:
+    that:
+      - scriptfile_checksum_result.stat.checksum == checksum_result.stat.checksum
+    fail_msg: "Checksum verification failed for /tmp/passbolt-repo-setup.ce.sh"
+    success_msg: "Checksum verification passed for /tmp/passbolt-repo-setup.ce.sh"

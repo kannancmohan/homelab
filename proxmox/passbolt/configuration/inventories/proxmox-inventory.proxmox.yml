@@ -1,0 +1,35 @@
+---
+plugin: community.general.proxmox
+
+validate_certs: false  # only do this when you trust the network!
+## set proxmox server url. This value could also be set using variable PROXMOX_URL
+url: "{{ lookup('env','PROXMOX_VE_API_ENDPOINT') }}"
+
+## set api-token user. This value could also be set using variable PROXMOX_USER
+user: "{{ lookup('env','PROXMOX_VE_API_USER') }}"
+
+## set api-token id. This value could also be set using variable  PROXMOX_TOKEN_ID
+token_id: "{{ lookup('env','PROXMOX_VE_API_USER_TOKEN_ID') }}"
+
+## set token_secret . This value could also be set using variable TOKEN_SECRET
+token_secret: "{{ lookup('env','PROXMOX_VE_API_USER_TOKEN_SECRET') }}"
+
+# Need to set want_facts to true so that filters and groups can work with meta data of the host
+want_facts: true
+
+## filter out the host based on custom proxmox tags
+filters:
+  - proxmox_status == "running"
+  - "proxmox_tags_parsed is defined and 'service-type-dns' in proxmox_tags_parsed"
+  - "'service-name-passbolt' in proxmox_tags_parsed"
+
+## add new host groups(service-name-passbolt) in inventory based on their tags
+groups:
+  passbolt_hosts: "'service-name-passbolt' in (proxmox_tags_parsed|list)"
+
+## include ansible_host so that ansible could connect to it
+compose:
+  ansible_host: proxmox_ipconfig0.ip | default(proxmox_net0.ip) | ansible.utils.ipaddr('address')
+
+# to include proxmox servers host
+#want_proxmox_nodes_ansible_host: true

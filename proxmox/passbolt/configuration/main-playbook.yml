@@ -1,6 +1,6 @@
 ---
 - name: Install & Configure Adguard Home
-  hosts: adguard_hosts
+  hosts: service_hosts
   become: yes
   gather_facts: false
   # vars_files:

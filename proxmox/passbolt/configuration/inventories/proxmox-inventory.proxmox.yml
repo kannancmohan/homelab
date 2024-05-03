@@ -20,12 +20,12 @@ want_facts: true
 ## filter out the host based on custom proxmox tags
 filters:
   - proxmox_status == "running"
-  - "proxmox_tags_parsed is defined and 'service-type-dns' in proxmox_tags_parsed"
+  - "proxmox_tags_parsed is defined and 'service-type-password' in proxmox_tags_parsed"
   - "'service-name-passbolt' in proxmox_tags_parsed"
 
 ## add new host groups(service-name-passbolt) in inventory based on their tags
 groups:
-  passbolt_hosts: "'service-name-passbolt' in (proxmox_tags_parsed|list)"
+  service_hosts: "'service-name-passbolt' in (proxmox_tags_parsed|list)"
 
 ## include ansible_host so that ansible could connect to it
 compose:

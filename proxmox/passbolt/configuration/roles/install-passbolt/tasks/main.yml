@@ -16,12 +16,7 @@
     dest: "/tmp/passbolt-repo-setup.ce.sh"
     mode: "0755"
 
-# - name: Download passbolt checksum file
-#   ansible.builtin.get_url:
-#     url: "https://github.com/passbolt/passbolt-dep-scripts/releases/latest/download/passbolt-ce-SHA512SUM.txt"
-#     dest: "/tmp/passbolt-ce-SHA512SUM.txt"
-
-- name: Get stats of the downloaded passbolt script 
+- name: Get stats of the downloaded passbolt setup script 
   ansible.builtin.stat:
     path: /tmp/passbolt-repo-setup.ce.sh
     checksum_algorithm: sha512
@@ -63,11 +58,11 @@
     value: "{{ item.value }}"
     vtype: "{{ item.vtype }}"
   loop:
-    - { question: "passbolt/nginx-configuration", value: "false", vtype: "boolean" }
-    # - { question: "passbolt/nginx-configuration-three-choices", value: "auto", vtype: "select" }
-    - { question: "passbolt/nginx-domain", value: "passbolt.devi.local", vtype: "string" }
-    # - { question: "passbolt/nginx-certificate-file", value: "/etc/letsencrypt/live/{{ _domain }}/fullchain.pem", vtype: "string" }
-    # - { question: "passbolt/nginx-certificate-key-file", value: "/etc/letsencrypt/live/{{ _domain }}/privkey.pem", vtype: "string" }
+    - { question: "passbolt/nginx-configuration", value: "true", vtype: "boolean" }
+    - { question: "passbolt/nginx-configuration-three-choices", value: "manual", vtype: "select" }
+    - { question: "passbolt/nginx-domain", value: "{{ domain_name }}", vtype: "string" }
+    - { question: "passbolt/nginx-certificate-file", value: "/etc/ssl/{{ domain_name }}/{{ domain_name }}.pem", vtype: "string" }
+    - { question: "passbolt/nginx-certificate-key-file", value: "/etc/ssl/{{ domain_name }}/{{ domain_name }}.key", vtype: "string" }
 
 - name: Install passbolt-ce server
   ansible.builtin.apt:

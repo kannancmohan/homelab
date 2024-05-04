@@ -1,0 +1,5 @@
+---
+#  defaults folder contain variables which users need not alter
+passbolt_setup_script_url: "https://download.passbolt.com/ce/installer/passbolt-repo-setup.ce.sh"
+passbolt_checksum_file_url: "https://github.com/passbolt/passbolt-dep-scripts/releases/latest/download/passbolt-ce-SHA512SUM.txt"
+passbolt_checksum: "{{ lookup('url', passbolt_checksum_file_url) | regex_search('([^\\s]+)', '\\1') | first}}"

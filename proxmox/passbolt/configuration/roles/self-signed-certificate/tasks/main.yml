@@ -1,0 +1,37 @@
+---
+- name: Ensure directory exists for key and cert.
+  ansible.builtin.file:
+    path: "{{ private_key_path }}"
+    state: directory
+
+- ansible.builtin.debug:
+    msg: "Generating key and cert using provided passphrase"
+  when: passphrase_available
+
+- name: Ensure (OpenSSL) Private key is present with the default values (4096 bits, RSA)
+  community.crypto.openssl_privatekey:
+    path: "{{ private_key_file_path }}"
+    passphrase: "{{ passphrase_available | ternary(private_key_passphrase, omit) }}"
+    cipher: "{{ passphrase_available | ternary('auto', omit) }}"
+    force: true # Force regenerate private key
+
+- name: Ensure certificate signing request (CSR) for self-signed certificate is present
+  community.crypto.openssl_csr_pipe:
+    privatekey_path: "{{ private_key_file_path }}"
+    privatekey_passphrase: "{{ passphrase_available | ternary(private_key_passphrase, omit) }}"
+    common_name: "{{ domain_name }}"
+    organization_name: KCM, Inc.
+    subject_alt_name:
+      - "DNS:{{ domain_name }}"
+      - "DNS:www.{{ domain_name }}"
+      - "DNS:*.{{ domain_name }}"
+  register: csr
+
+- name: Ensure self-signed cert is present
+  community.crypto.x509_certificate:
+    path: "{{ cert_file_path }}"
+    csr_content: "{{ csr.csr }}"
+    privatekey_path: "{{ private_key_file_path }}"
+    privatekey_passphrase: "{{ passphrase_available | ternary(private_key_passphrase, omit) }}"
+    selfsigned_not_after: "+3650d" # roughly 10years. this is the default
+    provider: selfsigned

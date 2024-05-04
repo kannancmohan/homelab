@@ -8,81 +8,84 @@
   vars:
     passbolt_checksum_file_url: "https://github.com/passbolt/passbolt-dep-scripts/releases/latest/download/passbolt-ce-SHA512SUM.txt"
     passbolt_checksum: "{{ lookup('url', passbolt_checksum_file_url) | regex_search('([^\\s]+)', '\\1') | first}}"
+  roles:
+    - role: self-signed-certificate
+      become: true
 
-  tasks:
-  - name: Set hostname
-    ansible.builtin.hostname:
-      name: "{{ host_name_prefix + ansible_host.split('.')[-1][-2:] }}"
+  # tasks:
+  # - name: Set hostname
+  #   ansible.builtin.hostname:
+  #     name: "{{ host_name_prefix + ansible_host.split('.')[-1][-2:] }}"
 
-  - name: Ensure common packages are installed
-    ansible.builtin.apt:
-      name: "{{ item }}"
-      state: present
-      update_cache: true
-    loop:
-      - debconf
-      - debconf-utils
+  # - name: Ensure common packages are installed
+  #   ansible.builtin.apt:
+  #     name: "{{ item }}"
+  #     state: present
+  #     update_cache: true
+  #   loop:
+  #     - debconf
+  #     - debconf-utils
 
-  - name: Download passbolt setup script
-    ansible.builtin.get_url:
-      url: "https://download.passbolt.com/ce/installer/passbolt-repo-setup.ce.sh"
-      dest: "/tmp/passbolt-repo-setup.ce.sh"
-      mode: "0755"
+  # - name: Download passbolt setup script
+  #   ansible.builtin.get_url:
+  #     url: "https://download.passbolt.com/ce/installer/passbolt-repo-setup.ce.sh"
+  #     dest: "/tmp/passbolt-repo-setup.ce.sh"
+  #     mode: "0755"
 
-  - name: Download passbolt checksum file
-    ansible.builtin.get_url:
-      url: "https://github.com/passbolt/passbolt-dep-scripts/releases/latest/download/passbolt-ce-SHA512SUM.txt"
-      dest: "/tmp/passbolt-ce-SHA512SUM.txt"
+  # - name: Download passbolt checksum file
+  #   ansible.builtin.get_url:
+  #     url: "https://github.com/passbolt/passbolt-dep-scripts/releases/latest/download/passbolt-ce-SHA512SUM.txt"
+  #     dest: "/tmp/passbolt-ce-SHA512SUM.txt"
 
-  - name: Get stats of the downloaded passbolt script 
-    ansible.builtin.stat:
-      path: /tmp/passbolt-repo-setup.ce.sh
-      checksum_algorithm: sha512
-      get_checksum: yes
-    register: scriptfile_stat
+  # - name: Get stats of the downloaded passbolt script 
+  #   ansible.builtin.stat:
+  #     path: /tmp/passbolt-repo-setup.ce.sh
+  #     checksum_algorithm: sha512
+  #     get_checksum: yes
+  #   register: scriptfile_stat
 
-  - name: Ensure downloaded setup script is valid using checksum
-    ansible.builtin.assert:
-      that:
-        - scriptfile_stat.stat.checksum == passbolt_checksum
-      fail_msg: "Checksum verification failed "
-      success_msg: "Checksum verification passed "
+  # - name: Ensure downloaded setup script is valid using checksum
+  #   ansible.builtin.assert:
+  #     that:
+  #       - scriptfile_stat.stat.checksum == passbolt_checksum
+  #     fail_msg: "Checksum verification failed "
+  #     success_msg: "Checksum verification passed "
 
-  - name: Setup passbolt repository
-    ansible.builtin.shell: bash /tmp/passbolt-repo-setup.ce.sh
+  # - name: Setup passbolt repository
+  #   ansible.builtin.shell: bash /tmp/passbolt-repo-setup.ce.sh
 
-  - name: Run passbolt-repo-setup.ce.sh script
-    ansible.builtin.command: "/tmp/passbolt-repo-setup.ce.sh"
+  # - name: Run passbolt-repo-setup.ce.sh script
+  #   ansible.builtin.command: "/tmp/passbolt-repo-setup.ce.sh"
   
-  ## https://www.passbolt.com/docs/hosting/faq/how-to-install-passbolt-in-non-interactive-mode/#advanced-mode
-  - name: Pre-configure passbolt mysql settings
-    ansible.builtin.debconf:
-      name: passbolt-ce-server
-      question: "{{ item.question }}"
-      value: "{{ item.value }}"
-      vtype: "{{ item.vtype }}"
-    loop:
-      - { question: "passbolt/mysql-configuration", value: "true", vtype: "boolean" }
-      - { question: "passbolt/mysql-passbolt-username", value: "passboltadmin", vtype: "string" }
-      - { question: "passbolt/mysql-passbolt-password", value: "{{ lookup('env','PASSBOLT_DB_PWD') }}", vtype: "password" }
-      - { question: "passbolt/mysql-passbolt-password-repeat", value: "{{ lookup('env','PASSBOLT_DB_PWD') }}", vtype: "password" }
-      - { question: "passbolt/mysql-passbolt-dbname", value: "passboltdb", vtype: "string" }
-    # no_log: true
+  # ## https://www.passbolt.com/docs/hosting/faq/how-to-install-passbolt-in-non-interactive-mode/#advanced-mode
+  # - name: Pre-configure passbolt mysql settings
+  #   ansible.builtin.debconf:
+  #     name: passbolt-ce-server
+  #     question: "{{ item.question }}"
+  #     value: "{{ item.value }}"
+  #     vtype: "{{ item.vtype }}"
+  #   loop:
+  #     - { question: "passbolt/mysql-configuration", value: "true", vtype: "boolean" }
+  #     - { question: "passbolt/mysql-passbolt-username", value: "passboltadmin", vtype: "string" }
+  #     - { question: "passbolt/mysql-passbolt-password", value: "{{ lookup('env','PASSBOLT_DB_PWD') }}", vtype: "password" }
+  #     - { question: "passbolt/mysql-passbolt-password-repeat", value: "{{ lookup('env','PASSBOLT_DB_PWD') }}", vtype: "password" }
+  #     - { question: "passbolt/mysql-passbolt-dbname", value: "passboltdb", vtype: "string" }
+  #   # no_log: true
 
-  - name: Pre-configure passbolt nginx settings
-    ansible.builtin.debconf:
-      name: passbolt-ce-server
-      question: "{{ item.question }}"
-      value: "{{ item.value }}"
-      vtype: "{{ item.vtype }}"
-    loop:
-      - { question: "passbolt/nginx-configuration", value: "false", vtype: "boolean" }
-      # - { question: "passbolt/nginx-configuration-three-choices", value: "auto", vtype: "select" }
-      - { question: "passbolt/nginx-domain", value: "passbolt.devi.local", vtype: "string" }
-      # - { question: "passbolt/nginx-certificate-file", value: "/etc/letsencrypt/live/{{ _domain }}/fullchain.pem", vtype: "string" }
-      # - { question: "passbolt/nginx-certificate-key-file", value: "/etc/letsencrypt/live/{{ _domain }}/privkey.pem", vtype: "string" }
+  # - name: Pre-configure passbolt nginx settings
+  #   ansible.builtin.debconf:
+  #     name: passbolt-ce-server
+  #     question: "{{ item.question }}"
+  #     value: "{{ item.value }}"
+  #     vtype: "{{ item.vtype }}"
+  #   loop:
+  #     - { question: "passbolt/nginx-configuration", value: "false", vtype: "boolean" }
+  #     # - { question: "passbolt/nginx-configuration-three-choices", value: "auto", vtype: "select" }
+  #     - { question: "passbolt/nginx-domain", value: "passbolt.devi.local", vtype: "string" }
+  #     # - { question: "passbolt/nginx-certificate-file", value: "/etc/letsencrypt/live/{{ _domain }}/fullchain.pem", vtype: "string" }
+  #     # - { question: "passbolt/nginx-certificate-key-file", value: "/etc/letsencrypt/live/{{ _domain }}/privkey.pem", vtype: "string" }
 
-  - name: Install passbolt-ce server
-    ansible.builtin.apt:
-      name: passbolt-ce-server
-      state: present
+  # - name: Install passbolt-ce server
+  #   ansible.builtin.apt:
+  #     name: passbolt-ce-server
+  #     state: present

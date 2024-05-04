@@ -1,0 +1,13 @@
+---
+#  defaults folder contain variables which users need not alter
+domain_name: "passbolt.pdev.local"
+private_key_name: "passbolt.pdev.local.key"
+private_key_path: "/etc/ssl/{{ domain_name }}"
+private_key_file_path: "{{ private_key_path }}/{{ private_key_name }}"
+cert_name: "passbolt.pdev.local.pem"
+cert_path: "/etc/ssl/{{ domain_name }}"
+cert_file_path: "{{ cert_path }}/{{ cert_name }}"
+# private_key_passphrase: "password@12212A"
+## Comment out the private_key_passphrase if you dont need to generate key and certificate using passphrase"
+private_key_passphrase: "{{ lookup('env','CERT_PRIVATE_KEY_PWD') }}"
+passphrase_available: "{{ (private_key_passphrase is defined) and (private_key_passphrase|length > 0) }}"

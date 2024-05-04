@@ -2,4 +2,4 @@
 
 terraform -chdir=./vm_provisioning apply --auto-approve &&
 
-ansible-playbook -i ./adguard_configuration/inventories/proxmox-inventory.proxmox.yml ./adguard_configuration/main-playbook.yml
+ansible-playbook -i ./configuration/inventories/proxmox-inventory.proxmox.yml ./configuration/main-playbook.yml

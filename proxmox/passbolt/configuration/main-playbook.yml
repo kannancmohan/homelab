@@ -6,8 +6,7 @@
   # vars_files:
   #   - vars/default.yaml
   vars:
-    passbolt_checksum_file_url: "https://github.com/passbolt/passbolt-dep-scripts/releases/latest/download/passbolt-ce-SHA512SUM.txt"
-    passbolt_checksum: "{{ lookup('url', passbolt_checksum_file_url) | regex_search('([^\\s]+)', '\\1') | first}}"
+    domain_name: "passbolt.pdev.local"
   roles:
     - role: self-signed-certificate
       become: true

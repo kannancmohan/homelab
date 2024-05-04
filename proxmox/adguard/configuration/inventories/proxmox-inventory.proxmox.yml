@@ -25,7 +25,7 @@ filters:
 
 ## add new host groups(k3s_cp_hosts & k3s_worker_hosts) in inventory based on their tags
 groups:
-  adguard_hosts: "'service-name-adguard' in (proxmox_tags_parsed|list)"
+  service_hosts: "'service-name-adguard' in (proxmox_tags_parsed|list)"
 
 ## include ansible_host so that ansible could connect to it
 compose:

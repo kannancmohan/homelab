@@ -16,7 +16,6 @@
     private_key_passphrase: "{{ lookup('env','CERT_PRIVATE_KEY_PWD') }}"
     passphrase_available: "{{ (private_key_passphrase is defined) and (private_key_passphrase|length > 0) }}"
 
-
   tasks:
   - name: Ensure directory exists for key and cert.
     ansible.builtin.file:

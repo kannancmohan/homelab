@@ -12,6 +12,7 @@
     cert_path: "/Users/kannancmohan/Desktop/ssl"
     cert_file_path: "{{ cert_path }}/{{ cert_name }}"
     # private_key_passphrase: "password@12212A"
+    ## Comment out the private_key_passphrase if you dont need to generate key and certificate without passphrase"
     private_key_passphrase: "{{ lookup('env','CERT_PRIVATE_KEY_PWD') }}"
     passphrase_available: "{{ (private_key_passphrase is defined) and (private_key_passphrase|length > 0) }}"
 

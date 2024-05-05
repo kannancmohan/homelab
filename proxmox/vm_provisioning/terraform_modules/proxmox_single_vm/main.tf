@@ -76,7 +76,7 @@ runcmd:
 }
 
 module "worker" {
-  source                           = "../../terraform_module"
+  source                           = "../proxmox_core_vm"
   count                            = 1
   vm_id                            = var.vm_id
   vm_name                          = local.vm_name_prefix

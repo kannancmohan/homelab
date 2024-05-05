@@ -38,17 +38,17 @@
 
     - name: Create kube directory
       ansible.builtin.file:
-        path: /home/{{ ansible_user_id }}/.kube
+        path: /home/{{ ansible_user }}/.kube
         state: directory
         mode: "0755"
 
     - name: Copy kubeconfig to user's home
       ansible.builtin.copy:
         src: /etc/kubernetes/admin.conf
-        dest: "/home/{{ ansible_user_id }}/.kube/config"
+        dest: "/home/{{ ansible_user }}/.kube/config"
         remote_src: true
-        owner: "{{ ansible_user_id }}"
-        group: "{{ ansible_user_id }}"
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user }}"
         mode: "0755"
 
     # TODO set the env variable K8S_AUTH_KUBECONFIG so that ansible k8s modules could authenticate without explicitly specifying kubeconfig param
@@ -74,14 +74,14 @@
         dest: "{{ item.name }}"
         mode: "0664"
       loop:
-        - name: /home/{{ ansible_user_id }}/calico-operator.yaml
+        - name: /home/{{ ansible_user }}/calico-operator.yaml
           url: "{{ common_cni_plugins.calico.calico_operator }}"
-        - name: /home/{{ ansible_user_id }}/calico-crd.yaml
+        - name: /home/{{ ansible_user }}/calico-crd.yaml
           url: "{{ common_cni_plugins.calico.calico_crd }}"
 
     - name: Apply custom CIDR to calico installation manifest
       ansible.builtin.replace:
-        path: /home/{{ ansible_user_id }}/calico-crd.yaml
+        path: /home/{{ ansible_user }}/calico-crd.yaml
         regexp: 192.168.0.0\/16
         replace: "{{ common_k8s_cp.pod_cidr }}"
 
@@ -92,8 +92,8 @@
         kubeconfig: /etc/kubernetes/admin.conf # directly passing kubeconfig as this task was complaining about missing configuration
         wait: true #  wait for certain resource kinds to end up in the desired state.
       loop:
-        - /home/{{ ansible_user_id }}/calico-operator.yaml
-        - /home/{{ ansible_user_id }}/calico-crd.yaml
+        - /home/{{ ansible_user }}/calico-operator.yaml
+        - /home/{{ ansible_user }}/calico-crd.yaml
 
     - name: Reboot host
       ansible.builtin.reboot:

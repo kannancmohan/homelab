@@ -3,7 +3,7 @@
 ### Example usage
 ```
 module "my_proxmox_vm" {
-  source                           = "../../../proxmox/vm_provisioning/terraform_module"
+  source                           = "../../../proxmox/vm_provisioning/terraform_modules/proxmox_core_vm"
   count                            = 1
   vm_id                            = "100"
   vm_name                          = "my_proxmox_vm"

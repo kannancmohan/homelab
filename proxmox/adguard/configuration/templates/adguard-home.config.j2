@@ -184,9 +184,14 @@ filters:
 whitelist_filters: []
 user_rules:
   - '||signaler-pa.clients6.google.com^$important'
-  - '||waa-pa.clients6.google.com^$important'
   - '||addons-pa.clients6.google.com^$important'
   - '||a.config.skype.com^$client=''192.168.0.15'''
+  - '@@||tailscale.com^$important'
+  - '@@||www.zerotier.com^$important'
+  - '||mobile.events.data.microsoft.com^$important'
+  - '||grafana.com^$client=''192.168.0.61'''
+  - '||grafana.com.io^$client=''192.168.0.61'''
+  - '||stats.grafana.org.io^$client=''192.168.0.61'''
   - ""
 dhcp:
   enabled: false

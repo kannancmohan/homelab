@@ -27,7 +27,7 @@ module "worker" {
   vm_name                       = var.vm_name
   vm_ip_addr                    = var.vm_ip_addr
   vm_gateway_ip                 = var.vm_gateway_ip
-  vm_cpu_cores                  = 1
+  vm_cpu_cores                  = var.vm_cores
   vm_memory                     = var.vm_memory
   vm_disk_size                  = var.vm_disk_size
   vm_tags                       = var.vm_tags

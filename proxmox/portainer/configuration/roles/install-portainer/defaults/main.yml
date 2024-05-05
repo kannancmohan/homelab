@@ -1,2 +1,3 @@
 ---
 #  defaults folder contain variables which users need not alter
+portainer_version: "latest"

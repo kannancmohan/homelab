@@ -19,11 +19,21 @@
 
 - name: Install Docker CE
   ansible.builtin.apt:
-    name: ['docker-ce', 'docker-ce-cli', 'containerd.io', 'docker-buildx-plugin', 'docker-compose-plugin']
+    # name: ['docker-ce', 'docker-ce-cli', 'containerd.io', 'docker-buildx-plugin', 'docker-compose-plugin']
+    name: ['docker-ce']
     state: present
     update_cache: true
 
-- name: Restart Docker
+- name: Enable and start Docker services
   ansible.builtin.systemd:
-    name: docker
-    state: restarted
+    name: "{{ item }}"
+    enabled: true
+    state: started
+  loop:
+    - docker.service
+    - containerd.service
+
+# - name: Restart Docker
+#   ansible.builtin.systemd:
+#     name: docker
+#     state: restarted

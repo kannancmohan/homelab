@@ -1,0 +1,3 @@
+---
+- ansible.builtin.debug:
+    msg: "Generating key and cert using provided passphrase"

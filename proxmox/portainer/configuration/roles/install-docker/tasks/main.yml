@@ -24,6 +24,17 @@
     state: present
     update_cache: true
 
+# - name: Add Docker group
+#   ansible.builtin.group:
+#     name: docker
+#     state: present
+
+# - name: Add user to Docker group
+#   ansible.builtin.user:
+#     name: "{{ ansible_user }}"
+#     groups: docker
+#     append: true
+
 - name: Configure Docker daemon options
   ansible.builtin.template:
     src: "templates/docker_daemon.json.j2"

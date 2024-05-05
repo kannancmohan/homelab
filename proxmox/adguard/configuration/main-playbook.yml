@@ -41,8 +41,8 @@
     ansible.builtin.template:
       src: templates/adguard-home.config.j2
       dest: /var/snap/adguard-home/current/AdGuardHome.yaml
-      # owner: "{{ ansible_user_id }}"
-      # group: "{{ ansible_user_id }}"
+      # owner: "{{ ansible_user }}"
+      # group: "{{ ansible_user }}"
       mode: "0644"
 
   - name: Restart AdGuard service

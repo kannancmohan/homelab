@@ -24,6 +24,14 @@
     state: present
     update_cache: true
 
+- name: Configure Docker daemon options
+  ansible.builtin.template:
+    src: "templates/docker_daemon.json.j2"
+    dest: "/etc/docker/daemon.json"
+    owner: "{{ ansible_user_id }}"
+    group: "{{ ansible_user_id }}"
+    mode: '0755'
+
 - name: Enable and start Docker services
   ansible.builtin.systemd:
     name: "{{ item }}"
@@ -33,7 +41,7 @@
     - docker.service
     - containerd.service
 
-# - name: Restart Docker
-#   ansible.builtin.systemd:
-#     name: docker
-#     state: restarted
+- name: Restart Docker
+  ansible.builtin.systemd:
+    name: docker
+    state: restarted

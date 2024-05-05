@@ -10,7 +10,7 @@ resource "proxmox_virtual_environment_download_file" "talos_image" {
 }
 
 module "controlplane" {
-  source          = "../../../proxmox/vm_provisioning/terraform_module"
+  source          = "../../../proxmox/vm_provisioning/terraform_modules/proxmox_core_vm"
   for_each        = { for item in local.controlplanes : item.name => item }
   vm_id           = each.value.id
   vm_name         = each.value.name
@@ -26,7 +26,7 @@ module "controlplane" {
 }
 
 module "worker" {
-  source          = "../../../proxmox/vm_provisioning/terraform_module"
+  source          = "../../../proxmox/vm_provisioning/terraform_modules/proxmox_core_vm"
   for_each        = { for item in local.workers : item.name => item }
   vm_id           = each.value.id
   vm_name         = each.value.name

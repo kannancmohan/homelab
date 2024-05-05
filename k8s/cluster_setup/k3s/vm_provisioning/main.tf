@@ -64,7 +64,7 @@ runcmd:
 }
 
 module "controlplane" {
-  source                           = "../../../../proxmox/vm_provisioning/terraform_module"
+  source                           = "../../../../proxmox/vm_provisioning/terraform_modules/proxmox_core_vm"
   count                            = var.cp_vm_count
   vm_id                            = "${var.cp_vm_id_prefix}${count.index + 1}"
   vm_name                          = "${var.cp_vm_name}-${count.index + 1}"
@@ -86,7 +86,7 @@ module "controlplane" {
 }
 
 module "worker" {
-  source                           = "../../../../proxmox/vm_provisioning/terraform_module"
+  source                           = "../../../../proxmox/vm_provisioning/terraform_modules/proxmox_core_vm"
   count                            = var.worker_vm_count
   vm_id                            = "${var.worker_vm_id_prefix}${count.index + 1}"
   vm_name                          = "${var.worker_vm_name}-${count.index + 1}"

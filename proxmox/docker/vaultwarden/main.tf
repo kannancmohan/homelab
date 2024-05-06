@@ -33,7 +33,7 @@ resource "docker_container" "vaultwarden" {
   }
   ports {
     internal = 80
-    external = 80
+    external = 901
   }
   restart = "unless-stopped"
 }

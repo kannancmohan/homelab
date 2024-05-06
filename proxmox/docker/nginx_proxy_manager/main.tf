@@ -42,6 +42,7 @@ resource "docker_container" "nginx_proxy_manager" {
   }
 
   ports {
+    # Admin Web Port
     internal = 81
     external = 81
   }

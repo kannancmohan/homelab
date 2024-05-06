@@ -1,0 +1,4 @@
+# remote docker ssh
+remote_username = "ubuntu"
+remote_ssh_ip   = "192.168.0.30"
+remote_ssh_port = 22

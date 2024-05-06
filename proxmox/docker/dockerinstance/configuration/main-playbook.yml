@@ -3,8 +3,8 @@
   hosts: service_hosts
   become: yes
   # gather_facts: false
-  vars:
-    domain_name: "dockerinstance.service.local"
+  # vars:
+  #   domain_name: "dockerinstance.service.local"
   roles:
     - role: common
     - role: install-docker

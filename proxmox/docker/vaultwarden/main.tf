@@ -22,14 +22,14 @@ resource "docker_volume" "vaultwarden_volume" {
 }
 
 resource "docker_container" "vaultwarden" {
-  image = docker_image.vaultwarden.image_id
-  name  = "vaultwarden"
+  image    = docker_image.vaultwarden.image_id
+  name     = "vaultwarden"
   hostname = "vaultwarden"
-  env = ["TZ=${var.timezone}"]
+  env      = ["TZ=${var.timezone}"]
   volumes {
     container_path = "/data"
-    volume_name = docker_volume.vaultwarden_volume.name
-    host_path = "/Users/${var.remote_username}/vaultwarden_home"
+    volume_name    = docker_volume.vaultwarden_volume.name
+    host_path      = "/Users/${var.remote_username}/vaultwarden_home"
   }
   ports {
     internal = 80

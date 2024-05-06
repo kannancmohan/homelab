@@ -10,6 +10,6 @@ variable "remote_ssh_port" {
 }
 
 variable "timezone" {
-  type = string
+  type    = string
   default = "Europe/Berlin"
 }

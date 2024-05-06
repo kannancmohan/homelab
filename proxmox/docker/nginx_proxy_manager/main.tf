@@ -26,6 +26,12 @@ resource "docker_container" "nginx_proxy_manager" {
   name     = "nginx_proxy_manager"
   hostname = "nginx_proxy_manager"
   # env      = ["TZ=${var.timezone}"]
+
+  volumes {
+    container_path = "/etc/letsencrypt"
+    host_path      = "/etc/letsencrypt"
+    # read_only      = true
+  }
   volumes {
     container_path = "/data"
     volume_name    = docker_volume.nginx_proxy_manager_volume.name

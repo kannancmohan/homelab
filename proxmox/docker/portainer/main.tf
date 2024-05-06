@@ -13,7 +13,7 @@ provider "docker" {
 }
 
 resource "docker_image" "portainer" {
-  name         = "portainer/portainer-ce:latest"
+  name         = "portainer/portainer-ce:2.20.2"
   keep_locally = true
 }
 

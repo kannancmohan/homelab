@@ -1,0 +1,4 @@
+---
+#  defaults folder contain variables which users need not alter
+docker_daemon_options:
+  storage-driver: "overlay2"

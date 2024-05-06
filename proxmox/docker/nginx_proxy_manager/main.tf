@@ -25,7 +25,7 @@ resource "docker_container" "nginx_proxy_manager" {
   image    = docker_image.nginx_proxy_manager.image_id
   name     = "nginx_proxy_manager"
   hostname = "nginx_proxy_manager"
-  env      = ["TZ=${var.timezone}"]
+  # env      = ["TZ=${var.timezone}"]
   volumes {
     container_path = "/data"
     volume_name    = docker_volume.nginx_proxy_manager_volume.name

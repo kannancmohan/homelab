@@ -29,7 +29,7 @@ resource "docker_container" "vaultwarden" {
   volumes {
     container_path = "/data"
     volume_name    = docker_volume.vaultwarden_volume.name
-    host_path      = "/Users/${var.remote_username}/vaultwarden_home"
+    host_path      = "/home/${var.remote_username}/vaultwarden_home"
   }
   ports {
     internal = 80

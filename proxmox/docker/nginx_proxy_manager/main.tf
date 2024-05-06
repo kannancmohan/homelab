@@ -29,7 +29,7 @@ resource "docker_container" "nginx_proxy_manager" {
   volumes {
     container_path = "/data"
     volume_name    = docker_volume.nginx_proxy_manager_volume.name
-    host_path      = "/Users/${var.remote_username}/nginx_proxy_manager_home"
+    host_path      = "/home/${var.remote_username}/nginx_proxy_manager_home"
   }
   ports {
     internal = 80

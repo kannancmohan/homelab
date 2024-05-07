@@ -32,6 +32,13 @@ resource "docker_container" "portainer" {
     host_path      = "/var/run/docker.sock"
     read_only      = true
   }
+
+  volumes {
+    container_path = "/etc/localtime"
+    host_path      = "/etc/localtime"
+    read_only      = true
+  }
+
   volumes {
     container_path = "/data"
     volume_name    = docker_volume.portainer_volume.name

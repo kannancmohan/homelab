@@ -13,9 +13,11 @@ provider "docker" {
 }
 
 locals {
-  caddy_env_variables        = yamldecode(file("${path.module}/configs/caddy_env_variables.yaml"))
-  caddy_env_variables_string = [for k, v in local.caddy_env_variables : "${k}=${v}"]
+  env_var_from_file  = yamldecode(file("${path.module}/configs/caddy_env_variables.yaml"))
+  additional_env_var = ["LETSENCRYPT_TOKEN=${var.letsencrypt_token}","hello=helloworld"]
+  env_var            = concat([for k, v in local.env_var_from_file : "${k}=${v}"], local.additional_env_var)
 }
+
 
 resource "docker_image" "caddy" {
   name         = "caddy/caddy:latest"
@@ -54,7 +56,7 @@ resource "docker_container" "caddy" {
     internal = 443
     external = 443
   }
-  env = local.caddy_env_variables_string
+  env = local.env_var
   # env = [
   #   "DOMAIN=${var.domain_name}",
   #   "USE_CAP_NET_ADMIN=true",

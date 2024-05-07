@@ -1,8 +1,18 @@
-localhost {
+/* localhost {
 	respond "Hello, world!"
 }
 
 portainer.local.dev {
      reverse_proxy portainer:9101
+} */
+
+portainer.{$DOMAIN_NAME} {
+	reverse_proxy portainer:9443 {
+		transport http {
+			tls_insecure_skip_verify
+		}
+	}
+	tls {
+		dns cloudflare {env.LETSENCRYPT_TOKEN}
+	}
 }
- 

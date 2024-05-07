@@ -13,3 +13,8 @@ variable "timezone" {
   type    = string
   default = "Europe/Berlin"
 }
+
+variable "letsencrypt_token" {
+  type      = string
+  sensitive = true
+}

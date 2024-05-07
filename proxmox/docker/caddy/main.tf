@@ -31,10 +31,10 @@ resource "docker_container" "caddy" {
   name     = "caddy"
   hostname = "caddy"
 
-  # upload {
-  #   source = "${path.module}/configs/Caddyfile"
-  #   file   = "/etc/caddy/Caddyfile"
-  # }
+  upload {
+    source = "${path.module}/configs/Caddyfile"
+    file   = "/etc/caddy/Caddyfile"
+  }
 
   # volumes {
   #   host_path      = "${path.module}/configs/Caddyfile"

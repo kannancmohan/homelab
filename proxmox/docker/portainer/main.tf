@@ -48,10 +48,10 @@ resource "docker_container" "portainer" {
     internal = 9443
     external = 9101
   }
-  ports {
-    internal = 9000
-    external = 9102
-  }
+  # ports {
+  #   internal = 9000
+  #   external = 9102
+  # }
   restart = "unless-stopped"
 }
 

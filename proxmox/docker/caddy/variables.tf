@@ -14,7 +14,7 @@ variable "timezone" {
   default = "Europe/Berlin"
 }
 
-variable "letsencrypt_token" {
+variable "duckdns_token" {
   type      = string
   sensitive = true
 }

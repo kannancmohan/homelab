@@ -1,18 +1,17 @@
-/* localhost {
-	respond "Hello, world!"
-}
-
-portainer.local.dev {
-     reverse_proxy portainer:9101
-} */
-
 portainer.{$DOMAIN_NAME} {
+	log {
+		level INFO
+		output file {$LOG_FILE} {
+			roll_size 10MB
+			roll_keep 10
+		}
+	}
 	reverse_proxy portainer:9443 {
 		transport http {
 			tls_insecure_skip_verify
 		}
 	}
 	tls {
-		dns cloudflare {env.LETSENCRYPT_TOKEN}
+		dns duckdns {env.DUCKDNS_TOKEN}
 	}
 }

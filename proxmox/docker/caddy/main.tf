@@ -20,9 +20,21 @@ locals {
 
 
 resource "docker_image" "caddy" {
-  name         = "caddy/caddy:latest"
+  name         = "caddy"
   keep_locally = true
+  build {
+    context    = path.module
+    dockerfile = "configs/Dockerfile"
+    # build_args = {
+    #   NPM_CONFIG_REGISTRY = var.npm_registry_url
+    # }
+    # tag = [aws_ecr_repository.react_frontend.repository_url]
+  }
 }
+# resource "docker_image" "caddy" {
+#   name         = "caddy/caddy:latest"
+#   keep_locally = true
+# }
 
 resource "docker_volume" "caddy_volume" {
   name = "${var.remote_username}_caddy_data"

@@ -1,0 +1,22 @@
+{
+       email kannanmohanklm@gmail.com
+}
+
+https://nextcloud.mydomain.net:443 {
+	tls {
+		dns cloudflare <APIKEY> # get your API KEY from Cloudflare
+	}
+	// header Strict-Transport-Security max-age=31536000;
+	reverse_proxy host.docker.internal:11001
+}
+
+// proxmox.{$MY_DOMAIN} {
+// 	reverse_proxy {$MY_HOST_IP}:8006 {
+//       transport http {
+//          tls_insecure_skip_verify
+//       }
+//    }
+// 	tls {
+// 		dns cloudflare {env.CLOUDFLARE_API_TOKEN}
+// 	}
+// }

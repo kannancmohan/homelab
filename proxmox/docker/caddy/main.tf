@@ -12,6 +12,11 @@ provider "docker" {
   ssh_opts = ["-o", "StrictHostKeyChecking=no", "-o", "UserKnownHostsFile=/dev/null"]
 }
 
+locals {
+  caddy_env_variables        = yamldecode(file("${path.module}/configs/caddy_env_variables.yaml"))
+  caddy_env_variables_string = [for k, v in local.caddy_env_variables : "${k}=${v}"]
+}
+
 resource "docker_image" "caddy" {
   name         = "caddy/caddy:latest"
   keep_locally = true
@@ -25,10 +30,15 @@ resource "docker_container" "caddy" {
   image    = docker_image.caddy.image_id
   name     = "caddy"
   hostname = "caddy"
-  
+
+  # upload {
+  #   source = "${path.module}/configs/Caddyfile"
+  #   file   = "/etc/caddy/Caddyfile"
+  # }
+
   # volumes {
-  #   container_path = "./Caddyfile"
-  #   host_path      = "/etc/caddy/Caddyfile"
+  #   host_path      = "${path.module}/configs/Caddyfile"
+  #   container_path = "/etc/caddy/Caddyfile"
   #   read_only      = true
   # }
   # volumes {
@@ -44,6 +54,7 @@ resource "docker_container" "caddy" {
     internal = 443
     external = 443
   }
+  env = local.caddy_env_variables_string
   # env = [
   #   "DOMAIN=${var.domain_name}",
   #   "USE_CAP_NET_ADMIN=true",

@@ -47,6 +47,11 @@
 		reverse_proxy {$ADGUARD_IP_PORT}
 	}
 
+	@vault host vault.{$DOMAIN_NAME}
+	handle @vault {
+		reverse_proxy {$VAULT_IP_PORT}
+	}
+
 	# Fallback to static page, if no matching subdomains
 	handle {
 		root * /etc/caddy/www

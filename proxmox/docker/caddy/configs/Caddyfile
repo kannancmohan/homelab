@@ -4,7 +4,12 @@
 	#admin 0.0.0.0:2019
 }
 
-(main) {
+(headers) {
+	# Send the true remote IP
+    header_up X-Real-IP {remote_host}
+}
+
+(logs) {
 	log {
 		level INFO
 		output file {$LOG_FILE} {
@@ -29,6 +34,7 @@
 }
 
 *.{$DOMAIN_NAME} {
+	#import logs
 	tls {
 		dns duckdns {
 			api_token {env.DUCKDNS_API_TOKEN}
@@ -49,7 +55,9 @@
 
 	@vault host vault.{$DOMAIN_NAME}
 	handle @vault {
-		reverse_proxy {$VAULT_IP_PORT}
+		reverse_proxy {$VAULT_IP_PORT} {
+			import headers
+		}
 	}
 
 	# Fallback to static page, if no matching subdomains

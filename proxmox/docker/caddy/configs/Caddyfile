@@ -1,7 +1,7 @@
 {
 	#debug
 	email {$ACME_EMAIL}
-	admin 0.0.0.0:2019
+	#admin 0.0.0.0:2019
 }
 
 (main) {

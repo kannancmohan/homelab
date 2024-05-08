@@ -1,3 +1,4 @@
-DOMAIN_NAME: "kcmeu.duckdns.org"
-CADDY_IP: "192.168.0.30"
-LOG_FILE: "/data/access.log"
+DOMAIN_NAME: kcmeu.duckdns.org
+CADDY_IP: 192.168.0.30
+LOG_FILE: /data/access.log
+ACME_EMAIL: kannanmohanklm@gmail.com

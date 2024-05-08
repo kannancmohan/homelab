@@ -1,17 +1,36 @@
-portainer.{$DOMAIN_NAME} {
+{
+	#debug
+	email {$ACME_EMAIL}
+	admin 0.0.0.0:2019
+}
+
+(main) {
 	log {
 		level INFO
 		output file {$LOG_FILE} {
 			roll_size 10MB
-			roll_keep 10
+			roll_keep 5
+			roll_keep_for 48h
 		}
+		format json
 	}
-	reverse_proxy portainer:9443 {
-		transport http {
-			tls_insecure_skip_verify
-		}
-	}
+}
+
+localhost {
+	#import main
+	respond "Hello, world!"
+}
+
+
+{$DOMAIN_NAME} {
+	#import main
+	# SSL Cert via Duckdns build
 	tls {
-		dns duckdns {env.DUCKDNS_TOKEN}
+		dns duckdns {
+			api_token {env.DUCKDNS_API_TOKEN}
+			# override_domain {$DOMAIN_NAME}
+		}
+		propagation_timeout -1 # turn off caddy DNS check
 	}
+	reverse_proxy {$CADDY_IP}:9102
 }

@@ -44,14 +44,14 @@ resource "docker_container" "portainer" {
     volume_name    = docker_volume.portainer_volume.name
     host_path      = "/home/${var.remote_username}/portainer_home"
   }
-  ports {
-    internal = 9443
-    external = 9101
-  }
   # ports {
-  #   internal = 9000
-  #   external = 9102
+  #   internal = 9443
+  #   external = 9101
   # }
+  ports {
+    internal = 9000
+    external = 9102
+  }
   restart = "unless-stopped"
 }
 

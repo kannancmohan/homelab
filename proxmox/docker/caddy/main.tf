@@ -14,7 +14,7 @@ provider "docker" {
 
 locals {
   env_var_from_file  = yamldecode(file("${path.module}/configs/caddy_env_variables.yaml"))
-  additional_env_var = ["DUCKDNS_TOKEN=${var.duckdns_token}","hello=helloworld"]
+  additional_env_var = ["DUCKDNS_API_TOKEN=${var.duckdns_token}","hello=helloworld"]
   env_var            = concat([for k, v in local.env_var_from_file : "${k}=${v}"], local.additional_env_var)
 }
 

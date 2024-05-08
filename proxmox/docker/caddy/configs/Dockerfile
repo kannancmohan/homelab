@@ -1,9 +1,8 @@
-# syntax=docker/dockerfile:1
-FROM caddy:2.7.6-builder AS builder
+FROM caddy:builder AS builder
 
 RUN xcaddy build \
-    --with github.com/caddy-dns/duckdns@latest
+    --with github.com/caddy-dns/duckdns
 
-FROM caddy:2.7.6
+FROM caddy:2.7.5
 
 COPY --from=builder /usr/bin/caddy /usr/bin/caddy

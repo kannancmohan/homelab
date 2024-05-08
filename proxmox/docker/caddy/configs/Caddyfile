@@ -16,13 +16,12 @@
 	}
 }
 
-localhost {
-	#import main
-	respond "Hello, world!"
+{$DOMAIN_NAME} {
+    root * /etc/caddy/www
+    file_server
 }
 
-
-{$DOMAIN_NAME} {
+portainer.{$DOMAIN_NAME} {
 	#import main
 	# SSL Cert via Duckdns build
 	tls {

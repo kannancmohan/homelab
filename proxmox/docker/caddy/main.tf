@@ -31,10 +31,6 @@ resource "docker_image" "caddy" {
     # tag = [aws_ecr_repository.react_frontend.repository_url]
   }
 }
-# resource "docker_image" "caddy" {
-#   name         = "caddy/caddy:latest"
-#   keep_locally = true
-# }
 
 resource "docker_volume" "caddy_volume" {
   name = "${var.remote_username}_caddy_data"
@@ -49,6 +45,12 @@ resource "docker_container" "caddy" {
     source = "${path.module}/configs/Caddyfile"
     file   = "/etc/caddy/Caddyfile"
   }
+
+  upload {
+    source = "${path.module}/configs/index.html"
+    file   = "/etc/caddy/www/index.html"
+  }
+  
 
   # volumes {
   #   host_path      = "${path.module}/configs/Caddyfile"
@@ -70,12 +72,6 @@ resource "docker_container" "caddy" {
     external = 443
   }
   env = local.env_var
-  # env = [
-  #   "DOMAIN=${var.domain_name}",
-  #   "USE_CAP_NET_ADMIN=true",
-  #   "WEBSOCKET_ENABLED=true",
-  #   "SIGNUPS_ALLOWED=false",
-  # ]
   restart = "unless-stopped"
 }
 

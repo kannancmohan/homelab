@@ -1,4 +1,6 @@
 DOMAIN_NAME: kcmeu.duckdns.org
 CADDY_IP: 192.168.0.30
+ADGUARD_IP_PORT: 192.168.0.21:80
+PORTAINER_IP_PORT: 192.168.0.30:9102
 LOG_FILE: /data/access.log
 ACME_EMAIL: kannanmohanklm@gmail.com

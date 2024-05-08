@@ -19,11 +19,6 @@
 {$DOMAIN_NAME} {
     root * /etc/caddy/www
     file_server
-}
-
-portainer.{$DOMAIN_NAME} {
-	#import main
-	# SSL Cert via Duckdns build
 	tls {
 		dns duckdns {
 			api_token {env.DUCKDNS_API_TOKEN}
@@ -31,5 +26,30 @@ portainer.{$DOMAIN_NAME} {
 		}
 		propagation_timeout -1 # turn off caddy DNS check
 	}
-	reverse_proxy {$CADDY_IP}:9102
+}
+
+*.{$DOMAIN_NAME} {
+	tls {
+		dns duckdns {
+			api_token {env.DUCKDNS_API_TOKEN}
+			# override_domain {$DOMAIN_NAME}
+		}
+		propagation_timeout -1 # turn off caddy DNS check
+	}
+
+	@portainer host portainer.{$DOMAIN_NAME}
+	handle @portainer {
+		reverse_proxy {$PORTAINER_IP_PORT}
+	}
+
+	@adguard host adguard.{$DOMAIN_NAME}
+	handle @adguard {
+		reverse_proxy {$ADGUARD_IP_PORT}
+	}
+
+	# Fallback to static page, if no matching subdomains
+	handle {
+		root * /etc/caddy/www
+    	file_server
+	}
 }

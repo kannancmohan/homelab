@@ -25,10 +25,6 @@ resource "docker_image" "caddy" {
   build {
     context    = path.module
     dockerfile = "configs/Dockerfile"
-    # build_args = {
-    #   NPM_CONFIG_REGISTRY = var.npm_registry_url
-    # }
-    # tag = [aws_ecr_repository.react_frontend.repository_url]
   }
 }
 

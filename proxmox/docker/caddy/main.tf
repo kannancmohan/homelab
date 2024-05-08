@@ -14,7 +14,7 @@ provider "docker" {
 
 locals {
   env_var_from_file  = yamldecode(file("${path.module}/configs/caddy_env_variables.yaml"))
-  additional_env_var = ["DUCKDNS_API_TOKEN=${var.duckdns_token}","hello=helloworld"]
+  additional_env_var = ["DUCKDNS_API_TOKEN=${var.duckdns_token}"]
   env_var            = concat([for k, v in local.env_var_from_file : "${k}=${v}"], local.additional_env_var)
 }
 
@@ -46,7 +46,7 @@ resource "docker_container" "caddy" {
     source = "${path.module}/configs/index.html"
     file   = "/etc/caddy/www/index.html"
   }
-  
+
 
   # volumes {
   #   host_path      = "${path.module}/configs/Caddyfile"
@@ -67,7 +67,7 @@ resource "docker_container" "caddy" {
     internal = 443
     external = 443
   }
-  env = local.env_var
+  env     = local.env_var
   restart = "unless-stopped"
 }
 

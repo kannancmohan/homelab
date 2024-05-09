@@ -5,3 +5,7 @@ https://vault.kcmeu.duckdns.org/admin
 ```
 TF_VAR_vault_admin_token # random generated token using cmd 'openssl rand -base64 48'
 ```
+
+### Official vaultwarden environment variables
+https://github.com/dani-garcia/vaultwarden/blob/main/.env.template
+

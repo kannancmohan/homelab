@@ -25,7 +25,7 @@ resource "docker_container" "vaultwarden" {
   image    = docker_image.vaultwarden.image_id
   name     = "vaultwarden"
   hostname = "vaultwarden"
-  env      = ["TZ=${var.timezone}"]
+  env      = ["TZ=${var.timezone}","SIGNUPS_ALLOWED=${var.signup_allowed}","ADMIN_TOKEN=${var.vault_admin_token}"]
   volumes {
     container_path = "/data"
     volume_name    = docker_volume.vaultwarden_volume.name

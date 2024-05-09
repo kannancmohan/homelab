@@ -13,3 +13,12 @@ variable "timezone" {
   type    = string
   default = "Europe/Berlin"
 }
+
+variable "signup_allowed" {
+  type    = bool
+  default = false
+}
+variable "vault_admin_token" {
+  type    = string
+  sensitive = true
+}

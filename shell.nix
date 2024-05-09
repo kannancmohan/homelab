@@ -8,6 +8,7 @@ packages = with pkgs; [
     pkgs.kubectl
     pkgs.kubernetes-helm
     pkgs.argocd
+    #pkgs.vaultwarden
 ];
 
 #KUBECONFIG = "~/.kube/config";

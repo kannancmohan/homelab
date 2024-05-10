@@ -31,12 +31,12 @@
 
     - name: Download Go installer
       ansible.builtin.get_url:
-        url: https://golang.org/dl/go{{ go_version }}.linux-amd64.tar.gz
-        dest: /root/caddy/go{{ go_version }}.linux-amd64.tar.gz
+        url: https://golang.org/dl/go{{ GO_VERSION }}.linux-amd64.tar.gz
+        dest: /root/caddy/go{{ GO_VERSION }}.linux-amd64.tar.gz
 
     - name: Unzip Go installer to /usr/local/
       ansible.builtin.unarchive:
-        src: /root/caddy/go{{ go_version }}.linux-amd64.tar.gz
+        src: /root/caddy/go{{ GO_VERSION }}.linux-amd64.tar.gz
         dest: /usr/local/
         remote_src: true
 
@@ -48,7 +48,7 @@
         GOPATH: '/root/caddy/go'
 
     - name: Build caddy with plugins(duckdns)
-      ansible.builtin.shell: /root/caddy/go/bin/xcaddy build --with github.com/caddy-dns/duckdns@latest
+      ansible.builtin.shell: /root/caddy/go/bin/xcaddy build {{ CADDY_VERSION }} --with github.com/caddy-dns/duckdns@latest
       environment:
         PATH: '/usr/local/go/bin:$PATH'
         GOROOT: '/usr/local/go'

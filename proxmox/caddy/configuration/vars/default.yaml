@@ -1,5 +1,5 @@
-caddy_version: v2.7.6
-go_version: 1.22.3
+CADDY_VERSION: v2.7.6
+GO_VERSION: 1.22.3
 
 DOMAIN_NAME: kcmeu.duckdns.org
 CADDY_IP: 192.168.0.22

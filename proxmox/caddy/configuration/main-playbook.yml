@@ -48,7 +48,7 @@
         GOPATH: '/root/caddy/go'
 
     - name: Build caddy with plugins(duckdns)
-      ansible.builtin.shell: /root/caddy/go/bin/xcaddy build {{ CADDY_VERSION }} --with github.com/caddy-dns/duckdns@latest
+      ansible.builtin.shell: /root/caddy/go/bin/xcaddy build --with github.com/caddy-dns/duckdns@latest
       environment:
         PATH: '/usr/local/go/bin:$PATH'
         GOROOT: '/usr/local/go'

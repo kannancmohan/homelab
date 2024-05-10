@@ -31,6 +31,7 @@
       loop:
         - /root/caddy/go
         - /usr/local/go
+        - /etc/caddy/www
 
     - name: Download Go installer
       ansible.builtin.get_url:
@@ -67,60 +68,27 @@
         mode: '0755'
         remote_src: true
 
-    # - name: Add signing key
-    #   ansible.builtin.apt_key:
-    #     url: https://dl.cloudsmith.io/public/caddy/xcaddy/gpg.key
-    #     keyring: /usr/share/keyrings/caddy-xcaddy-archive-keyring.gpg
-    #     state: present
+    - name: Copy CaddyFile to /etc/caddy/Caddyfile
+      template:
+        src: templates/Caddyfile.j2
+        dest: /etc/caddy/Caddyfile
 
-    # - name: Add XCaddy repo
-    #   ansible.builtin.get_url:
-    #     url: https://dl.cloudsmith.io/public/caddy/xcaddy/debian.deb.txt
-    #     dest: /etc/apt/sources.list.d/caddy-xcaddy.list
-    #     mode: '0644'
+    - name: Copy static files to /etc/caddy/www
+      template:
+        src: templates/index.html.j2
+        dest: /etc/caddy/www/index.html
 
-    # - name: Install XCaddy
-    #   ansible.builtin.apt:
-    #     name: xcaddy
-    #     update_cache: true
-    #     state: present
+    - name: Copy caddy service file to /etc/systemd/system/caddy.service
+      ansible.builtin.template:
+        src: templates/caddy.service.j2
+        dest: /etc/systemd/system/caddy.service
+        # owner: root
+        # group: root
+        mode: '0644'
 
-    # - ansible.builtin.debug:
-    #     msg: "version: {{ caddy_version }}"
-
-    # - name: Build caddy
-    #   ansible.builtin.shell:
-    #     cmd: 'xcaddy build {{ caddy_version }} --with github.com/caddy-dns/duckdns@latest'
-
-
-  # - name: Ensure common packages are installed
-  #   ansible.builtin.apt:
-  #     name: "{{ item }}"
-  #     state: present
-  #     update_cache: true
-  #   loop: [debian-keyring, debian-archive-keyring, apt-transport-https, curl]
-
-  # - name: Add signing key
-  #   ansible.builtin.apt_key:
-  #     url: https://dl.cloudsmith.io/public/caddy/stable/gpg.key
-  #     keyring: /usr/share/keyrings/caddy-stable-archive-keyring.gpg
-  #     state: present
-
-  # - name: Add Caddy repo
-  #   ansible.builtin.get_url:
-  #     url: https://dl.cloudsmith.io/public/caddy/stable/debian.deb.txt
-  #     dest: /etc/apt/sources.list.d/caddy-stable.list
-  #     mode: '0644'
-
-  # - name: Install Caddy
-  #   ansible.builtin.apt:
-  #     name: caddy
-  #     update_cache: true
-  #     state: present
-
-  # - name: Start Caddy service
-  #   ansible.builtin.systemd:
-  #     name: caddy.service
-  #     daemon_reload: true
-  #     enabled: true
-  #     state: restarted
+    - name: Start caddy service
+      ansible.builtin.systemd:
+        name: caddy
+        daemon_reload: true
+        enabled: true
+        state: restarted

@@ -1,0 +1,68 @@
+{
+	#debug
+	email kannanmohanklm@gmail.com
+	#admin 0.0.0.0:2019
+}
+
+(headers) {
+	# Send the true remote IP
+    header_up X-Real-IP {remote_host}
+}
+
+(logs) {
+	log {
+		level INFO
+		output file {{ DOMAIN_NAME }} {
+			roll_size 10MB
+			roll_keep 5
+			roll_keep_for 48h
+		}
+		format json
+	}
+}
+
+{{ DOMAIN_NAME }} {
+    root * /etc/caddy/www
+    file_server
+	tls {
+		dns duckdns {
+			api_token {{ DUCKDNS_API_TOKEN }}
+			# override_domain {{ DOMAIN_NAME }}
+		}
+		propagation_timeout -1 # turn off caddy DNS check
+	}
+}
+
+*.{{ DOMAIN_NAME }} {
+	#import logs
+	tls {
+		dns duckdns {
+			api_token {{ DUCKDNS_API_TOKEN }}
+			# override_domain {{ DOMAIN_NAME }}
+		}
+		propagation_timeout -1 # turn off caddy DNS check
+	}
+
+	@portainer host portainer.{{ DOMAIN_NAME }}
+	handle @portainer {
+		reverse_proxy {{ PORTAINER_IP_PORT }}
+	}
+
+	@adguard host adguard.{{ DOMAIN_NAME }}
+	handle @adguard {
+		reverse_proxy {{ ADGUARD_IP_PORT }}
+	}
+
+	@vault host vault.{{ DOMAIN_NAME }}
+	handle @vault {
+		reverse_proxy {{ VAULT_IP_PORT }} {
+			import headers
+		}
+	}
+
+	# Fallback to static page, if no matching subdomains
+	handle {
+		root * /etc/caddy/www
+    	file_server
+	}
+}

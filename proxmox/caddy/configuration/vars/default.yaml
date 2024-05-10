@@ -1,2 +1,11 @@
 caddy_version: v2.7.6
 go_version: 1.22.3
+
+DOMAIN_NAME: kcmeu.duckdns.org
+CADDY_IP: 192.168.0.22
+ADGUARD_IP_PORT: 192.168.0.21:80
+PORTAINER_IP_PORT: 192.168.0.30:9102
+VAULT_IP_PORT: 192.168.0.30:9202
+LOG_FILE: /data/access.log
+ACME_EMAIL: kannanmohanklm@gmail.com
+DUCKDNS_API_TOKEN: 69d66f7b-0362-4479-85a2-26abb61ff706

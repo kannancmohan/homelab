@@ -16,17 +16,13 @@
         update_cache: true
       loop: [debian-keyring, debian-archive-keyring, apt-transport-https, curl]
 
-    # - name: Install Go
-    #   ansible.builtin.apt:
-    #     name: golang-go
-
-    - name: Create necessary directories
+    - name: Ensure necessary directories are created
       ansible.builtin.file:
         path: "{{ item }}"
         state: directory
         recurse: yes
-        # owner: root
-        # group: root
+        owner: root
+        group: root
         mode: 0775
       loop:
         - /root/caddy/go
@@ -36,10 +32,9 @@
     - name: Download Go installer
       ansible.builtin.get_url:
         url: https://golang.org/dl/go{{ go_version }}.linux-amd64.tar.gz
-        dest: /root/caddy
-        # dest: /root/caddy/go{{ go_version }}.linux-amd64.tar.gz
+        dest: /root/caddy/go{{ go_version }}.linux-amd64.tar.gz
 
-    - name: Extract Go installer to /usr/local
+    - name: Unzip Go installer to /usr/local/
       ansible.builtin.unarchive:
         src: /root/caddy/go{{ go_version }}.linux-amd64.tar.gz
         dest: /usr/local/
@@ -52,7 +47,7 @@
         GOROOT: '/usr/local/go'
         GOPATH: '/root/caddy/go'
 
-    - name: Build Caddy
+    - name: Build caddy with plugins(duckdns)
       ansible.builtin.shell: /root/caddy/go/bin/xcaddy build --with github.com/caddy-dns/duckdns@latest
       environment:
         PATH: '/usr/local/go/bin:$PATH'
@@ -63,18 +58,18 @@
       ansible.builtin.copy:
         src: /root/caddy/caddy
         dest: /usr/local/bin/caddy
-        # owner: root
-        # group: root
+        owner: root
+        group: root
         mode: '0755'
         remote_src: true
 
     - name: Copy CaddyFile to /etc/caddy/Caddyfile
-      template:
+      ansible.builtin.template:
         src: templates/Caddyfile.j2
         dest: /etc/caddy/Caddyfile
 
     - name: Copy static files to /etc/caddy/www
-      template:
+      ansible.builtin.template:
         src: templates/index.html.j2
         dest: /etc/caddy/www/index.html
 
@@ -82,8 +77,8 @@
       ansible.builtin.template:
         src: templates/caddy.service.j2
         dest: /etc/systemd/system/caddy.service
-        # owner: root
-        # group: root
+        owner: root
+        group: root
         mode: '0644'
 
     - name: Start caddy service

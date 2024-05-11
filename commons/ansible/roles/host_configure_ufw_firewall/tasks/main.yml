@@ -13,12 +13,27 @@
   community.general.ufw:
     logging: "{{ ufw_logging }}"
 
-- name: UFW - Ensure ufw is applied for apps
+- name: UFW - Ensure OpenSSH is set to allow
   community.general.ufw:
     rule: allow
     name: OpenSSH
+
+- name: UFW - Ensure ufw is set to allowed for given apps
+  community.general.ufw:
+    rule: allow
+    name: "{{ item }}"
   loop: "{{ ufw_allowed_apps }}"
 
 - name: UFW - Ensure ufw is enabled
   community.general.ufw:
     state: enabled
+
+- name: UFW - check whether ufw status is active
+  shell: ufw status numbered
+  changed_when: false
+  register: ufw_check
+
+- name: UFW - Display ufw status
+  debug: 
+    msg: "{{ ufw_check.stdout_lines }}"
+  when: ufw_check is defined and ufw_check.stdout_lines is defined

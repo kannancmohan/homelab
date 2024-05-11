@@ -1,5 +1,4 @@
 ---
 #  defaults folder contain variables which users need not alter
 ufw_logging: high
-ufw_allowed_apps: [OpenSSH, 'Nginx Full']
-
+ufw_allowed_apps: []

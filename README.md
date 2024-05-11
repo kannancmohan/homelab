@@ -5,7 +5,7 @@ Project to automatically create virtual machine's in proxmox server.
 | Automation      |               |
 |---------------- |:-------------:| 
 | Terraform       |               | 
-| Ansibel         |               | 
+| Ansible         |               | 
 
 | K8s             |               |
 |---------------- |:-------------:| 

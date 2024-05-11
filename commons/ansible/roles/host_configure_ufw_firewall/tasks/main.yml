@@ -1,0 +1,24 @@
+---
+- name: UFW - Deny all incoming traffic
+  community.general.ufw:
+    direction: incoming
+    policy: deny
+
+- name: UFW - Allow all outgoing traffic
+  community.general.ufw:
+    direction: outgoing
+    policy: allow
+
+- name: UFW - Enable ufw logging
+  community.general.ufw:
+    logging: "{{ ufw_logging }}"
+
+- name: UFW - Ensure ufw is applied for apps
+  community.general.ufw:
+    rule: allow
+    name: OpenSSH
+  loop: "{{ ufw_allowed_apps }}"
+
+- name: UFW - Ensure ufw is enabled
+  community.general.ufw:
+    state: enabled

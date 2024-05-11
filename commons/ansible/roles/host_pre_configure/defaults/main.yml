@@ -1,0 +1,6 @@
+---
+#  defaults folder contain variables which users need not alter
+service_name: default-service
+host_name: "{{ service_name }}"
+packages_to_install: [ufw,openssh-server,curl]
+packages_to_uninstall: [postfix]

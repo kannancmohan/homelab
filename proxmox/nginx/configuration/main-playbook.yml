@@ -1,0 +1,36 @@
+---
+- name: Install & Configure
+  hosts: service_hosts
+  become: yes
+  gather_facts: true
+  vars:
+    ansible_user: root
+    service_type: reverseproxy
+  vars_files:
+    - vars/default.yaml
+
+  tasks:
+    - name: Pre configure host
+      import_role:
+        name: ../../commons/ansible/roles/host_pre_configure
+      vars:
+        service_name: ngnix-container
+
+    - name: Install nginx
+      ansible.builtin.package:
+        name: nginx
+
+    - name: Start nginx
+      ansible.builtin.systemd_service:
+        state: started
+        enabled: true
+        name: nginx.service
+
+    - name: Pre configure host
+      import_role:
+        name: ../../commons/ansible/roles/host_configure_ufw_firewall
+      vars:
+        ufw_allowed_apps: ['Nginx Full']
+
+    # - name: Reboot host
+    #   ansible.builtin.reboot:

@@ -1,0 +1,2 @@
+service_name: ngnix
+service_type: reverseproxy

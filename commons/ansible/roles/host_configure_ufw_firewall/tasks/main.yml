@@ -1,4 +1,8 @@
 ---
+- name: UFW - Reset UFW to default
+  ufw: 
+    state: reset
+
 - name: UFW - Deny all incoming traffic
   community.general.ufw:
     direction: incoming

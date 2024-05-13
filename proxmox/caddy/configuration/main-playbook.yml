@@ -2,19 +2,32 @@
 - name: Install & Configure
   hosts: service_hosts
   become: yes
-  gather_facts: true
+  gather_facts: false
   vars:
     ansible_user: root
   vars_files:
     - vars/default.yaml
 
   tasks:
-    - name: Ensure common packages are installed
+    - name: Wait for system to become reachable
+      wait_for_connection:
+        timeout: 120
+
+    - name: Gather facts 
+      setup:
+
+    - name: Pre configure host
+      import_role:
+        name: "{{ playbook_dir }}/../../../commons/ansible/roles/host_pre_configure"
+      vars:
+        host_name: caddy-container
+
+    - name: Ensure necessary packages are installed
       ansible.builtin.apt:
         name: "{{ item }}"
         state: present
         update_cache: true
-      loop: [debian-keyring, debian-archive-keyring, apt-transport-https, curl]
+      loop: [debian-keyring, debian-archive-keyring, apt-transport-https]
 
     - name: Ensure necessary directories are created
       ansible.builtin.file:
@@ -87,3 +100,9 @@
         daemon_reload: true
         enabled: true
         state: restarted
+
+    - name: Apply ufw settings
+      import_role:
+        name: "{{ playbook_dir }}/../../../commons/ansible/roles/host_configure_ufw_firewall"
+      vars:
+        ufw_allowed_tcp_port: [443,80]

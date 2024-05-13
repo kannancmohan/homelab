@@ -28,6 +28,13 @@
     name: "{{ item }}"
   loop: "{{ ufw_allowed_apps }}"
 
+- name: UFW - Ensure ufw is set to allowed for given tcp ports
+  community.general.ufw:
+    rule: allow
+    port: "{{ item }}"
+    proto: tcp
+  loop: "{{ ufw_allowed_tcp_port }}"
+
 - name: UFW - Ensure ufw is enabled
   community.general.ufw:
     state: enabled

@@ -2,17 +2,23 @@
 - name: Install & Configure
   hosts: service_hosts
   become: yes
-  gather_facts: true
+  gather_facts: false
   vars:
     ansible_user: root
-    service_type: reverseproxy
   vars_files:
     - vars/default.yaml
 
   tasks:
+    - name: Wait for system to become reachable
+      wait_for_connection:
+        timeout: 120
+
+    - name: Gather facts 
+      setup:
+
     - name: Pre configure host
       import_role:
-        name: ../../commons/ansible/roles/host_pre_configure
+        name: "{{ playbook_dir }}/../../../commons/ansible/roles/host_pre_configure"
       vars:
         service_name: ngnix-container
 
@@ -28,7 +34,7 @@
 
     - name: Pre configure host
       import_role:
-        name: ../../commons/ansible/roles/host_configure_ufw_firewall
+        name: "{{ playbook_dir }}/../../../commons/ansible/roles/host_configure_ufw_firewall"
       vars:
         ufw_allowed_apps: ['Nginx Full']
 

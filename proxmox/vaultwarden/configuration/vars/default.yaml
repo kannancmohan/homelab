@@ -1,0 +1,3 @@
+vault_temp_dir: /tmp/vaultwarden
+vault_opt_dir: /opt/vaultwarden
+vault_lib_dir: /var/lib/vaultwarden

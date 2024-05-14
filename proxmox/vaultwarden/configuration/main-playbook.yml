@@ -30,82 +30,82 @@
         # owner: root
         # group: root
         # mode: 0775
-      loop: ["{{ ansible_user_dir }}/source/vaultwarden", "/var/lib/vaultwarden/data"]
+      loop: ["{{ vault_temp_dir }}", "{{ vault_opt_dir }}", "{{ vault_lib_dir }}/data"]
 
     - name: Ensure necessary packages are installed
       ansible.builtin.apt:
         name: "{{ item }}"
         state: present
         update_cache: true
-      loop: [build-essential,git,pkg-config,libssl-dev,libsqlite3-dev]
+      loop: [wget]
 
-    - name: Install Rust & Cargo
-      ansible.builtin.apt:
-        name: "{{ item }}"
+    - name: Get docker-image-extract script
+      ansible.builtin.get_url:
+        url: https://raw.githubusercontent.com/jjlin/docker-image-extract/main/docker-image-extract
+        dest: "{{ vault_temp_dir }}/docker-image-extract"
+        mode: '0766'
+    
+    - name: Extract the vaultwarden docker image
+      ansible.builtin.command: "{{ vault_temp_dir }}/docker-image-extract -o {{ vault_temp_dir }}/output vaultwarden/server:latest"
+      changed_when: true
+
+    - name: Create group vaultwarden
+      ansible.builtin.group:
+        name: "vaultwarden"
         state: present
-        update_cache: yes
-        cache_valid_time: 3600
-      loop: [rustc, cargo]
 
-    - name: Git clone vaultwarden
-      ansible.builtin.git:
-        repo: https://github.com/dani-garcia/vaultwarden.git
-        dest: "{{ ansible_user_dir }}/source/vaultwarden"
-        version: "1.30.5"
+    - name: Create 'vaultwarden' user and group
+      ansible.builtin.user:
+        name: vaultwarden
+        groups: vaultwarden
+        # create_home: no
+        # append: yes
+        # shell: /sbin/nologin
+        state: present
 
-    - name: Building vaultwarden from source
-      ansible.builtin.shell: cargo build --features sqlite --release
-      args:
-        chdir: "{{ ansible_user_dir }}/source/vaultwarden"
+    - name: Change file ownership, group for /var/lib/vaultwarden
+      ansible.builtin.file:
+        path: "{{ vault_lib_dir }}"
+        owner: vaultwarden
+        group: vaultwarden
+        # mode: '0644'
 
-    # - name: This command will change the working directory to somedir/ and will only run when somedir/somelog.txt doesn't exist
-    #   ansible.builtin.shell: somescript.sh >> somelog.txt
-    #   args:
-    #     chdir: somedir/
-    #     creates: somelog.txt
+    - name: Copy extracted vaultwarden files to destination
+      ansible.builtin.copy:
+        src: "{{ item.src }}"
+        dest: "{{ item.dest }}"
+        remote_src: true
+        # owner: "{{ ansible_user }}"
+        # group: "{{ ansible_user }}"
+        # mode: "0755"
+      with_items:
+        - { src: "{{ vault_temp_dir }}/output/vaultwarden", dest: "{{ vault_opt_dir }}" }
+        - { src: "{{ vault_temp_dir }}/output/web-vault", dest: "{{ vault_lib_dir }}" }
 
-    - name: Gather the package facts
-      ansible.builtin.package_facts:
-        manager: auto
+    - name: Copy vaultwarden .env /var/lib/vaultwarden
+      ansible.builtin.template:
+          src: templates/.env.j2
+          dest: "{{ vault_lib_dir }}/.env"
+          # owner: root
+          # group: root
+          mode: '0644'
 
-    # - name: "Check for Node.JS"
-    #   debug:
-    #     msg: "{{ ansible_facts.packages  }}"
-      # when: "'nodejs' not in ansible_facts.packages"
+    - name: Copy vaultwarden service file to /etc/systemd/system/vaultwarden.service
+      ansible.builtin.template:
+        src: templates/vaultwarden.service.j2
+        dest: /etc/systemd/system/vaultwarden.service
+        # owner: root
+        # group: root
+        mode: '0644'
 
+    - name: Start vaultwarden service
+      ansible.builtin.systemd:
+        name: vaultwarden
+        daemon_reload: true
+        enabled: true
+        state: restarted
 
-    # - name: Check if Rust is already installed
-    #   stat:
-    #     path: "{{ ansible_user_dir }}/.cargo/bin/rustup"
-    #   register: rust_installed
-
-    # - name: Download installer
-    #   get_url:
-    #     dest: /tmp/rustup-init.sh
-    #     mode: 0755
-    #     url: https://sh.rustup.rs
-    #   when: not rust_installed.stat.exists
-
-    # - name: Execute rustup-init.sh
-    #   shell: /tmp/rustup-init.sh -y
-    #   when: not rust_installed.stat.exists
-
-    # - name: Remove rustup-init.sh
-    #   file:
-    #     path: /tmp/rustup-init.sh
-    #     state: absent
-
-    # - name: Create necessary directory for vaultwarden
-    #   ansible.builtin.file:
-    #     path: "{{ item }}"
-    #     state: directory
-    #     recurse: yes
-    #     mode: '0755'
-    #   loop:
-    #     - /root/caddy/go
-
-    # - name: Apply ufw settings
-    #   import_role:
-    #     name: "{{ playbook_dir }}/../../../commons/ansible/roles/host_configure_ufw_firewall"
-    #   vars:
-    #     ufw_allowed_tcp_port: [443,80]
+    - name: Delete temp directory
+      ansible.builtin.file:
+        state: absent
+        path: "{{ vault_temp_dir }}"

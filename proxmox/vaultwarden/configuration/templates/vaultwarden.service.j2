@@ -1,7 +1,8 @@
 [Unit]
 Description=Bitwarden Server (Rust Edition)
 Documentation=https://github.com/dani-garcia/vaultwarden
-After=network.target
+After=network.target network-online.target
+Requires=network-online.target
 
 [Service]
 User=vaultwarden

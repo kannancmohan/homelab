@@ -37,7 +37,7 @@
         name: "{{ item }}"
         state: present
         update_cache: true
-      loop: [wget]
+      loop: [wget, libmariadb-dev, libpq-dev]
 
     - name: Get docker-image-extract script
       ansible.builtin.get_url:
@@ -68,6 +68,7 @@
         path: "{{ vault_lib_dir }}"
         owner: vaultwarden
         group: vaultwarden
+        recurse: yes
         # mode: '0644'
 
     - name: Copy extracted vaultwarden files to destination
@@ -77,7 +78,7 @@
         remote_src: true
         # owner: "{{ ansible_user }}"
         # group: "{{ ansible_user }}"
-        # mode: "0755"
+        mode: "0755"
       with_items:
         - { src: "{{ vault_temp_dir }}/output/vaultwarden", dest: "{{ vault_opt_dir }}" }
         - { src: "{{ vault_temp_dir }}/output/web-vault", dest: "{{ vault_lib_dir }}" }

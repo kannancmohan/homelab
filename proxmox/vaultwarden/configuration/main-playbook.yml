@@ -1,0 +1,111 @@
+---
+- name: Install & Configure
+  hosts: service_hosts
+  become: yes
+  gather_facts: false
+  vars:
+    ansible_user: root
+  vars_files:
+    - vars/default.yaml
+
+  tasks:
+    - name: Wait for system to become reachable
+      wait_for_connection:
+        timeout: 120
+
+    - name: Gather facts 
+      setup:
+
+    - name: Pre configure host
+      import_role:
+        name: "{{ playbook_dir }}/../../../commons/ansible/roles/host_pre_configure"
+      vars:
+        host_name: vaultwarden-container
+
+    - name: Ensure necessary directories are created
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        recurse: yes
+        # owner: root
+        # group: root
+        # mode: 0775
+      loop: ["{{ ansible_user_dir }}/source/vaultwarden", "/var/lib/vaultwarden/data"]
+
+    - name: Ensure necessary packages are installed
+      ansible.builtin.apt:
+        name: "{{ item }}"
+        state: present
+        update_cache: true
+      loop: [build-essential,git,pkg-config,libssl-dev,libsqlite3-dev]
+
+    - name: Install Rust & Cargo
+      ansible.builtin.apt:
+        name: "{{ item }}"
+        state: present
+        update_cache: yes
+        cache_valid_time: 3600
+      loop: [rustc, cargo]
+
+    - name: Git clone vaultwarden
+      ansible.builtin.git:
+        repo: https://github.com/dani-garcia/vaultwarden.git
+        dest: "{{ ansible_user_dir }}/source/vaultwarden"
+        version: "1.30.5"
+
+    - name: Building vaultwarden from source
+      ansible.builtin.shell: cargo build --features sqlite --release
+      args:
+        chdir: "{{ ansible_user_dir }}/source/vaultwarden"
+
+    # - name: This command will change the working directory to somedir/ and will only run when somedir/somelog.txt doesn't exist
+    #   ansible.builtin.shell: somescript.sh >> somelog.txt
+    #   args:
+    #     chdir: somedir/
+    #     creates: somelog.txt
+
+    - name: Gather the package facts
+      ansible.builtin.package_facts:
+        manager: auto
+
+    # - name: "Check for Node.JS"
+    #   debug:
+    #     msg: "{{ ansible_facts.packages  }}"
+      # when: "'nodejs' not in ansible_facts.packages"
+
+
+    # - name: Check if Rust is already installed
+    #   stat:
+    #     path: "{{ ansible_user_dir }}/.cargo/bin/rustup"
+    #   register: rust_installed
+
+    # - name: Download installer
+    #   get_url:
+    #     dest: /tmp/rustup-init.sh
+    #     mode: 0755
+    #     url: https://sh.rustup.rs
+    #   when: not rust_installed.stat.exists
+
+    # - name: Execute rustup-init.sh
+    #   shell: /tmp/rustup-init.sh -y
+    #   when: not rust_installed.stat.exists
+
+    # - name: Remove rustup-init.sh
+    #   file:
+    #     path: /tmp/rustup-init.sh
+    #     state: absent
+
+    # - name: Create necessary directory for vaultwarden
+    #   ansible.builtin.file:
+    #     path: "{{ item }}"
+    #     state: directory
+    #     recurse: yes
+    #     mode: '0755'
+    #   loop:
+    #     - /root/caddy/go
+
+    # - name: Apply ufw settings
+    #   import_role:
+    #     name: "{{ playbook_dir }}/../../../commons/ansible/roles/host_configure_ufw_firewall"
+    #   vars:
+    #     ufw_allowed_tcp_port: [443,80]

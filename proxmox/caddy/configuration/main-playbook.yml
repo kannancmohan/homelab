@@ -16,83 +16,93 @@
     - name: Gather facts 
       setup:
 
-    - name: Pre configure host
-      import_role:
-        name: "{{ playbook_dir }}/../../../commons/ansible/roles/host_pre_configure"
-      vars:
-        host_name: caddy-container
+    - name: Check if caddy is already installed
+      ansible.builtin.shell: >
+        caddy list-modules | grep -e "dns.providers.duckdns" | wc -l | awk '{if ($1 == 1) print "true"; else print "false";}'
+        || echo false
+      register: caddy_installed
+      changed_when: false
 
-    - name: Ensure necessary packages are installed
-      ansible.builtin.apt:
-        name: "{{ item }}"
-        state: present
-        update_cache: true
-      loop: [debian-keyring, debian-archive-keyring, apt-transport-https]
+    - name: Install caddy
+      when: caddy_installed.stdout | trim | lower == 'false'
+      block:
+        - name: Pre configure host
+          import_role:
+            name: "{{ playbook_dir }}/../../../commons/ansible/roles/host_pre_configure"
+          vars:
+            host_name: caddy-container
 
-    - name: Ensure necessary directories are created
-      ansible.builtin.file:
-        path: "{{ item }}"
-        state: directory
-        recurse: yes
-        owner: root
-        group: root
-        mode: 0775
-      loop:
-        - /root/caddy/go
-        - /usr/local/go
-        - /etc/caddy/www
+        - name: Ensure necessary packages are installed
+          ansible.builtin.apt:
+            name: "{{ item }}"
+            state: present
+            update_cache: true
+          loop: [debian-keyring, debian-archive-keyring, apt-transport-https]
 
-    - name: Download Go installer
-      ansible.builtin.get_url:
-        url: https://golang.org/dl/go{{ GO_VERSION }}.linux-amd64.tar.gz
-        dest: /root/caddy/go{{ GO_VERSION }}.linux-amd64.tar.gz
+        - name: Ensure necessary directories are created
+          ansible.builtin.file:
+            path: "{{ item }}"
+            state: directory
+            recurse: yes
+            owner: root
+            group: root
+            mode: 0775
+          loop:
+            - /root/caddy/go
+            - /usr/local/go
+            - /etc/caddy/www
 
-    - name: Unzip Go installer to /usr/local/
-      ansible.builtin.unarchive:
-        src: /root/caddy/go{{ GO_VERSION }}.linux-amd64.tar.gz
-        dest: /usr/local/
-        remote_src: true
+        - name: Download Go installer
+          ansible.builtin.get_url:
+            url: https://golang.org/dl/go{{ GO_VERSION }}.linux-amd64.tar.gz
+            dest: /root/caddy/go{{ GO_VERSION }}.linux-amd64.tar.gz
 
-    - name: Install XCaddy
-      ansible.builtin.shell: go install github.com/caddyserver/xcaddy/cmd/xcaddy@latest
-      environment:
-        PATH: '/usr/local/go/bin:$PATH'
-        GOROOT: '/usr/local/go'
-        GOPATH: '/root/caddy/go'
+        - name: Unzip Go installer to /usr/local/
+          ansible.builtin.unarchive:
+            src: /root/caddy/go{{ GO_VERSION }}.linux-amd64.tar.gz
+            dest: /usr/local/
+            remote_src: true
 
-    - name: Build caddy with plugins(duckdns)
-      ansible.builtin.shell: /root/caddy/go/bin/xcaddy build --with github.com/caddy-dns/duckdns@latest
-      environment:
-        PATH: '/usr/local/go/bin:$PATH'
-        GOROOT: '/usr/local/go'
-        GOPATH: '/root/caddy/go'
+        - name: Install XCaddy
+          ansible.builtin.shell: go install github.com/caddyserver/xcaddy/cmd/xcaddy@latest
+          environment:
+            PATH: '/usr/local/go/bin:$PATH'
+            GOROOT: '/usr/local/go'
+            GOPATH: '/root/caddy/go'
 
-    - name: Copy caddy executable to /usr/local/bin
-      ansible.builtin.copy:
-        src: /root/caddy/caddy
-        dest: /usr/local/bin/caddy
-        owner: root
-        group: root
-        mode: '0755'
-        remote_src: true
+        - name: Build caddy with plugins(duckdns)
+          ansible.builtin.shell: "/root/caddy/go/bin/xcaddy build {{ CADDY_VERSION }} --with github.com/caddy-dns/duckdns@{{ DUCKDNS_CADDY_PLUGIN_VERSION }}"
+          environment:
+            PATH: '/usr/local/go/bin:$PATH'
+            GOROOT: '/usr/local/go'
+            GOPATH: '/root/caddy/go'
+
+        - name: Copy caddy executable to /usr/local/bin
+          ansible.builtin.copy:
+            src: /root/caddy/caddy
+            dest: /usr/local/bin/caddy
+            owner: root
+            group: root
+            mode: '0755'
+            remote_src: true
+
+        - name: Copy static files to /etc/caddy/www
+          ansible.builtin.template:
+            src: templates/index.html.j2
+            dest: /etc/caddy/www/index.html
+
+        - name: Copy caddy service file to /etc/systemd/system/caddy.service
+          ansible.builtin.template:
+            src: templates/caddy.service.j2
+            dest: /etc/systemd/system/caddy.service
+            owner: root
+            group: root
+            mode: '0644'
 
     - name: Copy CaddyFile to /etc/caddy/Caddyfile
       ansible.builtin.template:
         src: templates/Caddyfile.j2
         dest: /etc/caddy/Caddyfile
-
-    - name: Copy static files to /etc/caddy/www
-      ansible.builtin.template:
-        src: templates/index.html.j2
-        dest: /etc/caddy/www/index.html
-
-    - name: Copy caddy service file to /etc/systemd/system/caddy.service
-      ansible.builtin.template:
-        src: templates/caddy.service.j2
-        dest: /etc/systemd/system/caddy.service
-        owner: root
-        group: root
-        mode: '0644'
 
     - name: Start caddy service
       ansible.builtin.systemd:

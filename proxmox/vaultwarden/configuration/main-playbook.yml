@@ -58,9 +58,9 @@
       ansible.builtin.user:
         name: vaultwarden
         groups: vaultwarden
-        # create_home: no
-        # append: yes
-        # shell: /sbin/nologin
+        create_home: no
+        append: true # Whether or not to append the user to groups.
+        shell: /sbin/nologin
         state: present
 
     - name: Change file ownership, group for /var/lib/vaultwarden
@@ -76,14 +76,12 @@
         src: "{{ item.src }}"
         dest: "{{ item.dest }}"
         remote_src: true
-        # owner: "{{ ansible_user }}"
-        # group: "{{ ansible_user }}"
         mode: "0755"
       with_items:
         - { src: "{{ vault_temp_dir }}/output/vaultwarden", dest: "{{ vault_opt_dir }}" }
         - { src: "{{ vault_temp_dir }}/output/web-vault", dest: "{{ vault_lib_dir }}" }
 
-    - name: Copy vaultwarden .env /var/lib/vaultwarden
+    - name: Copy vaultwarden .env template to /var/lib/vaultwarden
       ansible.builtin.template:
           src: templates/.env.j2
           dest: "{{ vault_lib_dir }}/.env"
@@ -91,7 +89,7 @@
           # group: root
           mode: '0644'
 
-    - name: Copy vaultwarden service file to /etc/systemd/system/vaultwarden.service
+    - name: Copy service template to /etc/systemd/system/vaultwarden.service
       ansible.builtin.template:
         src: templates/vaultwarden.service.j2
         dest: /etc/systemd/system/vaultwarden.service
@@ -110,3 +108,9 @@
       ansible.builtin.file:
         state: absent
         path: "{{ vault_temp_dir }}"
+
+    - name: Apply ufw settings
+      import_role:
+        name: "{{ playbook_dir }}/../../../commons/ansible/roles/host_configure_ufw_firewall"
+      vars:
+        ufw_allowed_tcp_port: ["{{ vaultwarden_port }}"]

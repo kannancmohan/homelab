@@ -192,6 +192,8 @@ user_rules:
   - '||grafana.com^$client=''192.168.0.61'''
   - '||grafana.com.io^$client=''192.168.0.61'''
   - '||stats.grafana.org.io^$client=''192.168.0.61'''
+  - '@@||www.duckdns.org^$important'
+  - '||passbolt.pdev.local^$important'
   - ""
 dhcp:
   enabled: false
@@ -232,6 +234,10 @@ filtering:
   rewrites:
     - domain: '*.dev.local'
       answer: 192.168.0.61
+    - domain: '*.kcmeu.duckdns.org'
+      answer: 192.168.0.22
+    - domain: kcmeu.duckdns.org
+      answer: 192.168.0.22
   safebrowsing_cache_size: 1048576
   safesearch_cache_size: 1048576
   parental_cache_size: 1048576

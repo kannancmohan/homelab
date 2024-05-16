@@ -17,7 +17,7 @@ provider "proxmox" {
 }
 
 module "container" {
-  source                             = "../../container_provisioning/terraform_modules/proxmox_core_container"
+  source                             = "../../../commons/terraform/modules/proxmox/container_provisioning"
   count                              = length(var.ct_ip_addr)
   proxmox_node_name                  = var.proxmox_node_name
   proxmox_node_template_datastore_id = var.proxmox_node_template_datastore_id

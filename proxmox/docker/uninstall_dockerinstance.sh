@@ -1,3 +1,3 @@
 #!/bin/bash
 
-terraform -chdir=./dockerinstance/vm_provisioning destroy --auto-approve
+terraform -chdir=./dockerinstance/provisioning destroy --auto-approve

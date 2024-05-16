@@ -17,7 +17,7 @@ provider "proxmox" {
 }
 
 module "worker" {
-  source                        = "../../../vm_provisioning/terraform_modules/proxmox_single_vm"
+  source                        = "../../../../commons/terraform/modules/proxmox/vm_provisioning/single_vm"
   proxmox_node_name             = var.proxmox_node_name
   proxmox_node_iso_datastore_id = var.proxmox_node_iso_datastore_id
   local_machine_ssh_key         = var.local_machine_ssh_key

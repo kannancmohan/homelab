@@ -1,0 +1,54 @@
+---
+- name: Install & Configure
+  hosts: service_hosts
+  become: yes
+  gather_facts: false
+  vars:
+    ansible_user: root
+  # vars_files:
+  #   - vars/default.yaml
+
+
+  tasks:
+    - name: Wait for system to become reachable
+      wait_for_connection:
+        timeout: 120
+
+    - name: Gather facts 
+      setup:
+
+    - name: Pre configure host
+      import_role:
+        name: "{{ playbook_dir }}/../../../commons/ansible/roles/host_pre_configure"
+      vars:
+        host_name: adguard-container
+
+    - name: Ensure necessary directories are created
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        recurse: yes
+        # owner: root
+        # group: root
+        # mode: 0775
+      loop: ["/opt/AdGuardHome"]
+
+    # - name: Ensure necessary packages are installed
+    #   ansible.builtin.apt:
+    #     name: "{{ item }}"
+    #     state: present
+    #     update_cache: true
+    #   loop: [snapd]
+
+    - name: Download Adguard installer
+      ansible.builtin.get_url:
+        url: https://github.com/AdguardTeam/AdGuardHome/releases/download/{{ ADGUARD_VERSION }}/AdGuardHome_linux_amd64.tar.gz
+        checksum: sha256:https://github.com/AdguardTeam/AdGuardHome/releases/download/{{ ADGUARD_VERSION }}/checksums.txt
+        dest: /temp/AdGuardHome_linux_amd64.tar.gz
+
+    - name: Unzip Go installer to /usr/local/
+      ansible.builtin.unarchive:
+        src: /temp/AdGuardHome_linux_amd64.tar.gz
+        dest: /opt/AdGuardHome
+        remote_src: true
+

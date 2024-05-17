@@ -1,13 +1,12 @@
-proxmox_node_name                 = "node1-home-network"
-proxmox_node_iso_datastore_id     = "local"
-proxmox_node_default_datastore_id = "local-lvm"
+proxmox_node_name                  = "node1-home-network"
+proxmox_node_template_datastore_id = "local"
+proxmox_node_default_datastore_id  = "local-lvm"
 
-# vm variables
-vm_name       = "adguard-home-vm"
-vm_id         = 121
-vm_ip_addr    = "192.168.0.21"
-vm_gateway_ip = "192.168.0.1"
-vm_cores      = 1
-vm_memory     = 2048
-vm_disk_size  = 15
-vm_tags       = ["iac-tf", "os-ubuntu", "service-type-dns", "service-name-adguard"]
+# ct variables
+ct_name       = "adguard-container"
+ct_ip_addr    = ["192.168.0.21"]
+ct_gateway_ip = "192.168.0.1"
+ct_cpu_cores  = 1
+ct_memory     = 1024
+ct_disk_size  = 10
+ct_tags       = ["iac-tf", "os-ubuntu", "service-type-dns", "service-name-adguard"]

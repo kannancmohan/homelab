@@ -1,51 +1,82 @@
 ---
-- name: Install & Configure Adguard Home
+- name: Install & Configure
   hosts: service_hosts
   become: yes
   gather_facts: false
-  # vars_files:
-  #   - vars/default.yaml
-
+  vars:
+    ansible_user: root
+  vars_files:
+    - vars/default.yaml
 
   tasks:
-  - name: Set hostname
-    ansible.builtin.hostname:
-      name: "{{ host_name_prefix + ansible_host.split('.')[-1][-2:] }}"
+    - name: Wait for system to become reachable
+      wait_for_connection:
+        timeout: 120
 
-  - name: Install Adguard Home
-    community.general.snap:
-      name:
-        - adguard-home
+    - name: Gather facts 
+      setup:
 
-  - name: Make /etc/systemd/resolved.conf.d Directory
-    command: mkdir -p /etc/systemd/resolved.conf.d
+    - name: Pre configure host
+      import_role:
+        name: "{{ playbook_dir }}/../../../commons/ansible/roles/host_pre_configure"
+      vars:
+        host_name: adguard-container
 
-  - name: Create adguardhome.conf
-    copy:
-      dest: "/etc/systemd/resolved.conf.d/adguardhome.conf"
-      content: |
-        [Resolve]
-        DNS=127.0.0.1
-        DNSStubListener=no
+    - name: Ensure necessary directories are created
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        recurse: yes
+      loop: ["/opt/AdGuardHome","/temp/AdGuardHome"]
 
-  - name: Backup resolv.conf
-    command: mv /etc/resolv.conf /etc/resolv.conf.backup
+    - name: Disable internal DNS
+      ansible.builtin.lineinfile:
+        path: /etc/systemd/resolved.conf
+        regexp: "#DNSStubListener=yes"
+        line: "DNSStubListener=no"
+        backup: true
+      register: dns_disabled
 
-  - name: Create symbolic link to resolv.conf
-    command: ln -s /run/systemd/resolve/resolv.conf /etc/resolv.conf
+    - name: Restart systemd-resolved service
+      ansible.builtin.service:
+        name: systemd-resolved
+        state: restarted
+      when: dns_disabled is defined and dns_disabled.changed
 
-  - name: Restart systemd-resolved
-    command: systemctl reload-or-restart systemd-resolved
+    - name: Download Adguard installer
+      ansible.builtin.get_url:
+        url: https://github.com/AdguardTeam/AdGuardHome/releases/download/{{ ADGUARD_VERSION }}/AdGuardHome_linux_amd64.tar.gz
+        checksum: sha256:https://github.com/AdguardTeam/AdGuardHome/releases/download/{{ ADGUARD_VERSION }}/checksums.txt
+        dest: /temp/AdGuardHome_linux_amd64.tar.gz
 
-  - name: Copy AdGuard config file
-    ansible.builtin.template:
-      src: templates/adguard-home.config.j2
-      dest: /var/snap/adguard-home/current/AdGuardHome.yaml
-      # owner: "{{ ansible_user }}"
-      # group: "{{ ansible_user }}"
-      mode: "0644"
+    - name: Unzip Adguard installer
+      ansible.builtin.unarchive:
+        src: /temp/AdGuardHome_linux_amd64.tar.gz
+        dest: /temp
+        remote_src: true
 
-  - name: Restart AdGuard service
-    ansible.builtin.systemd_service:
-      name: snap.adguard-home.adguard-home.service
-      state: restarted
+    - name: Copy Adguard executable file and set permissions
+      ansible.builtin.copy:
+        src: /temp/AdGuardHome/AdGuardHome
+        dest: /opt/AdGuardHome/
+        remote_src: true
+        mode: '0755'
+
+    - name: Copy AdGuard config file
+      ansible.builtin.template:
+        src: templates/adguard-home.config.j2
+        dest: /opt/AdGuardHome/AdGuardHome.yaml
+
+    - name: Install Adguard
+      ansible.builtin.shell: /opt/AdGuardHome/AdGuardHome -s install
+
+    - name: Delete temp directory
+      ansible.builtin.file:
+        state: absent
+        path: "/temp/AdGuardHome"
+
+    - name: Apply ufw settings
+      import_role:
+        name: "{{ playbook_dir }}/../../../commons/ansible/roles/host_configure_ufw_firewall"
+      vars:
+        ufw_allowed_tcp_port: ["{{ adguard_port }}", "{{ adguard_dns_port }}"]

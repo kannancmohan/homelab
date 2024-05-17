@@ -2,7 +2,7 @@ terraform {
   required_providers {
     proxmox = {
       source  = "bpg/proxmox"
-      version = "0.47.0"
+      version = "0.55.1"
     }
   }
 }
@@ -16,23 +16,23 @@ provider "proxmox" {
   }
 }
 
-module "worker" {
-  source                        = "../../../commons/terraform/modules/proxmox/vm_provisioning/single_vm"
-  proxmox_node_name             = var.proxmox_node_name
-  proxmox_node_iso_datastore_id = var.proxmox_node_iso_datastore_id
-  local_machine_ssh_key         = var.local_machine_ssh_key
-  vm_default_user_name          = var.vm_default_user_name
-  vm_default_user_pwd           = var.vm_default_user_pwd
-  vm_id                         = var.vm_id
-  vm_name                       = var.vm_name
-  vm_ip_addr                    = var.vm_ip_addr
-  vm_gateway_ip                 = var.vm_gateway_ip
-  vm_cpu_cores                  = var.vm_cores
-  vm_memory                     = var.vm_memory
-  vm_disk_size                  = var.vm_disk_size
-  vm_tags                       = var.vm_tags
+module "container" {
+  source                             = "../../../commons/terraform/modules/proxmox/container_provisioning"
+  count                              = length(var.ct_ip_addr)
+  proxmox_node_name                  = var.proxmox_node_name
+  proxmox_node_template_datastore_id = var.proxmox_node_template_datastore_id
+  proxmox_node_default_datastore_id  = var.proxmox_node_default_datastore_id
+  local_machine_ssh_key              = var.local_machine_ssh_key
+  ct_default_user_pwd                = var.ct_default_user_pwd
+  ct_name                            = var.ct_name
+  ct_ip_addr                         = var.ct_ip_addr[count.index]
+  ct_gateway_ip                      = var.ct_gateway_ip
+  ct_cpu_cores                       = var.ct_cpu_cores
+  ct_memory                          = var.ct_memory
+  ct_disk_size                       = var.ct_disk_size
+  ct_tags                            = var.ct_tags
 }
 
-output "worker_vm_info" {
-  value = module.worker
+output "container_info" {
+  value = module.container
 }

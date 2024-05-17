@@ -18,11 +18,12 @@
     name: "{{ item }}"
     state: present
     update_cache: true
-  loop: "{{ packages_to_install}}"
+  loop: "{{ packages_to_install }}"
 
 - name: Ensure unwanted packages are uninstalled
   ansible.builtin.apt:
     name: "{{ item }}"
-    state: present
+    state: absent
+    autoremove: true
     update_cache: true
-  loop: "{{ packages_to_uninstall}}"
+  loop: "{{ packages_to_uninstall }}"

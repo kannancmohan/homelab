@@ -112,7 +112,6 @@ Automatically provision 3 vm's in proxmox with the following configuration
 
 ## License
 
-
 ## Acknowledgments
 
 * [Inspiration](https://blog.andreasm.io/2024/01/15/proxmox-with-opentofu-kubespray-and-kubernetes/)

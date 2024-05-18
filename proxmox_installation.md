@@ -49,3 +49,10 @@
 6.  Try ssh to the newly created proxmox node
 
     ```    ssh root@192.168.0.50     ```
+
+## Proxmox Upgrade 
+Upgrade via gui(node > updates) or use the following command
+```
+apt update && apt dist-upgrade -y
+```
+

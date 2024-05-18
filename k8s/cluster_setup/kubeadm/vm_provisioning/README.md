@@ -3,7 +3,7 @@
 ### Tools Version
 | Tools                             | Version       |
 | --------------------------------- |:-------------:|
-| Proxmox VE                        | 8.1.4         |
+| Proxmox VE                        | 8.2.2         |
 | Terraform                         | 1.7.4         |
 | Terraform provider 'bpg/proxmox'  | 0.47.0        |
 | OS for vm                         | Ubuntu 22.04  |

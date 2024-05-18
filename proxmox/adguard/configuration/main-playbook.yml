@@ -32,10 +32,13 @@
     - name: Disable internal DNS
       ansible.builtin.lineinfile:
         path: /etc/systemd/resolved.conf
-        regexp: "#DNSStubListener=yes"
-        line: "DNSStubListener=no"
+        regexp: "{{ item.regexp }}"
+        line: "{{ item.line }}"
         backup: true
       register: dns_disabled
+      loop:
+        - { regexp: '#DNS=', line: 'DNS=127.0.0.1' }
+        - { regexp: '#DNSStubListener=yes', line: 'DNSStubListener=no' }
 
     - name: Restart systemd-resolved service
       ansible.builtin.service:
@@ -79,4 +82,4 @@
       import_role:
         name: "{{ playbook_dir }}/../../../commons/ansible/roles/host_configure_ufw_firewall"
       vars:
-        ufw_allowed_tcp_port: ["{{ adguard_port }}", "{{ adguard_dns_port }}"]
+        ufw_allowed_ports: ["{{ adguard_port }}", "{{ adguard_dns_port }}"]

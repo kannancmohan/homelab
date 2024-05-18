@@ -113,4 +113,4 @@
       import_role:
         name: "{{ playbook_dir }}/../../../commons/ansible/roles/host_configure_ufw_firewall"
       vars:
-        ufw_allowed_tcp_port: ["{{ vaultwarden_port }}"]
+        ufw_allowed_ports: ["{{ vaultwarden_port }}"]

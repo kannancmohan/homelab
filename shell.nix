@@ -10,6 +10,7 @@ packages = with pkgs; [
     pkgs.argocd
     #pkgs.vaultwarden
 ];
+HISTCONTROL = "ignoreboth:erasedups";
 
 #KUBECONFIG = "~/.kube/config";
 

@@ -2,8 +2,6 @@
 - name: Update Proxmox
   hosts: all
   become: yes
-  vars:
-    ansible_user: root
   vars_files:
     - vars/default.yaml
 

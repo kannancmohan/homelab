@@ -1,0 +1,33 @@
+---
+- name: Update Proxmox
+  hosts: all
+  become: yes
+  vars:
+    ansible_user: root
+  vars_files:
+    - vars/default.yaml
+
+  tasks:
+    - name: Ensure any enterprise repositories is commented out
+      lineinfile:
+        dest: /etc/apt/sources.list.d/pve-enterprise.list
+        regexp: '^deb'
+        line: '#deb'
+        state: present
+        backup: yes
+
+    - name: Ensure ceph enterprise repositories is commented out
+      lineinfile:
+        dest: /etc/apt/sources.list.d/ceph.list
+        regexp: '^deb https://enterprise'
+        line: '#deb'
+        state: present
+        backup: yes
+
+    - name: Apt upgrade dist
+      ansible.builtin.apt:
+        update_cache: yes
+        upgrade: dist
+
+    - name: Reboot the machine
+      ansible.builtin.reboot:

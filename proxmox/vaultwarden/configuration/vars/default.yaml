@@ -2,3 +2,6 @@ vault_temp_dir: /tmp/vaultwarden
 vault_opt_dir: /opt/vaultwarden
 vault_lib_dir: /var/lib/vaultwarden
 vaultwarden_port: 8000
+vaultwarden_signups_allowed: true
+vaultwarden_org_creation_users: kannanmohanklm@gmail.com
+vaultwarden_smtp_from_email_id: kannanmohanklm@gmail.com

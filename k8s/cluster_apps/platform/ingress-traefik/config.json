@@ -1,0 +1,8 @@
+{
+    "app": {
+        "enabled": "true",
+        "name": "traefik",
+        "nameSpace": "traefik",
+        "syncWave": "-50"
+    }
+}

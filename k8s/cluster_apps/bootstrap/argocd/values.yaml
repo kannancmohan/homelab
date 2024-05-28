@@ -1,0 +1,81 @@
+## Helm chart values - https://github.com/argoproj/argo-helm/blob/main/charts/argo-cd/values.yaml
+argo-cd:
+  global:
+    env:
+      - name: TZ
+        value: Europe/ Berlin
+  #   domain: &host argocd.local.info
+  dex:
+    enabled: false
+  configs:
+    ### Argocd OIDC
+    cm:
+      # admin.enabled: "false"
+      url: https://argocd.dev.local
+      ## https://argo-cd.readthedocs.io/en/stable/operator-manual/user-management/#existing-oidc-provider
+      oidc.config: |
+        name: Dex
+        issuer: https://dex.dev.local
+        clientID: argocd-sso
+        clientSecret: $argocd-oidc-credential:clientSecret
+        requestedIDTokenClaims: {"groups": {"essential": true}}
+        requestedScopes: ["openid", "profile", "email", "groups"]
+      oidc.tls.insecure.skip.verify: true # skip self-signed certificate validation
+    rbac:
+      policy.default: role:readonly
+      # Policy rules are in the form: where <subject> can be role/user/group
+      #  p, subject, resource, action, object, effect
+      # Role definitions and bindings are in the form:
+      #  g, subject, inherited-subject
+      ## Make sure the below roles (administrator and users) are configured in your identity provider
+      policy.csv: |
+        g, administrator, role:admin
+        g, users, role:readonly
+      scopes: "[groups]"
+    ### Argocd OIDC ended
+    params:
+      server.insecure: true
+    secret:
+      argocdServerAdminPassword: "$2a$10$oRPU/09Terdo4pBYlCwSz.8S13d.vhjUjxv1uil0OM3IXc7tZOqV6"
+  server:
+    # extraArgs:
+    #   - --insecure
+    # Added based on https://kubito.dev/posts/enable-argocd-sync-wave-between-apps/
+    config:
+      # resource.ignoreResourceUpdatesEnabled: true
+      # resource.customizations.ignoreResourceUpdates.all: |
+      #   jsonPointers:
+      #     - /status
+      resource.customizations.health.argoproj.io_Application: |
+        hs = {}
+        hs.status = "Progressing"
+        hs.message = ""
+        if obj.status ~= nil then
+          if obj.status.health ~= nil then
+            hs.status = obj.status.health.status
+            if obj.status.health.message ~= nil then
+              hs.message = obj.status.health.message
+            end
+          end
+        end
+        return hs
+    ingress:
+      enabled: true
+      ingressClassName: traefik
+      annotations:
+        cert-manager.io/cluster-issuer: default-root-cert-issuer
+      hostname: &host argocd.dev.local
+      extraTls:
+        - secretName: argocd-server-tls
+          hosts:
+            - *host
+    metrics: &metrics
+      enabled: true
+      serviceMonitor:
+        enabled: true
+  controller:
+    metrics: *metrics
+  repoServer:
+    metrics: *metrics
+  redis:
+    metrics: *metrics

@@ -1,0 +1,8 @@
+{
+    "app": {
+        "enabled": "true",
+        "name": "cert-manager-generator",
+        "nameSpace": "cert-manager",
+        "syncWave": "-100"
+    }
+}

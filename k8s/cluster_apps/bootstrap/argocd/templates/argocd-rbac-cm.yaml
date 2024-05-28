@@ -1,0 +1,27 @@
+# apiVersion: v1
+# kind: ConfigMap
+# metadata:
+#   name: argocd-rbac-cm
+#   namespace: argocd
+#   labels:
+#     app.kubernetes.io/name: argocd-rbac-cm
+#     app.kubernetes.io/part-of: argocd
+# data:
+#   policy.csv: |
+#     p, role:qa,  applications, *, */*, allow
+#     p, role:dev, applications, *, */*, allow
+#     p, role:dev, projects, *, *, allow
+#     p, role:dev, repositories, *, *, allow
+#     g, admin, role:qa
+#     g, kannanmohanklm@gmail.com, role:dev
+#     g, qauser, role:qa
+#   # policy.csv: |
+#   #   p, role:readwrite, applications, get, */*, allow
+#   #   p, role:readwrite, applications, create, */*, allow
+#   #   p, role:readwrite, applications, delete, *, allow
+#   #   p, role:readexecute, applications, get, */*, allow
+#   #   p, role:readexecute, applications, sync, */*, allow
+#   #   g, admin@zitadellocal.com, role:readwrite
+#   #   g, kannanmohanklm@gmail.com, role:readexecute
+#   # policy.default: role:readonly
+#   # # scopes: '[groups, email]'

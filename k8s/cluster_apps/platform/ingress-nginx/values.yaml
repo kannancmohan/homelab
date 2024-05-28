@@ -1,0 +1,14 @@
+## Official configuration - https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/
+## Helm chart values - https://github.com/kubernetes/ingress-nginx/blob/main/charts/ingress-nginx/values.yaml
+ingress-nginx:
+  controller:
+    admissionWebhooks:
+      timeoutSeconds: 30
+    metrics:
+      enabled: true
+      serviceMonitor:
+        enabled: true
+    # extraArgs:
+    #   --enable-ssl-passthrough
+  # tcp:
+  #   22: gitea/gitea-ssh:22

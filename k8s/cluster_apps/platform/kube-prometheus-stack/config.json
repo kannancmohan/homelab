@@ -1,0 +1,8 @@
+{
+    "app": {
+        "enabled": "true",
+        "name": "kube-prometheus-stack",
+        "nameSpace": "kube-prometheus-stack",
+        "syncWave": "0"
+    }
+}

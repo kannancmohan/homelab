@@ -1,0 +1,8 @@
+{
+    "app": {
+        "enabled": "false",
+        "name": "keycloak",
+        "nameSpace": "keycloak",
+        "syncWave": "0"
+    }
+}

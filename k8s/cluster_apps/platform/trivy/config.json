@@ -1,0 +1,8 @@
+{
+    "app": {
+        "enabled": "true",
+        "name": "trivy",
+        "nameSpace": "trivy",
+        "syncWave": "0"
+    }
+}

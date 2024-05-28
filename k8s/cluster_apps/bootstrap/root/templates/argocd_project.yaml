@@ -1,0 +1,24 @@
+{{- range $index, $project := .Values.argoProjects }}
+---
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: {{ $project.name }}
+  # namespace: {{ $.Release.Namespace }}
+spec:
+  description: {{ $project.name }}
+  destinations:
+    # - name: in-cluster
+    #   namespace: '*'
+    #   server: '*'
+    - namespace: '*'
+      server: '*'
+  sourceRepos:
+    - '*'
+  clusterResourceWhitelist:
+    - group: '*'
+      kind: '*'
+  namespaceResourceWhitelist:
+    - group: '*'
+      kind: '*'
+{{- end }}

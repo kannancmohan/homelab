@@ -1,0 +1,10 @@
+## Official configuration - https://cert-manager.io/docs/installation/configuring-components/
+## Helm chart values - https://github.com/cert-manager/cert-manager/blob/master/deploy/charts/cert-manager/values.yaml
+cert-manager:
+  installCRDs: true
+  enabled: true #custom property
+  certProvider: self_signed #custom property - expected values letsencrypt_duckdns/self_signed
+  prometheus:
+    enabled: true
+    servicemonitor:
+      enabled: true

@@ -1,0 +1,36 @@
+# Added for exposing metrics to prometheus 
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: "{{ .Release.Name }}-metrics-service"
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: "{{ .Release.Name }}-metrics-service"
+spec:
+  selector:
+    app.kubernetes.io/name: {{ .Release.Name }}
+  ports:
+  - name: metrics
+    port: 9100
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name:  traefik
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: traefik
+    release: kube-prometheus-stack
+spec:
+  jobLabel: traefik-metrics
+  selector:
+    matchLabels:
+      app: "{{ .Release.Name }}-metrics-service"
+  namespaceSelector:
+    matchNames:
+      - {{ .Release.Namespace }}
+  endpoints:
+    - port: metrics
+      path: /metrics
+      honorLabels: true

@@ -1,0 +1,6 @@
+## Official configuration - https://grafana.com/docs/loki/latest/configure/
+## Helm chart values - https://github.com/grafana/loki/blob/main/production/helm/loki/values.yaml
+loki-distributed:
+  enabled: true
+  serviceMonitor:
+    enabled: true

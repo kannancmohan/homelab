@@ -1,0 +1,8 @@
+apiVersion: v2
+name: dex
+version: 0.1.0
+dependencies:
+  - name: dex
+    version: 0.17.1
+    condition: dex.enabled
+    repository: https://charts.dexidp.io

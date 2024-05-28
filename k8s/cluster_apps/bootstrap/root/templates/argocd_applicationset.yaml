@@ -1,0 +1,80 @@
+{{- range $index, $appSet := .Values.argoApplicationSet }}
+---
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: {{ $appSet.name }}
+  namespace: {{ $.Release.Namespace }}
+spec:
+  # goTemplate: true
+  # goTemplateOptions: ["missingkey=error"]
+  generators:
+    - merge:
+        mergeKeys:
+          - values.repoPath
+        generators:
+          - git:
+              repoURL: '{{ $.Values.gitops.repo }}'
+              revision: '{{ $.Values.gitops.revision }}'
+              directories:
+                - path: '{{ $appSet.path }}/*'
+              values:
+                repoPath: '{{ `{{ path }}` }}'
+                appEnabled: 'true'
+                appName: '{{ `{{ path.basename }}` }}'
+                appNameSpace: '{{ `{{ path.basename }}` }}'
+                syncWave: "0"
+          - git:
+              repoURL: '{{ $.Values.gitops.repo }}'
+              revision: '{{ $.Values.gitops.revision }}'
+              files:
+                - path: '{{ $appSet.path }}/**/config.json'
+              values:
+                repoPath: '{{ `{{ path }}` }}'
+                appEnabled: '{{ `{{ app.enabled }}` }}'
+                appName: '{{ `{{ app.name }}` }}'
+                appNameSpace: '{{ `{{ app.nameSpace }}` }}'
+                syncWave: '{{ `{{ app.syncWave }}` }}'
+      selector:
+          matchExpressions:
+            - key: values.appEnabled
+              operator: In
+              values: ['true']
+  template:
+    metadata:
+      name: '{{ `{{values.appName}}` }}'
+      annotations:
+        argocd.argoproj.io/sync-wave: '{{ `{{values.syncWave}}` }}'
+    spec:
+      destination:
+        name: in-cluster
+        namespace: '{{ default `{{values.appNameSpace}}` $appSet.appNamespace }}'
+      project: '{{ default "default" $appSet.appProject }}'
+      source:
+        # https://argo-cd.readthedocs.io/en/latest/user-guide/multiple_sources/#helm-value-files-from-external-git-repository
+        helm:
+          valueFiles:
+            - $values/k8s/cluster_apps/apps-global-values.yaml
+        repoURL: {{ $.Values.gitops.repo }}
+        path: '{{ `{{ path }}` }}'
+        targetRevision: {{ $.Values.gitops.revision }}
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+          #allow_empty: true
+        retry:
+          limit: 10 # Maximum number of attempts for retrying a failed sync
+          backoff:
+            duration: 1m
+            factor: 2
+            maxDuration: 16m
+        syncOptions:
+          - CreateNamespace=true # will create the namespace specified in spec.destination.namespace if it doesn't exist
+          - ApplyOutOfSyncOnly=true # sync only out-of-sync resources
+          - ServerSideApply=true # If set to true, ArgoCD will use kubectl apply — server-side command to apply changes
+  templatePatch: |
+    {{`metadata:
+      labels:
+        app.kubernetes.io/name: {{ values.appName }}`}}
+{{- end }}

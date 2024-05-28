@@ -1,0 +1,47 @@
+## Helm chart values - https://github.com/traefik/traefik-helm-chart/blob/master/traefik/values.yaml
+traefik:
+  additionalArguments:
+    - "--providers.kubernetesingress=true"
+    ## Added to fix agrocd stuck at "progressing" - https://community.traefik.io/t/traefik-ingress-not-getting-loadbalancer-ip/17445
+    - "--providers.kubernetesingress.ingressendpoint.publishedservice=traefik/traefik"
+
+  logs:
+    general:
+      level: DEBUG
+    access:
+      enabled: true
+      format: json
+      filePath: /var/log/traefik/access.log
+      fields:
+        headers:
+          defaultmode: keep
+      # filters:
+
+  deployment:
+    # replicas: 3
+    ### uncomment to enable container that tails access log
+    # additionalContainers:
+    #   - name: tail-accesslogs
+    #     image: busybox
+    #     args: [ "/bin/sh", "-c", "tail -n+1 -F /var/log/traefik/access.log" ]
+    #     volumeMounts:
+    #       - name: logs
+    #         mountPath: /var/log/traefik
+    additionalVolumes:
+    - name: logs
+  additionalVolumeMounts:
+  - name: logs
+    mountPath: /var/log/traefik
+  ingressRoute:
+    dashboard:
+      enabled: true
+      matchRule: PathPrefix(`/dashboard`) || PathPrefix(`/api`)
+      # matchRule: (Host(`traefik.dev.local`) && PathPrefix(`/dashboard`)) || (Host(`traefik.dev.local`) && PathPrefix(`/api`))
+      # tls:
+      #   certResolver: default-root-cert-issuer
+      #   secretName: traefik-server-tls
+    # healthcheck:
+    #   enabled: false
+  # metrics:
+  #   prometheus:
+  #     entryPoint: metrics

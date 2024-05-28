@@ -1,0 +1,16 @@
+## Helm chart values - https://github.com/external-secrets/external-secrets/blob/main/deploy/charts/external-secrets/values.yaml
+external-secrets:
+  installCRDs: true
+  serviceMonitor:
+    enabled: true
+# extraVolumeMounts:
+#   - mountPath: /etc/ssl/certs/custom-root.pem
+#     subPath: custom-root.pem
+#     name: root-ca
+# extraVolumes:
+#   - name: root-ca
+#     secret:
+#       secretName: custom-root-ca
+#       items:
+#         - key: "ca.crt"
+#           path: "custom-root.pem"

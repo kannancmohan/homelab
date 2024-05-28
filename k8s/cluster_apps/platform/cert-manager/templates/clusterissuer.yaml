@@ -1,0 +1,72 @@
+{{- if index .Values "cert-manager" "enabled" }} # using index function as per https://github.com/helm/helm/issues/2192
+{{- if eq (index .Values "cert-manager" "certProvider") "letsencrypt_duckdns" }}
+---
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: default-root-cert-issuer
+spec:
+  acme:
+    server: https://acme-v02.api.letsencrypt.org/directory
+    email: kannanmohanklm@gmail.com
+    #preferredChain: "ISRG Root X1"
+    privateKeySecretRef:
+      name: default-root-cert-issuer
+    solvers:
+    - dns01:
+        webhook:
+          config:
+            apiTokenSecretRef:
+              name: duckdns-credential
+              key: token
+          groupName: acme.example.duckdns.org
+          solverName: duckdns
+{{- end }}
+{{- if eq (index .Values "cert-manager" "certProvider") "self_signed" }}
+---
+# self-signed certificate issuer 
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: self-signed-cert-issuer
+  namespace: {{ .Release.Namespace }}
+spec:
+  selfSigned: {}
+
+---
+# self-signed certificate 
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: self-signed-tls-cert
+  namespace: {{ .Release.Namespace }}
+spec:
+  isCA: true
+  commonName: self-signed-tls-cert
+  secretName: self-signed-tls-cert # certificate are stored as secret in k8s
+  duration: 43800h # 5y
+  issuerRef:
+    name: self-signed-cert-issuer
+    kind: Issuer
+    group: cert-manager.io
+  privateKey:
+    algorithm: ECDSA
+    size: 256
+  subject:
+    organizations:
+      - ACME Inc.
+    organizationalUnits:
+      - Widgets
+
+---
+# Create an Issuer that uses the above generated CA certificate to issue certs
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: default-root-cert-issuer
+  namespace: {{ .Release.Namespace }}
+spec:
+  ca:
+    secretName: self-signed-tls-cert
+{{- end }}
+{{- end }}

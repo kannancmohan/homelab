@@ -1,0 +1,91 @@
+## Official configuration - https://zitadel.com/docs/self-hosting/manage/configure
+## Helm chart values -https://github.com/zitadel/zitadel-charts/blob/main/charts/zitadel/values.yaml
+zitadel:
+  enabled: true
+  replicaCount: 1
+  zitadel:
+    # masterkey: MasterkeyNeedsToHave32Characters
+    masterkeySecretName: zitadel-credential
+    # configSecretName: zitadel-config-secret
+    configmapConfig:
+      ExternalPort: 443
+      ExternalSecure: true
+      ExternalDomain: "zitadel.dev.local"
+      TLS:
+        Enabled: false
+      Database:
+        Postgres:
+          MaxOpenConns: 20
+          MaxIdleConns: 10
+          MaxConnLifetime: 30m
+          MaxConnIdleTime: 5m
+          User:
+            SSL:
+              Mode: require
+          Admin:
+            SSL:
+              Mode: require
+  env:
+    - name: "ZITADEL_DATABASE_POSTGRES_HOST"
+      valueFrom:
+        secretKeyRef:
+          name: zitadel-credential
+          key: dbhost
+    - name: "ZITADEL_DATABASE_POSTGRES_PORT"
+      valueFrom:
+        secretKeyRef:
+          name: zitadel-credential
+          key: dbport
+    - name: "ZITADEL_DATABASE_POSTGRES_DATABASE"
+      valueFrom:
+        secretKeyRef:
+          name: zitadel-credential
+          key: dbname
+    - name: "ZITADEL_DATABASE_POSTGRES_USER_USERNAME"
+      valueFrom:
+        secretKeyRef:
+          name: zitadel-credential
+          key: dbuser
+    - name: "ZITADEL_DATABASE_POSTGRES_USER_PASSWORD"
+      valueFrom:
+        secretKeyRef:
+          name: zitadel-credential
+          key: dbuser_password
+    - name: "ZITADEL_DATABASE_POSTGRES_ADMIN_USERNAME"
+      valueFrom:
+        secretKeyRef:
+          name: zitadel-credential
+          key: dbadmin
+    - name: "ZITADEL_DATABASE_POSTGRES_ADMIN_PASSWORD"
+      valueFrom:
+        secretKeyRef:
+          name: zitadel-credential
+          key: dbadmin_password
+    - name: ZITADEL_FIRSTINSTANCE_ORG_HUMAN_USERNAME
+      valueFrom:
+        secretKeyRef:
+          name: zitadel-credential
+          key: zitadel_first_user
+    - name: ZITADEL_FIRSTINSTANCE_ORG_HUMAN_PASSWORD
+      valueFrom:
+        secretKeyRef:
+          name: zitadel-credential
+          key: zitadel_first_pwd
+  ingress:
+    enabled: true
+    className: traefik
+    annotations:
+      cert-manager.io/cluster-issuer: default-root-cert-issuer
+    hosts:
+      - host: &host zitadel.dev.local
+        paths:
+          - path: /
+            pathType: Prefix
+    tls:
+      - secretName: zitadel-server-tls
+        hosts:
+          - *host
+  metrics:
+    enabled: true
+    serviceMonitor:
+      enabled: true

@@ -1,0 +1,32 @@
+## Official configuration - 
+## Helm chart values - https://github.com/bitnami/charts/blob/main/bitnami/keycloak/values.yaml
+keycloak:
+  enabled: true
+  metrics:
+    serviceMonitor:
+      enabled: true
+  auth:
+    adminUser: admin
+    existingSecret: keycloak-credentials-secret
+    passwordSecretKey: admin-password
+  postgresql:
+    enabled: true
+    auth:
+      username: bn_keycloak
+      database: bitnami_keycloak
+      existingSecret: keycloak-credentials-secret
+      secretKeys:
+        adminPasswordKey: postgres-password
+        userPasswordKey: password
+        replicationPasswordKey: password
+    architecture: standalone
+  ingress:
+    enabled: true
+    ingressClassName: traefik
+    annotations:
+      cert-manager.io/cluster-issuer: default-root-cert-issuer
+    hostname: &host identity.dev.local
+    extraTls:
+      - secretName: keycloak-server-tls
+        hosts:
+          - *host

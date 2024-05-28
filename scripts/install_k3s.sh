@@ -30,9 +30,9 @@ if [ "${INGRESS_CONTROLLER}" = "nginx" ] || [ "$DISABLE_K3S_OOTB_TRAEFIK" == tru
     ADDITIONAL_CONFIG="${ADDITIONAL_CONFIG} --disable=traefik --disable=metrics-server"
 fi
 
-echo $ADDITIONAL_CONFIG
+# echo $ADDITIONAL_CONFIG
 export K3S_CP_ADDITIONAL_CONFIG="$ADDITIONAL_CONFIG"
 
-terraform -chdir=../k8s/cluster_setup/k3s/vm_provisioning apply --auto-approve &&
+terraform -chdir=k8s/cluster_setup/k3s/vm_provisioning apply --auto-approve &&
 
-ansible-playbook -i ../k8s/cluster_setup/k3s/k8s_configuration/inventories/proxmox-inventory.proxmox.yml ../k8s/cluster_setup/k3s/k8s_configuration/main-playbook.yml
+ansible-playbook -i k8s/cluster_setup/k3s/k8s_configuration/inventories/proxmox-inventory.proxmox.yml k8s/cluster_setup/k3s/k8s_configuration/main-playbook.yml

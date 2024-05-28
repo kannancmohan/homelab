@@ -206,6 +206,7 @@ Trivy is used for security scanning and Grafana to visualize it
     </tr>
 </table>
 
+### All services
 <table style='font-family:"Courier New", Courier, monospace; font-size:100%'>
     <tr>
         <th colspan="3">Cluster Services</th>
@@ -269,9 +270,15 @@ Trivy is used for security scanning and Grafana to visualize it
 
 ### Steps to run
 
-1. To provision the vm, check steps mentioned [here](/proxmox/vm-provisioning/README.md#executing-the-provisioning) 
+1. To provision vm's and install k3s
+```
+sh scripts/install_k3s.sh 
+```
 
-2. To configure vm, check steps mentioned [here](/proxmox/k8s-environment-setup/ansible/README.md#steps-to-execute) 
+2. To bootstrap k8s
+```
+sh scripts/bootstrap_k8s.sh 
+```
 
 ## Authors
 

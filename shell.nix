@@ -8,7 +8,10 @@ packages = with pkgs; [
     pkgs.kubectl
     pkgs.kubernetes-helm
     pkgs.argocd
+    pkgs.k9s
     #pkgs.vaultwarden
+    #pkgs.prometheus-alertmanager
+    #pkgs.postgresql_jit
 ];
 HISTCONTROL = "ignoreboth:erasedups";
 

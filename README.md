@@ -280,6 +280,17 @@ sh scripts/install_k3s.sh
 sh scripts/bootstrap_k8s.sh 
 ```
 
+### Steps to uninstall k3s and destroy k8s vm's
+1. To uninstall k3s
+```
+sh scripts/uninstall_k3s.sh 
+```
+
+2. To destroy k8s vm's
+```
+sh scripts/destroy_k3s.sh 
+```
+
 ## Authors
 
 * kannan

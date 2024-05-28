@@ -1,5 +1,5 @@
 gitops:
-  repo: https://github.com/kannancmohan/argocd-test
+  repo: https://github.com/kannancmohan/homelab
   revision: main
 
 # argocd AppProject

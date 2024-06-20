@@ -291,6 +291,12 @@ sh scripts/uninstall_k3s.sh
 sh scripts/destroy_k3s.sh 
 ```
 
+### Step to generate new service using proxmox container template
+Executing the following command will prompt for service details and generates new service in 'proxmox' folder 
+```
+copier copy ./scripts/templates/proxmox_container_service ./proxmox
+```
+
 ## Authors
 
 * kannan

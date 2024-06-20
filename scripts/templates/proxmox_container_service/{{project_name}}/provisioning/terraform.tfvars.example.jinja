@@ -1,0 +1,12 @@
+proxmox_node_name                  = "node1-home-network"
+proxmox_node_template_datastore_id = "local"
+proxmox_node_default_datastore_id  = "local-lvm"
+
+# ct variables
+ct_name       = "{{project_name}}-container"
+ct_ip_addr    = ["{{service_ip}}"]
+ct_gateway_ip = "{{gateway_ip}}"
+ct_cpu_cores  = {{cpu_cores}}
+ct_memory     = {{service_memory}}
+ct_disk_size  = {{disk_size}}
+ct_tags       = ["iac-tf", "os-ubuntu", "service-type-{{service_type}}", "service-name-{{project_name}}"]

@@ -1,0 +1,29 @@
+---
+- name: Install & Configure
+  hosts: service_hosts
+  become: yes
+  gather_facts: false
+  vars:
+    ansible_user: root
+  vars_files:
+    - vars/default.yaml
+
+  tasks:
+    - name: Wait for system to become reachable
+      wait_for_connection:
+        timeout: 120
+
+    - name: Gather facts 
+      setup:
+
+    - name: Pre configure host
+      import_role:
+        name: "{{ playbook_dir }}/../../../commons/ansible/roles/host_pre_configure"
+      vars:
+        host_name: "{{project_name}}-container"
+
+    # - name: Apply ufw settings
+    #   import_role:
+    #     name: "{{ playbook_dir }}/../../../commons/ansible/roles/host_configure_ufw_firewall"
+    #   vars:
+    #     ufw_allowed_ports: [443,80]

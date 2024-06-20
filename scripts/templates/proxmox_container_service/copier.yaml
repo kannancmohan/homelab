@@ -1,0 +1,39 @@
+# settings
+_templates_suffix: .jinja
+_skip_if_exists:
+  - CHANGELOG.md
+_message_after_copy: | 
+    Your proxmox service "{{ project_name }}" has been created successfully!
+
+# questions
+project_name:
+    type: str
+    help: What is your project name?
+
+service_type:
+    type: str
+    help: "What is service type(eg: reverseproxy,dns)?"
+
+service_ip:
+    type: str
+    help: "What is ip address(eg: 192.168.0.22)?"
+
+gateway_ip:
+    type: str
+    help: "What is gateway ip address(eg: 192.168.0.1)?"
+    default: 192.168.0.1
+
+cpu_cores:
+    type: str
+    help: "What is the cpu core(eg: 1)?"
+    default: 1
+
+service_memory:
+    type: str
+    help: "What is the memory (eg: 1024)?"
+    default: 1024
+
+disk_size:
+    type: str
+    help: "What is disk size(eg: 10)?"
+    default: 10

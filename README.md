@@ -4,7 +4,6 @@ A project that utilizes IaC and GitOps practices for automating provisioning and
 ## Folder Structure
 
 ```bash
-.
 ├── commons/
 │   ├── ansible         # common ansible roles
 │   ├── terraform       # common terraform modules
@@ -18,9 +17,53 @@ A project that utilizes IaC and GitOps practices for automating provisioning and
 ├── shell.nix           # nix configuration for starting nix shell with necessary dependencies for project
 ```
 
+## Tech stack
 <table style='font-family:"Courier New", Courier, monospace; font-size:100%'>
     <tr>
-        <th colspan="2">Self Hosted Services</th>
+        <th>Name</th>
+        <th>Description</th>
+    </tr>
+    <tr>
+        <td><a href="https://www.ansible.com/">Ansible</a></td>
+        <td>For managing and configuring infrastructure</td>
+    </tr>
+    <tr>
+        <td><a href="https://www.terraform.io/">Terraform</a></td>
+        <td>For provisioning and managing infrastructure</td>
+    </tr>
+    <tr>
+        <td><a href="https://kubernetes.io/">Kubernetes</a></td>
+        <td>Container orchestration system</td>
+    </tr>
+    <tr>
+        <td><a href="https://k3s-io.github.io/">k3s</a></td>
+        <td>Lightweight distribution of Kubernetes</td>
+    </tr>
+    <tr>
+        <td><a href="https://argoproj.github.io/cd/">ArgoCD</a></td>
+        <td>Continuous delivery tool for Kubernetes</td>
+    </tr>
+    <tr>
+        <td><a href="https://helm.sh/">Helm</a></td>
+        <td>The package manager for Kubernetes</td>
+    </tr>
+    <tr>
+        <td><a href="https://github.com/copier-org/copier">Copier</a></td>
+        <td>Copier template library for generating project template</td>
+    </tr>
+    <tr>
+        <td><a href="https://github.com/gruntwork-io/terratest">Terratest</a></td>
+        <td>For testing infrastructure code(terraform & helm)</td>
+    </tr>
+    <tr>
+        <td><a href="https://www.proxmox.com/en/proxmox-ve">Proxmox</a></td>
+        <td>Bare metal hypervisors for managing virtual machines and containers</td>
+    </tr>
+</table>
+
+<table style='font-family:"Courier New", Courier, monospace; font-size:100%'>
+    <tr>
+        <th colspan="2">Self Hosted Services (in Proxmox)</th>
     </tr>
     <tr>
         <th>Name</th>
@@ -126,11 +169,6 @@ Loki, Promtail and Grafana is used for log aggregation and  visualization
         <td><a href="https://grafana.com/">Grafana</a></td>
         <td>Allows to query and visualize logs</td>
         <td>Installed as part of <a href="https://artifacthub.io/packages/helm/grafana/grafana">Grafana helm chart</a></td>
-    </tr>
-    <tr>
-        <td>Thanos</td>
-        <td>TODO</td>
-        <td>TODO</td>
     </tr>
 </table>
 

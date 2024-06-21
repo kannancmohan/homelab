@@ -1,5 +1,5 @@
 ## HomeLab
-A project that utilizes IaC and GitOps practices for automating provisioning and operation of self-hosted services in Homelab.
+A project that utilizes IaC and GitOps practices for provisioning and configuring self-hosted services.
 
 ## Folder Structure
 
@@ -93,6 +93,11 @@ A project that utilizes IaC and GitOps practices for automating provisioning and
 
 
 ## Hardware spec
+### Machine #1
+| Name          | Cores         | Memory| Disk|
+| ------------- |:-------------:| -----:| -----:|
+| lab1          | 6             | 32GB  | 500G  |
+
 ### Kubernetes Hardware requirement
 | VM            | Cores         | Memory| Disk|
 | ------------- |:-------------:| -----:| -----:|

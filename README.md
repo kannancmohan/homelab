@@ -1,6 +1,23 @@
 ## HomeLab
 A project that utilizes IaC and GitOps practices for automating provisioning and operation of self-hosted services in Homelab.
 
+## Folder Structure
+
+```bash
+.
+├── commons/
+│   ├── ansible         # common ansible roles
+│   ├── terraform       # common terraform modules
+├── k8s/
+│   ├── cluster_apps    # contains apps to be deployed in k8s
+│   └── cluster_setup   # kubernetes cluster setup code
+└── proxmox/            # contains services deployed as containers in proxmox
+├── scripts/            # contains different shell scripts 
+│   ├── templates       # contains copier templates
+├── README.md
+├── shell.nix           # nix configuration for starting nix shell with necessary dependencies for project
+```
+
 <table style='font-family:"Courier New", Courier, monospace; font-size:100%'>
     <tr>
         <th colspan="2">Self Hosted Services</th>

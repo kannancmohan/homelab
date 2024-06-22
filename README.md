@@ -14,7 +14,7 @@ A project that utilizes IaC and GitOps practices for provisioning and configurin
 ├── scripts/            # contains different shell scripts 
 │   ├── templates       # contains copier templates
 ├── README.md
-├── shell.nix           # nix configuration for starting nix shell with necessary dependencies for project
+├── shell.nix           # nix configuration for starting nix shell with necessary project dependencies
 ```
 
 ## Tech stack

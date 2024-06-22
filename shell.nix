@@ -7,9 +7,9 @@ pkgs.mkShellNoCC {
 packages = with pkgs; [
     pkgs.kubectl
     pkgs.kubernetes-helm
-    pkgs.argocd
     pkgs.k9s
     pkgs.copier
+    #pkgs.argocd
     #pkgs.vaultwarden
     #pkgs.prometheus-alertmanager
     #pkgs.postgresql_jit

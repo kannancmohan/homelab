@@ -1,9 +1,0 @@
----
-- name: Set hostname
-  ansible.builtin.hostname:
-    name: "{{ host_name_prefix + ansible_host.split('.')[-1][-2:] }}"
-
-- name: Upgrade all packages
-  ansible.builtin.package:
-    name: "*"
-    state: latest

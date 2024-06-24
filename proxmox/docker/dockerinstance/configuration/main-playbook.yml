@@ -1,11 +1,96 @@
 ---
-- name: Install & Configure Docker
+- name: Install & Configure
   hosts: service_hosts
   become: yes
-  # gather_facts: false
-  # vars:
-  #   domain_name: "dockerinstance.service.local"
-  roles:
-    - role: common
-    - role: install-docker
+  gather_facts: false
+  vars:
+    ansible_user: ubuntu
+  vars_files:
+    - vars/default.yaml
 
+  tasks:
+    - name: Wait for system to become reachable
+      wait_for_connection:
+        timeout: 120
+
+    - name: Gather facts 
+      setup:
+
+    - name: Pre configure host
+      import_role:
+        name: "{{ playbook_dir }}/../../../../commons/ansible/roles/host_pre_configure"
+      vars:
+        host_name: docker-container
+
+    - name: Ensure common docker packages are installed
+      ansible.builtin.apt:
+        name: "{{ item }}"
+        state: present
+        update_cache: true
+      loop: [apt-transport-https, ca-certificates, software-properties-common]
+
+    - name: Create directory for Docker GPG key
+      ansible.builtin.file:
+        path: /etc/apt/keyrings
+        state: directory
+        mode: '0755'
+
+    - name: Add Docker's official GPG key
+      ansible.builtin.apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        keyring: /etc/apt/keyrings/docker.gpg
+        state: present
+
+    - name: Add Docker repository
+      ansible.builtin.apt_repository:
+        repo: deb [arch=amd64 signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/{{ ansible_system | lower }}/{{ ansible_distribution | lower }} {{ ansible_distribution_release }} stable
+        state: present
+
+    - name: Install Docker CE
+      ansible.builtin.apt:
+        name: ['docker-ce', 'docker-ce-cli', 'containerd.io', 'docker-buildx-plugin', 'docker-compose-plugin']
+        state: present
+        update_cache: true
+
+    - name: Add Docker group
+      ansible.builtin.group:
+        name: docker
+        state: present
+
+    - name: Add user to Docker group
+      ansible.builtin.user:
+        name: "{{ ansible_user }}"
+        groups: docker
+        append: true
+
+    - name: Configure Docker daemon options
+      ansible.builtin.template:
+        src: "templates/docker_daemon.json.j2"
+        dest: "/etc/docker/daemon.json"
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user }}"
+        mode: '0755'
+
+    # change service file to remove '-H' options from service file to be able to use daemon.json
+    - name: Update Docker service to remove options
+      ansible.builtin.replace:
+        path:  /usr/lib/systemd/system/docker.service
+        regexp: ExecStart=/usr/bin/dockerd -H fd:// --containerd=/run/containerd/containerd.sock
+        replace: ExecStart=/usr/bin/dockerd --containerd=/run/containerd/containerd.sock
+      when: docker_remote_api_enable is defined and docker_remote_api_enable
+      register: update_docker_service_result
+
+    - name: Conditionaly Reload systemd
+      ansible.builtin.command: systemctl daemon-reload
+      when: update_docker_service_result.changed
+
+    - name: Install docker-compose
+      get_url:
+        url : https://github.com/docker/compose/releases/download/v2.27.0/docker-compose-Linux-x86_64
+        dest: /usr/local/bin/docker-compose
+        mode: '0755'
+
+    - name: Restart Docker
+      ansible.builtin.systemd:
+        name: docker
+        state: restarted

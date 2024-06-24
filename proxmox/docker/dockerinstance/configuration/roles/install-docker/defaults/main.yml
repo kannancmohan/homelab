@@ -2,3 +2,4 @@
 #  defaults folder contain variables which users need not alter
 docker_daemon_options:
   storage-driver: "overlay2"
+docker_remote_api_enable: false

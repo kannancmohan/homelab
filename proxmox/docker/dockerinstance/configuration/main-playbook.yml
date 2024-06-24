@@ -1,5 +1,5 @@
 ---
-- name: Install & Configure Adguard Home
+- name: Install & Configure Docker
   hosts: service_hosts
   become: yes
   # gather_facts: false

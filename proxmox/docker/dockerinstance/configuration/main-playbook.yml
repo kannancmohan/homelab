@@ -72,12 +72,12 @@
         mode: '0755'
 
     # change service file to remove '-H' options from service file to be able to use daemon.json
-    - name: Update Docker service to remove options
+    - name: Conditionaly update Docker service to remove options
       ansible.builtin.replace:
         path:  /usr/lib/systemd/system/docker.service
         regexp: ExecStart=/usr/bin/dockerd -H fd:// --containerd=/run/containerd/containerd.sock
         replace: ExecStart=/usr/bin/dockerd --containerd=/run/containerd/containerd.sock
-      when: docker_remote_api_enable is defined and docker_remote_api_enable
+      when: docker_remote_tcp_enabled is defined and docker_remote_tcp_enabled
       register: update_docker_service_result
 
     - name: Conditionaly Reload systemd

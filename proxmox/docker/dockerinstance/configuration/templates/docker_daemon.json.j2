@@ -1,5 +1,5 @@
 {
-    {% if docker_remote_api_enable|bool %}
+    {% if docker_remote_tcp_enabled|bool %}
     "hosts": ["tcp://0.0.0.0:2375", "unix:///var/run/docker.sock"],
     {% endif %}
     "storage-driver": "{{ docker_daemon_options['storage-driver'] }}"

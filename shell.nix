@@ -2,7 +2,7 @@ let
     nixpkgs = fetchTarball "https://github.com/NixOS/nixpkgs/tarball/nixos-23.11";
     pkgs = import nixpkgs { config = {}; overlays = []; };
     isMacOS = pkgs.stdenv.hostPlatform.system == "darwin";
-    useRemoteDocker = "false";
+    useRemoteDocker = "true";
     pythonEnv = pkgs.python3.withPackages (ps: with ps; [
         molecule
         docker
@@ -40,7 +40,7 @@ pkgs.mkShellNoCC {
         alias kg="kubectl get"
         alias tf="terraform"
         #helm plugin install https://github.com/databus23/helm-diff
-        
+
         if [ "${useRemoteDocker}" = "true" ]; then
             echo "Using remote Docker and setting ssh for the same"
             export DOCKER_HOST=ssh://ubuntu@192.168.0.30
@@ -59,8 +59,10 @@ pkgs.mkShellNoCC {
             export SSH_AUTH_SOCK=$SSH_AUTH_SOCK
         else
             echo "Using local Docker"
-            # TODO
         fi
-        
+        # Ensure Docker is running
+        if ! docker info > /dev/null 2>&1; then
+            echo "Docker is not running. Please check the Docker daemon."
+        fi
     '';
 }

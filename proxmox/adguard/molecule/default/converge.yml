@@ -1,0 +1,41 @@
+---
+- name: Converge
+  hosts: all
+
+  tasks:
+    - name: Update apt cache (on Debian).
+      ansible.builtin.apt:
+        update_cache: true
+        cache_valid_time: 3600
+      when: ansible_os_family == 'Debian'
+
+    - name: Ensure necessary packages for test are installed
+      ansible.builtin.apt:
+        name: "{{ item }}"
+        state: present
+        update_cache: true
+      loop: ["tzdata"]
+
+    - name: Test service
+      ansible.builtin.service:
+        name: systemd-resolved
+        enabled: yes
+
+    - name: Resolve | Enable resolved
+      ansible.builtin.systemd_service:
+        name: systemd-resolved
+        enabled: true
+        masked: false
+
+    - name: Resolve | Restart resolved
+      ansible.builtin.systemd_service:
+        name: systemd-resolved
+        state: started
+
+    # - name: Ensure systemd package is installed
+    #   ansible.builtin.apt:
+    #     name: systemd
+    #     state: present
+    #   when: ansible_os_family == "Debian"
+
+- ansible.builtin.import_playbook: ../../configuration/main-playbook.yml

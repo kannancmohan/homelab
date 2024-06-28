@@ -52,12 +52,20 @@ A project that utilizes IaC and GitOps practices for provisioning and configurin
         <td>Copier template library for generating project template</td>
     </tr>
     <tr>
+        <td><a href="https://www.proxmox.com/en/proxmox-ve">Proxmox</a></td>
+        <td>Bare metal hypervisors for managing virtual machines and containers</td>
+    </tr>
+    <tr>
         <td><a href="https://github.com/gruntwork-io/terratest">Terratest</a></td>
         <td>For testing infrastructure code(terraform & helm)</td>
     </tr>
     <tr>
-        <td><a href="https://www.proxmox.com/en/proxmox-ve">Proxmox</a></td>
-        <td>Bare metal hypervisors for managing virtual machines and containers</td>
+        <td><a href="https://github.com/ansible/molecule">Molecule</a></td>
+        <td>For testing Ansible</td>
+    </tr>
+    <tr>
+        <td><a href="https://testinfra.readthedocs.io/en/latest/">Testinfra</a></td>
+        <td>A python library used for testing infrastructure(here used with Molecule to write ansible test)</td>
     </tr>
 </table>
 

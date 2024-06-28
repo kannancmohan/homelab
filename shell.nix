@@ -4,6 +4,7 @@ let
     isMacOS = pkgs.stdenv.hostPlatform.system == "darwin";
     useRemoteDocker = "true";
     pythonEnv = pkgs.python3.withPackages (ps: with ps; [
+        pip
         molecule
         docker
         ansible
@@ -56,9 +57,10 @@ pkgs.mkShellNoCC {
                 ssh-add ~/.ssh/id_ed25519
             fi
             ## Export the SSH_AUTH_SOCK so that it's available in the shell
-            export SSH_AUTH_SOCK=$SSH_AUTH_SOCK
+            #export SSH_AUTH_SOCK=$SSH_AUTH_SOCK
         else
             echo "Using local Docker"
+            # TODO
         fi
         # Ensure Docker is running
         if ! docker info > /dev/null 2>&1; then

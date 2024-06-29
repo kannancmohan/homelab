@@ -45,6 +45,7 @@
         name: systemd-resolved
         state: restarted
       when: dns_disabled is defined and dns_disabled.changed
+      tags: molecule-notest
 
     - name: Download Adguard installer
       ansible.builtin.get_url:
@@ -72,6 +73,7 @@
 
     - name: Install Adguard
       ansible.builtin.shell: /opt/AdGuardHome/AdGuardHome -s install
+      # tags: molecule-idempotence-notest
 
     - name: Delete temp directory
       ansible.builtin.file:

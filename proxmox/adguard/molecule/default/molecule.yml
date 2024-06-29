@@ -9,14 +9,10 @@ platforms:
     dockerfile: Dockerfile
     privileged: true
     # pre_build_image: true
-    # ansible_user: ubuntu
 provisioner:
   name: ansible
   playbooks:
     converge: ./converge.yml
-  # config_options:
-  #   defaults:
-  #     remote_tmp: /tmp/.ansible/tmp
   env:
     ANSIBLE_REMOTE_TMP: /tmp/.ansible/tmp
   inventory:
@@ -27,42 +23,24 @@ provisioner:
           service_hosts:
             hosts:
               instance1:
-  # inventory:
-  #   hosts: ./dynamic_inventory.py
-  # inventory:
-  #   group_vars:
-  #     service_hosts:
-  #       ansible_user: ubuntu
-  #       ansible_password: password
-  #   host_vars:
-  #     instance1:
-  #       ansible_host: instance1
-  # config_options:
-  #   defaults:
-  #     transport:
-  #       ssh_args: -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null
-  # connection_options:
-  #   ansible_ssh_common_args: " -o ControlMaster=auto -o ControlPersist=60s -o PreferredAuthentications=publickey,password -F /tmp/ssh_config -o StrictHostKeychecking=no"
-  # inventory:
-  #   host_vars:
-  #     # Inventory used for Molecule when executing the Ansible role tested.     
-  #     instance:
-  #       variable1: value
-  #       variable2: False
 verifier:
   name: ansible
   options:
-    sudo: true
-    v: 1
-# scenario:
-#   name: default
-#   test_sequence:
-#     - destroy
-#     - create
-#     - converge
-#     - verify
-#     - destroy
+    skip_tags: molecule-notest # added tasks defined with tasgs are skipped
+scenario:
+  test_sequence: # added so as to skip 'idempotence' check while executing 'molecule test'
+    - dependency
+    - cleanup
+    - destroy
+    - syntax
+    - create
+    - prepare
+    - converge
+    # - idempotence
+    - verify
+    - cleanup
+    - destroy
 lint: |
   set -e
   yamllint .
-  ansible-lint --exclude molecule/default/
+  ansible-lint

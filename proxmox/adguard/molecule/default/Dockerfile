@@ -20,4 +20,4 @@ RUN python3 --version
 # STOPSIGNAL SIGRTMIN+3
 
 # Set default command
-CMD ["/sbin/init"]
+CMD ["/bin/bash"]

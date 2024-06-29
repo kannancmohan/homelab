@@ -3,7 +3,7 @@
 ## Prerequisite
 * Docker 
 
-if you are using remote docker ,make sure the following environment variable is set 
+if you are using remote docker ,make sure the following environment variable is set (in shell.nix)
 ```
 export DOCKER_HOST=ssh://ubuntu@192.168.0.30
 ```
@@ -12,12 +12,14 @@ export DOCKER_HOST=ssh://ubuntu@192.168.0.30
 * molecule
 * pytest-testinfra
 
-### creating new molecule scenario
+### To create new molecule test
 ```
 cd to_project_directory
-molecule init scenario
+molecule init scenario # this will create a new molecule folder with 'default' scenario folder
 ```
-### Test 
+### For Testing proxmox container service
+eg: for testing proxmox/adguard
 ```
+cd proxmox/adguard
 molecule test
 ```

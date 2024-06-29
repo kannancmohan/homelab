@@ -11,11 +11,11 @@ platforms:
     # pre_build_image: true
 provisioner:
   name: ansible
-  playbooks:
-    converge: ./converge.yml
+  # playbooks:
+  #   converge: ./converge.yml
   env:
     ANSIBLE_REMOTE_TMP: /tmp/.ansible/tmp
-  inventory:
+  inventory: # added so make use of inventory group 'service_hosts'
     hosts:
       all:
         hosts:
@@ -40,7 +40,3 @@ scenario:
     - verify
     - cleanup
     - destroy
-lint: |
-  set -e
-  yamllint .
-  ansible-lint

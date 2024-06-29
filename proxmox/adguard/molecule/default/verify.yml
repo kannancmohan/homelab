@@ -3,16 +3,29 @@
   hosts: all
 
   tasks:
-    # check that the file exists
-    - stat:
+    - name: Check if file exists
+      ansible.builtin.stat:
         path: /opt/AdGuardHome/AdGuardHome.yaml
-      register: p
+      register: file_exists_reg
 
-    - assert:
+    - ansible.builtin.assert:
+        that: file_exists_reg.stat.exists
+
+    - name: Populate services facts
+      ansible.builtin.service_facts:
+      
+    - name: Check services up
+      ansible.builtin.assert:
         that:
-          - p.stat.exists
+          - ansible_facts.services['AdGuardHome'].state == "running"
 
-    # - name: Verify Apache is serving web requests.
-    #   ansible.builtin.uri:
-    #     url: http://192.168.0.30/
-    #     status_code: 200
+    - name: Verify service web requests.
+      ansible.builtin.uri:
+        url: http://localhost/
+        status_code: 200
+
+    - name: Check if port 53 is listening
+      ansible.builtin.wait_for:
+        port: 53
+        timeout: 10
+        msg: "Timeout waiting for 53 to respond"

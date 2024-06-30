@@ -25,8 +25,6 @@ provisioner:
               instance1:
 verifier:
   name: ansible
-  options:
-    skip_tags: molecule-notest # added tasks defined with tasgs are skipped
 scenario:
   test_sequence: # added so as to skip 'idempotence' check while executing 'molecule test'
     - dependency

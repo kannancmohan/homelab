@@ -8,6 +8,7 @@ let
         molecule
         docker
         ansible
+        pytest
         pytest-testinfra
         # Add any additional Python packages you need
     ]);
@@ -31,7 +32,7 @@ pkgs.mkShellNoCC {
         #pkgs.vaultwarden
         #pkgs.prometheus-alertmanager
         #pkgs.postgresql_jit
-    ];
+    ] ++ (if pkgs.stdenv.isDarwin then [ pkgs.darwin.iproute2mac ] else [ pkgs.iproute2 ]);
 
     HISTCONTROL = "ignoreboth:erasedups";
     #KUBECONFIG = "~/.kube/config";

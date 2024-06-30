@@ -24,7 +24,7 @@ provisioner:
             hosts:
               instance1:
 verifier:
-  name: ansible
+  name: testinfra
 scenario:
   test_sequence: # added so as to skip 'idempotence' check while executing 'molecule test'
     - dependency

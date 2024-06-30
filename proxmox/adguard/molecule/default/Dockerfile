@@ -3,7 +3,7 @@ FROM ubuntu:22.04
 
 # Update package list and install Python 3
 RUN apt-get update \
-    && apt-get install -y python3  python3-pip \
+    && apt-get install -y iproute2 python3  python3-pip \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 

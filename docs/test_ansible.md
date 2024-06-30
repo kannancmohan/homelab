@@ -23,3 +23,19 @@ eg: for testing proxmox/adguard
 cd proxmox/adguard
 molecule test
 ```
+
+### Tip
+#### To ignore a specific ansible task from molecule test
+use one of tags provided by molecule 
+* notest
+* molecule-notest
+* molecule-idempotence-notest
+
+eg:
+```
+    - name: Restart systemd-resolved service
+      ansible.builtin.service:
+        name: systemd-resolved
+        state: restarted
+      tags: molecule-notest
+```

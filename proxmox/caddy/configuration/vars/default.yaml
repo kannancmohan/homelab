@@ -1,3 +1,5 @@
+service_exposed_ports: [443,80]
+
 CADDY_VERSION: v2.7.6
 DUCKDNS_CADDY_PLUGIN_VERSION: latest
 GO_VERSION: 1.22.3

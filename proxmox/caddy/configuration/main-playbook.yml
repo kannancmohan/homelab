@@ -115,4 +115,4 @@
       import_role:
         name: "{{ playbook_dir }}/../../../commons/ansible/roles/host_configure_ufw_firewall"
       vars:
-        ufw_allowed_ports: [443,80]
+        ufw_allowed_ports: "{{ service_exposed_ports }}"

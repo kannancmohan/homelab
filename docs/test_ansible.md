@@ -24,7 +24,7 @@ cd proxmox/adguard
 molecule test
 ```
 
-### Tip
+### Tips
 #### To ignore a specific ansible task from molecule test
 use one of tags provided by molecule 
 * notest
@@ -38,4 +38,17 @@ eg:
         name: systemd-resolved
         state: restarted
       tags: molecule-notest
+```
+#### To login to test instance
+```
+cd to_project_directory
+molecule converge # make sure the instance is created with all ansible tasks executed
+molecule login
+```
+
+#### To verify 
+```
+cd to_project_directory
+molecule converge # make sure the instance is created with all ansible tasks executed
+molecule verify
 ```

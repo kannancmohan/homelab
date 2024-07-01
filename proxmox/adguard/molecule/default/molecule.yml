@@ -4,10 +4,14 @@
 driver:
   name: docker
 platforms:
-  - name: instance1
+  - name: adguard_instance1
     image: custom-ubuntu:22.04
     dockerfile: Dockerfile
     privileged: true
+    published_ports:
+      - "8081:80"
+    networks:
+      - name: adguard_network
     # pre_build_image: true
 provisioner:
   name: ansible
@@ -22,7 +26,7 @@ provisioner:
         children:
           service_hosts:
             hosts:
-              instance1:
+              adguard_instance1:
 verifier:
   name: testinfra
 scenario:

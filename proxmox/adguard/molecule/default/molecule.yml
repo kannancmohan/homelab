@@ -5,14 +5,13 @@ driver:
   name: docker
 platforms:
   - name: adguard_instance1
-    image: custom-ubuntu:22.04
-    dockerfile: Dockerfile
+    image: "geerlingguy/docker-ubuntu2204-ansible:latest"
+    command: ${MOLECULE_DOCKER_COMMAND:-""}
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:rw
+    cgroupns_mode: host
     privileged: true
-    published_ports:
-      - "8081:80"
-    networks:
-      - name: adguard_network
-    # pre_build_image: true
+    pre_build_image: true
 provisioner:
   name: ansible
   # playbooks:

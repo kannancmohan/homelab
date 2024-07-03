@@ -11,5 +11,5 @@ def test_web_url_accessible(host):
     assert output.succeeded
 
 def test_port_listening(host):
-    socket = host.socket("tcp://0.0.0.0:800")
+    socket = host.socket("tcp://0.0.0.0:8000")
     assert socket.is_listening

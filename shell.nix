@@ -25,6 +25,7 @@ pkgs.mkShellNoCC {
         ## added for ansible test
         #pkgs.ansible-lint
         #pkgs.yamllint
+        pkgs.parallel
         ## added for ssh access
         pkgs.git
         pkgs.curl

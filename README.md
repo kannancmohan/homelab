@@ -7,6 +7,7 @@ A project that utilizes IaC and GitOps practices for provisioning and configurin
 ├── commons/
 │   ├── ansible         # common ansible roles
 │   ├── terraform       # common terraform modules
+└── docs/
 ├── k8s/
 │   ├── cluster_apps    # contains apps to be deployed in k8s
 │   └── cluster_setup   # kubernetes cluster setup code

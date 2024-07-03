@@ -37,3 +37,8 @@ disk_size:
     type: str
     help: "What is disk size(eg: 10)?"
     default: 10
+
+ansible_molecule_test:
+    type: bool
+    help: "Do you need ansible molecule test?"
+    default: yes

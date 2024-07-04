@@ -16,9 +16,11 @@ variable "proxmox_node_default_datastore_id" {
 # project variables
 variable "cloud_image_iso_url" {
   type = string
+  default = "https://cloud-images.ubuntu.com/jammy/current/jammy-server-cloudimg-amd64.img"
 }
 variable "cloud_image_iso_checksum" {
   type = string
+  default = "1d465eadfecffd6dc4e7be02df925519e18df432d846c8001eb8bd3d1124373c"
 }
 variable "local_machine_ssh_key" {
   type        = string
@@ -42,6 +44,7 @@ variable "vm_timezone" {
 # worker vm variables
 variable "worker_vm_name" {
   type = string
+  default = "k3s-worker-vm"
 }
 variable "worker_vm_id_prefix" {
   type = number
@@ -54,23 +57,27 @@ variable "worker_vm_gateway_ip" {
 }
 variable "worker_vm_count" {
   type    = number
-  default = 1
+  default = 2
 }
 variable "worker_vm_cores" {
   type = number
+  default = 1
 }
 variable "worker_vm_memory" {
   type = number
+  default = 3072
 }
 variable "worker_vm_disk_size" {
   type        = number
   description = "Disk size in GB"
+  default = 15
 }
 
 
 # controlplane vm variables
 variable "cp_vm_name" {
   type = string
+  default = "k3s-cp-vm"
 }
 variable "cp_vm_id_prefix" {
   type = number
@@ -87,13 +94,16 @@ variable "cp_vm_count" {
 }
 variable "cp_vm_cores" {
   type = number
+  default = 3
 }
 variable "cp_vm_memory" {
   type = number
+  default = 5120
 }
 variable "cp_vm_disk_size" {
   type        = number
   description = "Disk size in GB"
+  default = 25
 }
 
 # proxmox cloud-init 

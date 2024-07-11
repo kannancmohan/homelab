@@ -1,6 +1,0 @@
-apiVersion: v2
-name: tekton
-description: A Helm chart for tekton(pipeline,triggers & dashboard)
-type: application
-version: 0.1.0
-appVersion: "0.59.2"

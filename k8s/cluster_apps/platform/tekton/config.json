@@ -1,8 +1,0 @@
-{
-    "app": {
-        "enabled": "false",
-        "name": "tekton",
-        "nameSpace": "tekton-pipelines",
-        "syncWave": "-50"
-    }
-}

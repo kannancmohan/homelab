@@ -1,0 +1,8 @@
+{
+    "app": {
+        "enabled": "false",
+        "name": "tekton-operator",
+        "nameSpace": "tekton-operator",
+        "syncWave": "-50"
+    }
+}

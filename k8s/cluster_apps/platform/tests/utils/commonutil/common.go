@@ -51,3 +51,11 @@ func GetEnvAsString(key string) string {
 	}
 	return val
 }
+
+func GetDockerIp() string {
+	envVarValue, exists := os.LookupEnv("REMOTE_DOCKER_IP") //this env variable is set in shell.nix
+	if exists {
+		return envVarValue
+	}
+	return "127.0.0.1"
+}

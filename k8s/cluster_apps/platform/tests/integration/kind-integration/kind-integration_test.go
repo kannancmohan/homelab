@@ -13,6 +13,7 @@ import (
 func TestMinikubeIntegration(t *testing.T) {
 	t.Parallel()
 	originalKubeconfig := os.Getenv("KUBECONFIG")
+	
 	//create temp directory "/tmp/integrationtest"
 	tempDir, tempDirCleanup, err := commonutil.CreateTempDir("integrationtest")
 	if err != nil {
@@ -24,9 +25,10 @@ func TestMinikubeIntegration(t *testing.T) {
 		KubernetesVersion: "v1.28.7",
 		KubeConfigPath:    tempDir + "/kind-kubeconfig",
 		KindConfigFile:    tempDir + "/kind-config.yaml",
-		KindDockerIp:      GetDockerIp(),
+		KindDockerIp:      commonutil.GetDockerIp(),
 	}
 
+	//cleanup
 	defer func() {
 		err = kindutil.DeleteKindCluster(cfg)
 		commonutil.ResetKubeconfig(originalKubeconfig)
@@ -47,12 +49,7 @@ func TestMinikubeIntegration(t *testing.T) {
 	sleepBetweenRetries := 5 * time.Second
 	k8s.WaitUntilAllNodesReady(t, options, maxRetries, sleepBetweenRetries)
 
+	
+
 }
 
-func GetDockerIp() string {
-	envVarValue, exists := os.LookupEnv("REMOTE_DOCKER_IP") //this env variable is set in shell.nix
-	if exists {
-		return envVarValue
-	}
-	return "127.0.0.1"
-}

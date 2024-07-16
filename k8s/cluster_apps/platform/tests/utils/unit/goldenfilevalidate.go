@@ -30,8 +30,8 @@ func (s *TemplateGoldenTest) TestContainerGoldenTestDefaults() {
 		KubectlOptions: k8s.NewKubectlOptions("", "", s.Namespace),
 		SetValues:      s.SetValues,
 	}
-	
-	output := helm.RenderTemplate(s.T(), options, s.ChartPath, s.Release, s.Templates, s.ExtraHelmArgs...)	
+
+	output := helm.RenderTemplate(s.T(), options, s.ChartPath, s.Release, s.Templates, s.ExtraHelmArgs...)
 	s.IgnoredLines = append(s.IgnoredLines, `\s+helm.sh/chart:\s+.*`)
 	bytes := []byte(output)
 	for _, ignoredLine := range s.IgnoredLines {
@@ -48,7 +48,7 @@ func (s *TemplateGoldenTest) TestContainerGoldenTestDefaults() {
 	}
 
 	expected, err := ioutil.ReadFile(goldenFile)
-	
+
 	// Test
 	s.Require().NoError(err, "Golden file doesn't exist or was not readable")
 	s.Require().Equal(string(expected), output)

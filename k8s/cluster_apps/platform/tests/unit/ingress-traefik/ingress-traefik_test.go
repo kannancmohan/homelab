@@ -3,10 +3,8 @@ package unit
 import (
 	"homelab/k8s/cluster_apps/platform/tests/utils/unit"
 	"path/filepath"
-	// "strings"
 	"testing"
 
-	// "github.com/gruntwork-io/terratest/modules/random"
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
 )
@@ -16,7 +14,6 @@ func TestGoldenDefaultsTemplate(t *testing.T) {
 
 	chartPath, err := filepath.Abs("../../../ingress-traefik")
 	require.NoError(t, err)
-	// FIXME/TODO: the "inbound-secret" generates a random secret every time thus failing to pass on golden
 	//templateNames := []string{"service", "serviceaccount", "deployment", "ingress"}
 	templateNames := []string{"traefik-service-monitor"}
 	release := "ingress-traefik-test"

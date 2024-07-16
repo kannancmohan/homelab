@@ -4,7 +4,6 @@ import (
 	"flag"
 	"io/ioutil"
 	"regexp"
-	// "fmt"
 
 	"github.com/gruntwork-io/terratest/modules/helm"
 	"github.com/gruntwork-io/terratest/modules/k8s"
@@ -39,7 +38,6 @@ func (s *TemplateGoldenTest) TestContainerGoldenTestDefaults() {
 		bytes = regex.ReplaceAll(bytes, []byte(""))
 	}
 	output = string(bytes)
-	// fmt.Printf("output: %s\n", output)
 
 	goldenFile := "golden/" + s.GoldenFileName + ".golden.yaml"
 	if *update {

@@ -13,7 +13,7 @@ import (
 func TestMinikubeIntegration(t *testing.T) {
 	t.Parallel()
 	originalKubeconfig := os.Getenv("KUBECONFIG")
-	
+
 	//create temp directory "/tmp/integrationtest"
 	tempDir, tempDirCleanup, err := commonutil.CreateTempDir("integrationtest")
 	if err != nil {
@@ -49,7 +49,4 @@ func TestMinikubeIntegration(t *testing.T) {
 	sleepBetweenRetries := 5 * time.Second
 	k8s.WaitUntilAllNodesReady(t, options, maxRetries, sleepBetweenRetries)
 
-	
-
 }
-

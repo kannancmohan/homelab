@@ -1,18 +1,18 @@
 package commonutil
 
 import (
-	"path/filepath"
 	"fmt"
+	"os"
+	"path/filepath"
 	"runtime"
-    "os"
 )
 
 func GetCurrentDirectory() (string, error) {
-    _, filePath, _, ok := runtime.Caller(1)
-    if !ok {
-        return "", fmt.Errorf("failed to get current file path")
-    }
-    return filepath.Dir(filePath), nil
+	_, filePath, _, ok := runtime.Caller(1)
+	if !ok {
+		return "", fmt.Errorf("failed to get current file path")
+	}
+	return filepath.Dir(filePath), nil
 }
 
 func CreateTempDir(prefix string) (string, func(), error) {
@@ -25,7 +25,7 @@ func CreateTempDir(prefix string) (string, func(), error) {
 			return "", nil, err
 		}
 	}
-	
+
 	cleanup := func() {
 		os.RemoveAll(tempDir)
 	}
@@ -33,21 +33,21 @@ func CreateTempDir(prefix string) (string, func(), error) {
 }
 
 func SetKubeconfig(kubeconfigPath string) {
-    os.Setenv("KUBECONFIG", kubeconfigPath)
+	os.Setenv("KUBECONFIG", kubeconfigPath)
 }
 
 func ResetKubeconfig(originalKubeconfig string) {
-    if originalKubeconfig == "" {
-        os.Unsetenv("KUBECONFIG")
-    } else {
-        os.Setenv("KUBECONFIG", originalKubeconfig)
-    }
+	if originalKubeconfig == "" {
+		os.Unsetenv("KUBECONFIG")
+	} else {
+		os.Setenv("KUBECONFIG", originalKubeconfig)
+	}
 }
 
 func GetEnvAsString(key string) string {
-    val, exists := os.LookupEnv(key)
-    if !exists {
-        return ""
-    }
-    return val
+	val, exists := os.LookupEnv(key)
+	if !exists {
+		return ""
+	}
+	return val
 }

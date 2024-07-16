@@ -2,31 +2,31 @@ package kindutil
 
 import (
 	"fmt"
-	"os/exec"
 	"os"
+	"os/exec"
 	"strings"
 	"text/template"
 )
 
-func GenerateKindConfigFromTemplate(cfg Config) error{
+func GenerateKindConfigFromTemplate(cfg Config) error {
 	tmpl, err := template.ParseFiles("kind-config.tmpl.yaml")
-    if err != nil {
+	if err != nil {
 		return fmt.Errorf("Error parsing template: %v", err)
-    }
-    outFile, err := os.Create(cfg.KindConfigFile)
-    if err != nil {
+	}
+	outFile, err := os.Create(cfg.KindConfigFile)
+	if err != nil {
 		return fmt.Errorf("Error creating output file: %v", err)
-    }
+	}
 
 	if err := tmpl.Execute(outFile, cfg); err != nil {
 		return fmt.Errorf("Error executing template: %v", err)
-    }
+	}
 	return nil
 }
 
-func StartKindCluster(cfg Config) error {	
+func StartKindCluster(cfg Config) error {
 	image := fmt.Sprintf("kindest/node:%s", cfg.KubernetesVersion)
-	
+
 	exists, err := ClusterExists(cfg.ClusterName)
 	if err != nil {
 		return fmt.Errorf("Could not find whether Kind Cluster already exists: %v", err)
@@ -40,7 +40,7 @@ func StartKindCluster(cfg Config) error {
 	if err != nil {
 		return fmt.Errorf("Could generate KindConfig file from template: %v", err)
 	}
-	
+
 	fmt.Printf("Starting Kind cluster: %s with Kubernetes version: %s\n", cfg.ClusterName, cfg.KubernetesVersion)
 	cmdArgs := []string{"create", "cluster", "--kubeconfig", cfg.KubeConfigPath, "--image", image, "--config", cfg.KindConfigFile}
 
@@ -85,9 +85,9 @@ func ClusterExists(name string) (bool, error) {
 }
 
 type Config struct {
-    ClusterName      string
-    KubernetesVersion string
-	KubeConfigPath string
-	KindConfigFile string
-	KindDockerIp string
+	ClusterName       string
+	KubernetesVersion string
+	KubeConfigPath    string
+	KindConfigFile    string
+	KindDockerIp      string
 }

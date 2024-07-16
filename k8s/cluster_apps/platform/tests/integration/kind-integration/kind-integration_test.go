@@ -3,6 +3,7 @@ package test
 import (
 	"github.com/gruntwork-io/terratest/modules/k8s"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 	"homelab/k8s/cluster_apps/platform/tests/utils/commonutil"
 	"homelab/k8s/cluster_apps/platform/tests/utils/integration/kindutil"
 	"os"
@@ -16,9 +17,7 @@ func TestMinikubeIntegration(t *testing.T) {
 
 	//create temp directory "/tmp/integrationtest"
 	tempDir, tempDirCleanup, err := commonutil.CreateTempDir("integrationtest")
-	if err != nil {
-		t.Fatalf("Failed to create temp dir: %v", err)
-	}
+	require.NoError(t, err)
 
 	cfg := kindutil.Config{
 		ClusterName:       "test-cluster",
@@ -31,9 +30,9 @@ func TestMinikubeIntegration(t *testing.T) {
 	//cleanup
 	defer func() {
 		err = kindutil.DeleteKindCluster(cfg)
+		assert.NoError(t, err, "Failed to stop Kind cluster")
 		commonutil.ResetKubeconfig(originalKubeconfig)
 		tempDirCleanup()
-		assert.NoError(t, err, "Failed to stop Kind cluster")
 	}()
 
 	// Start the Kind cluster
@@ -42,11 +41,9 @@ func TestMinikubeIntegration(t *testing.T) {
 	commonutil.SetKubeconfig(cfg.KubeConfigPath)
 	assert.Equal(t, cfg.KubeConfigPath, os.Getenv("KUBECONFIG"), "KUBECONFIG should be set to the custom kubeconfig path")
 
-	options := k8s.NewKubectlOptions("", cfg.KubeConfigPath, "default")
+	kubectlOptions := k8s.NewKubectlOptions("", cfg.KubeConfigPath, "default")
 
 	// Wait until all nodes are ready
-	maxRetries := 5
-	sleepBetweenRetries := 5 * time.Second
-	k8s.WaitUntilAllNodesReady(t, options, maxRetries, sleepBetweenRetries)
+	k8s.WaitUntilAllNodesReady(t, kubectlOptions, 5, 5*time.Second) //maxRetries=5 & sleepBetweenRetries=5sec
 
 }

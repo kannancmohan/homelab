@@ -41,9 +41,9 @@ func TestMinikubeIntegration(t *testing.T) {
 	commonutil.SetKubeconfig(cfg.KubeConfigPath)
 	assert.Equal(t, cfg.KubeConfigPath, os.Getenv("KUBECONFIG"), "KUBECONFIG should be set to the custom kubeconfig path")
 
-	kubectlOptions := k8s.NewKubectlOptions("", cfg.KubeConfigPath, "default")
-
+	
 	// Wait until all nodes are ready
+	kubectlOptions := k8s.NewKubectlOptions("", cfg.KubeConfigPath, "default")
 	k8s.WaitUntilAllNodesReady(t, kubectlOptions, 5, 5*time.Second) //maxRetries=5 & sleepBetweenRetries=5sec
 
 }

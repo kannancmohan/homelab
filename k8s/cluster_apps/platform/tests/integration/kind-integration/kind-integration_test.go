@@ -51,11 +51,11 @@ func TestMinikubeIntegration(t *testing.T) {
 	// Wait until all nodes are ready
 	nameSpace := "traefik"
 	kubectlOptions := k8s.NewKubectlOptions("", cfg.KubeConfigPath, nameSpace)
-	//kubectlOptions.ExtraArgs = []string{"wait", "--for=condition=established"}
 	k8s.WaitUntilAllNodesReady(t, kubectlOptions, 5, 5*time.Second) //maxRetries=5 & sleepBetweenRetries=5sec
 
 	//helm test starts
 	helmChartPath, err := filepath.Abs("../../../ingress-traefik")
+	require.NoError(t, err)
 
 	k8s.CreateNamespace(t, kubectlOptions, nameSpace)
 	defer k8s.DeleteNamespace(t, kubectlOptions, nameSpace)
@@ -71,8 +71,9 @@ func TestMinikubeIntegration(t *testing.T) {
 	releaseName := "test-release"
 	helmOutput := helm.RenderTemplate(t, helmOptions, helmChartPath, releaseName, []string{}, extraHelmArgs...)
 
-	installPrerequisiteCRDs(t, kubectlOptions) // Install Prerequisite CRD's
+	installPrerequisiteCRDs(t, k8s.NewKubectlOptions("", cfg.KubeConfigPath, "")) // Install Prerequisite CRD's
 	crdManifests, otherManifests := splitCRDsAndOthers(helmOutput)
+
 	if crdManifests != "" {
 		k8s.KubectlApplyFromString(t, helmOptions.KubectlOptions, crdManifests) // Apply CRDs first
 	}

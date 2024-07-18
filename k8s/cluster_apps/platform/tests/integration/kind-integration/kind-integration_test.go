@@ -70,11 +70,15 @@ func TestMinikubeIntegration(t *testing.T) {
 	extraHelmArgs := []string{"--include-crds", "--create-namespace", "--dependency-update"}
 	releaseName := "test-release"
 	helmOutput := helm.RenderTemplate(t, helmOptions, helmChartPath, releaseName, []string{}, extraHelmArgs...)
-	crdManifests, otherManifests := splitCRDsAndOthers(helmOutput)
 
-	installPrerequisiteCRDs(t, kubectlOptions)                                // Install Prerequisite CRD's
-	k8s.KubectlApplyFromString(t, helmOptions.KubectlOptions, crdManifests)   // Apply CRDs first
-	k8s.KubectlApplyFromString(t, helmOptions.KubectlOptions, otherManifests) // Apply the remaining resources
+	installPrerequisiteCRDs(t, kubectlOptions) // Install Prerequisite CRD's
+	crdManifests, otherManifests := splitCRDsAndOthers(helmOutput)
+	if crdManifests != "" {
+		k8s.KubectlApplyFromString(t, helmOptions.KubectlOptions, crdManifests) // Apply CRDs first
+	}
+	if otherManifests != "" {
+		k8s.KubectlApplyFromString(t, helmOptions.KubectlOptions, otherManifests) // Apply the remaining resources
+	}
 
 	//then
 	filterOptions := metav1.ListOptions{

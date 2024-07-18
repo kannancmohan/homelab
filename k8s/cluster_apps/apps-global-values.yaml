@@ -1,3 +1,5 @@
 global:
   external-secrets:
     enabled: true
+  test-secrets:
+    enabled: false # set this to true for test purpose

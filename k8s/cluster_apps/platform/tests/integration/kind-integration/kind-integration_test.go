@@ -50,6 +50,7 @@ func TestMinikubeIntegration(t *testing.T) {
 
 	// Wait until all nodes are ready
 	nameSpace := "traefik"
+	serviceName := "test-release-traefik"
 	kubectlOptions := k8s.NewKubectlOptions("", cfg.KubeConfigPath, nameSpace)
 	k8s.WaitUntilAllNodesReady(t, kubectlOptions, 5, 5*time.Second) //maxRetries=5 & sleepBetweenRetries=5sec
 
@@ -60,7 +61,11 @@ func TestMinikubeIntegration(t *testing.T) {
 	k8s.CreateNamespace(t, kubectlOptions, nameSpace)
 	defer k8s.DeleteNamespace(t, kubectlOptions, nameSpace)
 
-	helmOptValues := map[string]string{"global.external-secrets.enabled": "false", "traefik.deployment.enabled": "true"} // override helm values
+	helmOptValues := map[string]string{
+		"global.external-secrets.enabled": "false",
+		"global.test-secrets.enabled":     "true",
+		"grafana.testFramework.enabled":   "false",
+	} // override helm values
 	helmOptions := &helm.Options{
 		KubectlOptions: kubectlOptions,
 		SetValues:      helmOptValues,
@@ -83,19 +88,20 @@ func TestMinikubeIntegration(t *testing.T) {
 
 	//then
 	filterOptions := metav1.ListOptions{
-		LabelSelector: fmt.Sprintf("app.kubernetes.io/name=%s", nameSpace),
+		// LabelSelector: fmt.Sprintf("app.kubernetes.io/instance=%s", releaseName+"-"+nameSpace),
 	}
 	k8s.WaitUntilNumPodsCreated(t, helmOptions.KubectlOptions, filterOptions, 1, 10, 5*time.Second) //desiredCount=1 , retries=10, sleepBetweenRetries=5sec
 	pods := k8s.ListPods(t, helmOptions.KubectlOptions, filterOptions)
 	assert.Equal(t, 1, len(pods))
 
+	//check for service name
+	k8s.GetService(t, helmOptions.KubectlOptions, serviceName)
 }
 
 func installPrerequisiteCRDs(t *testing.T, options *k8s.KubectlOptions) {
 	crdURLs := []string{
 		"https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/main/example/prometheus-operator-crd/monitoring.coreos.com_servicemonitors.yaml",
 	}
-
 	for _, url := range crdURLs {
 		err := applyCRD(t, options, url)
 		if err != nil {

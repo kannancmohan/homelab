@@ -33,7 +33,7 @@ The idea is to validate the generated helm template against a predefined golden 
 Execute the test
 ```
 cd /k8s/tests
-go test -v ./k8s/tests/unit/...
+go test -v ./cluster_apps/unit/...
 ```
 
 ## Helm Integration test
@@ -41,10 +41,10 @@ go test -v ./k8s/tests/unit/...
 Execute the test
 ```
 cd /k8s/tests
-go test -v ./integration/...
+go test -v ./cluster_apps/integration/...
 ```
 
-## Format go test files
+## Format all go test files
 ```
 cd /k8s/tests
 go fmt ./...

@@ -20,7 +20,7 @@ import (
 
 var testOptions = []TestOptions{
 	{
-		HelmChartPath: "../../../cluster_apps/platform/cert-manager",
+		HelmChartPath: "../../../../cluster_apps/platform/cert-manager",
 		Namespace:     "cert-manager",
 		OverrideHelmValues: map[string]string{
 			"global.leaderElection.namespace": "cert-manager",
@@ -29,13 +29,13 @@ var testOptions = []TestOptions{
 		ExpectedServiceName: "test-release-cert-manager",
 	},
 	{
-		HelmChartPath:       "../../../cluster_apps/platform/ingress-traefik",
+		HelmChartPath:       "../../../../cluster_apps/platform/ingress-traefik",
 		Namespace:           "traefik",
 		ExpectedPodCount:    1,
 		ExpectedServiceName: "test-release-traefik",
 	},
 	{
-		HelmChartPath: "../../../cluster_apps/platform/grafana",
+		HelmChartPath: "../../../../cluster_apps/platform/grafana",
 		Namespace:     "grafana",
 		OverrideHelmValues: map[string]string{
 			"grafana.testFramework.enabled": "false",

@@ -14,12 +14,20 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
-	// "sync"
 	"testing"
 	"time"
 )
 
 var testOptions = []TestOptions{
+	{
+		HelmChartPath: "../../../cert-manager",
+		Namespace:     "cert-manager",
+		OverrideHelmValues: map[string]string{
+			"global.leaderElection.namespace": "cert-manager",
+		},
+		ExpectedPodCount:    4,
+		ExpectedServiceName: "test-release-cert-manager",
+	},
 	{
 		HelmChartPath:       "../../../ingress-traefik",
 		Namespace:           "traefik",
@@ -39,8 +47,7 @@ var testOptions = []TestOptions{
 
 func TestMinikubeIntegration(t *testing.T) {
 
-	//create temp directory "/tmp/integrationtest"
-	tempDir, err := commonutil.CreateTempDir("integrationtest")
+	tempDir, err := commonutil.CreateTempDir("integrationtest") //create temp directory "/tmp/integrationtest"
 	require.NoError(t, err)
 	originalKubeconfig := os.Getenv("KUBECONFIG")
 
@@ -56,25 +63,16 @@ func TestMinikubeIntegration(t *testing.T) {
 
 	preTestSetup(t, kindCfg)
 	for _, options := range testOptions {
-		runHelmChartTest(t, kindCfg, options)
+		options := options // Capture range variable
+		testName := fmt.Sprintf("Testing Helm chart: %s", options.HelmChartPath)
+		t.Run(testName, func(t *testing.T) {
+			//t.Parallel()
+			runHelmChartTest(t, kindCfg, options)
+		})
 	}
-	// var wg sync.WaitGroup // Use a WaitGroup to wait for all goroutines to complete
-	// for _, options := range testOptions {
-	// 	options := options // Capture range variable
-	// 	wg.Add(1)
-	// 	go func(options TestOptions) {
-	// 		defer wg.Done()
-	// 		t.Run(fmt.Sprintf("Testing Helm chart: %s", options.HelmChartPath), func(t *testing.T) {
-	// 			t.Parallel()
-	// 			runHelmChartTest(t, kindCfg, options)
-	// 		})
-	// 	}(options)
-	// }
-	// wg.Wait()
 }
 
 func preTestSetup(t *testing.T, kindCfg kindutil.Config) {
-	// Start the Kind cluster
 	err := kindutil.StartKindCluster(kindCfg)
 	require.NoError(t, err, "Failed to start Kind cluster")
 	commonutil.SetKubeconfig(kindCfg.KubeConfigPath)
@@ -93,7 +91,6 @@ func postTestTeardown(t *testing.T, kindCfg kindutil.Config, tempDir string, ori
 }
 
 func runHelmChartTest(t *testing.T, kindCfg kindutil.Config, testOptions TestOptions) {
-	//helm test starts
 	helmChartPath, err := filepath.Abs(testOptions.HelmChartPath)
 	require.NoError(t, err)
 
@@ -104,7 +101,7 @@ func runHelmChartTest(t *testing.T, kindCfg kindutil.Config, testOptions TestOpt
 	helmValues := map[string]string{
 		"global.external-secrets.enabled": "false",
 		"global.test-secrets.enabled":     "true",
-	} // override helm values
+	} // set helm values
 	helmOptions := &helm.Options{
 		KubectlOptions: kubectlOptions,
 		SetValues:      commonutil.CombineMaps(helmValues, testOptions.OverrideHelmValues),
@@ -123,9 +120,7 @@ func runHelmChartTest(t *testing.T, kindCfg kindutil.Config, testOptions TestOpt
 	filterOptions := metav1.ListOptions{
 		// LabelSelector: fmt.Sprintf("app.kubernetes.io/instance=%s", releaseName+"-"+nameSpace),
 	}
-	k8s.WaitUntilNumPodsCreated(t, helmOptions.KubectlOptions, filterOptions, 1, 10, 5*time.Second) //desiredCount=1 , retries=10, sleepBetweenRetries=5sec
-	pods := k8s.ListPods(t, helmOptions.KubectlOptions, filterOptions)
-	assert.Equal(t, 1, len(pods))
+	k8s.WaitUntilNumPodsCreated(t, helmOptions.KubectlOptions, filterOptions, testOptions.ExpectedPodCount, 5, 5*time.Second) // retries=5, sleepBetweenRetries=5sec
 	k8s.GetService(t, helmOptions.KubectlOptions, testOptions.ExpectedServiceName)
 }
 

@@ -15,21 +15,26 @@ func GetCurrentDirectory() (string, error) {
 	return filepath.Dir(filePath), nil
 }
 
-func CreateTempDir(prefix string) (string, func(), error) {
+func CreateTempDir(prefix string) (string, error) {
 	tempDirParent := os.TempDir()
 	tempDir := filepath.Join(tempDirParent, prefix)
-
 	if _, err := os.Stat(tempDir); os.IsNotExist(err) {
 		err := os.Mkdir(tempDir, 0755)
 		if err != nil {
-			return "", nil, err
+			return "", err
 		}
 	}
+	return tempDir, nil
+}
 
-	cleanup := func() {
-		os.RemoveAll(tempDir)
+func RemoveTempDir(prefix string) error {
+	tempDirParent := os.TempDir()
+	tempDir := filepath.Join(tempDirParent, prefix)
+	err := os.RemoveAll(tempDir)
+	if err != nil {
+		return err
 	}
-	return tempDir, cleanup, nil
+	return nil
 }
 
 func SetKubeconfig(kubeconfigPath string) {
@@ -58,4 +63,13 @@ func GetDockerIp() string {
 		return envVarValue
 	}
 	return "127.0.0.1"
+}
+
+func CombineMaps(m1 map[string]string, m2 map[string]string) map[string]string {
+	if len(m2) > 0 {
+		for key, value := range m2 {
+			m1[key] = value
+		}
+	}
+	return m1
 }

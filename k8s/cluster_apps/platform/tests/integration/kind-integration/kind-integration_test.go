@@ -18,15 +18,31 @@ import (
 	"time"
 )
 
+var testOptions = []TestOptions{
+	{
+		HelmChartPath:       "../../../ingress-traefik",
+		Namespace:           "traefik",
+		ExpectedPodCount:    1,
+		ExpectedServiceName: "test-release-traefik",
+	},
+	{
+		HelmChartPath: "../../../grafana",
+		Namespace:     "grafana",
+		OverrideHelmValues: map[string]string{
+			"grafana.testFramework.enabled": "false",
+		},
+		ExpectedPodCount:    1,
+		ExpectedServiceName: "test-release-grafana",
+	},
+}
+
 func TestMinikubeIntegration(t *testing.T) {
-	t.Parallel()
+	//create temp directory "/tmp/integrationtest"
+	tempDir, err := commonutil.CreateTempDir("integrationtest")
+	require.NoError(t, err)
 	originalKubeconfig := os.Getenv("KUBECONFIG")
 
-	//create temp directory "/tmp/integrationtest"
-	tempDir, tempDirCleanup, err := commonutil.CreateTempDir("integrationtest")
-	require.NoError(t, err)
-
-	cfg := kindutil.Config{
+	kindCfg := kindutil.Config{
 		ClusterName:       "test-cluster",
 		KubernetesVersion: "v1.28.7",
 		KubeConfigPath:    tempDir + "/kind-kubeconfig",
@@ -36,66 +52,65 @@ func TestMinikubeIntegration(t *testing.T) {
 
 	//cleanup
 	defer func() {
-		err = kindutil.DeleteKindCluster(cfg)
+		err = kindutil.DeleteKindCluster(kindCfg)
 		assert.NoError(t, err, "Failed to stop Kind cluster")
 		commonutil.ResetKubeconfig(originalKubeconfig)
-		tempDirCleanup()
+		err = commonutil.RemoveTempDir("integrationtest")
+		assert.NoError(t, err, "failed to remove temporary directory")
 	}()
 
+	preTestSetup(t, kindCfg)
+	for _, options := range testOptions {
+		runHelmChartTest(t, kindCfg, options)
+	}
+}
+
+func preTestSetup(t *testing.T, kindCfg kindutil.Config) {
 	// Start the Kind cluster
-	err = kindutil.StartKindCluster(cfg)
-	assert.NoError(t, err, "Failed to start Kind cluster")
-	commonutil.SetKubeconfig(cfg.KubeConfigPath)
-	assert.Equal(t, cfg.KubeConfigPath, os.Getenv("KUBECONFIG"), "KUBECONFIG should be set to the custom kubeconfig path")
-
-	// Wait until all nodes are ready
-	nameSpace := "traefik"
-	serviceName := "test-release-traefik"
-	kubectlOptions := k8s.NewKubectlOptions("", cfg.KubeConfigPath, nameSpace)
+	err := kindutil.StartKindCluster(kindCfg)
+	require.NoError(t, err, "Failed to start Kind cluster")
+	commonutil.SetKubeconfig(kindCfg.KubeConfigPath)
+	assert.Equal(t, kindCfg.KubeConfigPath, os.Getenv("KUBECONFIG"), "KUBECONFIG should be set to the custom kubeconfig path")
+	kubectlOptions := k8s.NewKubectlOptions("", kindCfg.KubeConfigPath, "")
 	k8s.WaitUntilAllNodesReady(t, kubectlOptions, 5, 5*time.Second) //maxRetries=5 & sleepBetweenRetries=5sec
+	installPrerequisiteCRDs(t, kubectlOptions)                      // Install Prerequisite CRD's
+}
 
+func runHelmChartTest(t *testing.T, kindCfg kindutil.Config, testOptions TestOptions) {
 	//helm test starts
-	helmChartPath, err := filepath.Abs("../../../ingress-traefik")
+	helmChartPath, err := filepath.Abs(testOptions.HelmChartPath)
 	require.NoError(t, err)
 
-	k8s.CreateNamespace(t, kubectlOptions, nameSpace)
-	defer k8s.DeleteNamespace(t, kubectlOptions, nameSpace)
+	kubectlOptions := k8s.NewKubectlOptions("", kindCfg.KubeConfigPath, testOptions.Namespace)
+	k8s.CreateNamespace(t, kubectlOptions, testOptions.Namespace)
+	defer k8s.DeleteNamespace(t, kubectlOptions, testOptions.Namespace)
 
-	helmOptValues := map[string]string{
+	helmValues := map[string]string{
 		"global.external-secrets.enabled": "false",
 		"global.test-secrets.enabled":     "true",
-		"grafana.testFramework.enabled":   "false",
 	} // override helm values
 	helmOptions := &helm.Options{
 		KubectlOptions: kubectlOptions,
-		SetValues:      helmOptValues,
+		SetValues:      commonutil.CombineMaps(helmValues, testOptions.OverrideHelmValues),
 		// BuildDependencies: true,
 	}
-
 	extraHelmArgs := []string{"--include-crds", "--create-namespace", "--dependency-update"}
 	releaseName := "test-release"
 	helmOutput := helm.RenderTemplate(t, helmOptions, helmChartPath, releaseName, []string{}, extraHelmArgs...)
-
-	installPrerequisiteCRDs(t, k8s.NewKubectlOptions("", cfg.KubeConfigPath, "")) // Install Prerequisite CRD's
 	crdManifests, otherManifests := splitCRDsAndOthers(helmOutput)
-
 	if crdManifests != "" {
 		k8s.KubectlApplyFromString(t, helmOptions.KubectlOptions, crdManifests) // Apply CRDs first
 	}
 	if otherManifests != "" {
 		k8s.KubectlApplyFromString(t, helmOptions.KubectlOptions, otherManifests) // Apply the remaining resources
 	}
-
-	//then
 	filterOptions := metav1.ListOptions{
 		// LabelSelector: fmt.Sprintf("app.kubernetes.io/instance=%s", releaseName+"-"+nameSpace),
 	}
 	k8s.WaitUntilNumPodsCreated(t, helmOptions.KubectlOptions, filterOptions, 1, 10, 5*time.Second) //desiredCount=1 , retries=10, sleepBetweenRetries=5sec
 	pods := k8s.ListPods(t, helmOptions.KubectlOptions, filterOptions)
 	assert.Equal(t, 1, len(pods))
-
-	//check for service name
-	k8s.GetService(t, helmOptions.KubectlOptions, serviceName)
+	k8s.GetService(t, helmOptions.KubectlOptions, testOptions.ExpectedServiceName)
 }
 
 func installPrerequisiteCRDs(t *testing.T, options *k8s.KubectlOptions) {
@@ -143,4 +158,12 @@ func splitCRDsAndOthers(manifests string) (string, string) {
 		}
 	}
 	return strings.Join(crdManifests, "---"), strings.Join(otherManifests, "---")
+}
+
+type TestOptions struct {
+	HelmChartPath       string
+	Namespace           string
+	OverrideHelmValues  map[string]string
+	ExpectedPodCount    int
+	ExpectedServiceName string
 }

@@ -90,38 +90,38 @@ func postTestTeardown(t *testing.T, kindCfg kindutil.Config, tempDir string, ori
 	assert.NoError(t, err, "failed to remove temporary directory")
 }
 
-func runHelmChartTest(t *testing.T, kindCfg kindutil.Config, testOptions TestOptions) {
-	helmChartPath, err := filepath.Abs(testOptions.HelmChartPath)
+func runHelmChartTest(t *testing.T, kindCfg kindutil.Config, testOpts TestOptions) {
+	helmChartPath, err := filepath.Abs(testOpts.HelmChartPath)
 	require.NoError(t, err)
 
-	kubectlOptions := k8s.NewKubectlOptions("", kindCfg.KubeConfigPath, testOptions.Namespace)
-	k8s.CreateNamespace(t, kubectlOptions, testOptions.Namespace)
-	defer k8s.DeleteNamespace(t, kubectlOptions, testOptions.Namespace)
+	kubectlOpts := k8s.NewKubectlOptions("", kindCfg.KubeConfigPath, testOpts.Namespace)
+	k8s.CreateNamespace(t, kubectlOpts, testOpts.Namespace)
+	defer k8s.DeleteNamespace(t, kubectlOpts, testOpts.Namespace)
 
 	helmValues := map[string]string{
 		"global.external-secrets.enabled": "false",
 		"global.test-secrets.enabled":     "true",
 	} // set helm values
-	helmOptions := &helm.Options{
-		KubectlOptions: kubectlOptions,
-		SetValues:      commonutil.CombineMaps(helmValues, testOptions.OverrideHelmValues),
+	helmOpts := &helm.Options{
+		KubectlOptions: kubectlOpts,
+		SetValues:      commonutil.CombineMaps(helmValues, testOpts.OverrideHelmValues),
 		// BuildDependencies: true,
 	}
 	extraHelmArgs := []string{"--include-crds", "--create-namespace", "--dependency-update"}
 	releaseName := "test-release"
-	helmOutput := helm.RenderTemplate(t, helmOptions, helmChartPath, releaseName, []string{}, extraHelmArgs...)
+	helmOutput := helm.RenderTemplate(t, helmOpts, helmChartPath, releaseName, []string{}, extraHelmArgs...)
 	crdManifests, otherManifests := splitCRDsAndOthers(helmOutput)
 	if crdManifests != "" {
-		k8s.KubectlApplyFromString(t, helmOptions.KubectlOptions, crdManifests) // Apply CRDs first
+		k8s.KubectlApplyFromString(t, helmOpts.KubectlOptions, crdManifests) // Apply CRDs first
 	}
 	if otherManifests != "" {
-		k8s.KubectlApplyFromString(t, helmOptions.KubectlOptions, otherManifests) // Apply the remaining resources
+		k8s.KubectlApplyFromString(t, helmOpts.KubectlOptions, otherManifests) // Apply the remaining resources
 	}
 	filterOptions := metav1.ListOptions{
 		// LabelSelector: fmt.Sprintf("app.kubernetes.io/instance=%s", releaseName+"-"+nameSpace),
 	}
-	k8s.WaitUntilNumPodsCreated(t, helmOptions.KubectlOptions, filterOptions, testOptions.ExpectedPodCount, 5, 5*time.Second) // retries=5, sleepBetweenRetries=5sec
-	k8s.GetService(t, helmOptions.KubectlOptions, testOptions.ExpectedServiceName)
+	k8s.WaitUntilNumPodsCreated(t, helmOpts.KubectlOptions, filterOptions, testOpts.ExpectedPodCount, 5, 5*time.Second) // retries=5, sleepBetweenRetries=5sec
+	k8s.GetService(t, helmOpts.KubectlOptions, testOpts.ExpectedServiceName)
 }
 
 func installPrerequisiteCRDs(t *testing.T, options *k8s.KubectlOptions) {

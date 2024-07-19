@@ -48,6 +48,8 @@ terraform.rc
 
 ### helm
 **/charts/*.tgz
+### custom ignore
+/k8s/cluster_apps/platform/**/Chart.lock
 
 ### python
 __pycache__/

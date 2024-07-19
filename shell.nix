@@ -1,5 +1,5 @@
 let
-    nixpkgs = fetchTarball "https://github.com/NixOS/nixpkgs/tarball/nixos-23.11";
+    nixpkgs = fetchTarball "https://github.com/NixOS/nixpkgs/tarball/nixos-24.05";
     pkgs = import nixpkgs { config = {}; overlays = []; };
     isMacOS = pkgs.stdenv.hostPlatform.system == "darwin";
     useRemoteDocker = "true";
@@ -26,6 +26,10 @@ pkgs.mkShellNoCC {
         #pkgs.ansible-lint
         #pkgs.yamllint
         pkgs.parallel
+        ## added for go test(terratest)
+        pkgs.go
+        pkgs.clang
+        pkgs.kind
         ## added for ssh access
         pkgs.git
         pkgs.curl
@@ -33,12 +37,18 @@ pkgs.mkShellNoCC {
         #pkgs.vaultwarden
         #pkgs.prometheus-alertmanager
         #pkgs.postgresql_jit
-    ] ++ (if pkgs.stdenv.isDarwin then [ pkgs.darwin.iproute2mac ] else [ pkgs.iproute2 ]);
+    ] ++ (if pkgs.stdenv.isDarwin then [ pkgs.darwin.iproute2mac pkgs.darwin.apple_sdk.frameworks.CoreFoundation ] else [ pkgs.iproute2 ]);
 
     HISTCONTROL = "ignoreboth:erasedups";
     #KUBECONFIG = "~/.kube/config";
 
     shellHook = ''
+        # Added for go test(terratest)
+        export CGO_ENABLED=1
+        export CC=clang
+        export CXX=clang++
+        export GOARCH=arm64
+
         alias k="kubectl"
         alias kg="kubectl get"
         alias tf="terraform"
@@ -47,6 +57,7 @@ pkgs.mkShellNoCC {
         if [ "${useRemoteDocker}" = "true" ]; then
             echo "Using remote Docker and setting ssh for the same"
             export DOCKER_HOST=ssh://ubuntu@192.168.0.30
+            export REMOTE_DOCKER_IP=192.168.0.30
             ## Start SSH agent if not already running
             if [ -z "$SSH_AGENT_PID" ]; then
                 eval $(ssh-agent -s)

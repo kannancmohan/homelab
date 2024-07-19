@@ -1,0 +1,37 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: "ingress-traefik-test-metrics-service"
+  namespace: ingress-traefik-test
+  labels:
+    app: "ingress-traefik-test-metrics-service"
+spec:
+  selector:
+    app.kubernetes.io/name: ingress-traefik-test
+  ports:
+  - name: metrics
+    port: 9100
+---
+# Added for exposing metrics to prometheus
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name:  traefik
+  namespace: ingress-traefik-test
+  labels:
+    app: traefik
+    release: kube-prometheus-stack
+spec:
+  jobLabel: traefik-metrics
+  selector:
+    matchLabels:
+      app: "ingress-traefik-test-metrics-service"
+  namespaceSelector:
+    matchNames:
+      - ingress-traefik-test
+  endpoints:
+    - port: metrics
+      path: /metrics
+      honorLabels: true

@@ -4,13 +4,13 @@
 1. Ensure you have Go installed and initialize a new Go module in your project root
 Executing the following command will generate go.mod file
 ```
-cd your-project
-go mod init your-project
+cd /k8s/tests
+go mod init homelab_test
 ```
-2. Edit go.mod to include Terratest dependency and execute "go mod tidy"
+2. Edit go.mod to include Terratest dependency
 Eg:
 ```
-module homelab
+module homelab_test
 
 go 1.21.10
 
@@ -32,6 +32,7 @@ The idea is to validate the generated helm template against a predefined golden 
 
 Execute the test
 ```
+cd /k8s/tests
 go test -v ./k8s/tests/unit/...
 ```
 
@@ -39,12 +40,14 @@ go test -v ./k8s/tests/unit/...
 
 Execute the test
 ```
-go test -v ./k8s/tests/integration/...
+cd /k8s/tests
+go test -v ./integration/...
 ```
 
 ## Format go test files
 ```
-go fmt ./k8s/tests/...
+cd /k8s/tests
+go fmt ./...
 ```
 
 

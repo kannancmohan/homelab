@@ -1,7 +1,7 @@
 package unit
 
 import (
-	"homelab/k8s/tests/utils/unit"
+	"homelab_test/utils/unit"
 	"path/filepath"
 	"testing"
 

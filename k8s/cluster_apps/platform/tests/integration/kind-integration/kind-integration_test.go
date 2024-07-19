@@ -120,8 +120,12 @@ func runHelmChartTest(t *testing.T, kindCfg kindutil.Config, testOpts TestOption
 	filterOptions := metav1.ListOptions{
 		// LabelSelector: fmt.Sprintf("app.kubernetes.io/instance=%s", releaseName+"-"+nameSpace),
 	}
-	k8s.WaitUntilNumPodsCreated(t, helmOpts.KubectlOptions, filterOptions, testOpts.ExpectedPodCount, 5, 5*time.Second) // retries=5, sleepBetweenRetries=5sec
-	k8s.GetService(t, helmOpts.KubectlOptions, testOpts.ExpectedServiceName)
+	if testOpts.ExpectedPodCount > 0 {
+		k8s.WaitUntilNumPodsCreated(t, helmOpts.KubectlOptions, filterOptions, testOpts.ExpectedPodCount, 5, 5*time.Second) // retries=5, sleepBetweenRetries=5sec
+	}
+	if testOpts.ExpectedServiceName != "" {
+		k8s.GetService(t, helmOpts.KubectlOptions, testOpts.ExpectedServiceName)
+	}
 }
 
 func installPrerequisiteCRDs(t *testing.T, options *k8s.KubectlOptions) {

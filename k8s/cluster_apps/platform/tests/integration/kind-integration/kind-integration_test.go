@@ -14,6 +14,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	// "sync"
 	"testing"
 	"time"
 )
@@ -37,6 +38,7 @@ var testOptions = []TestOptions{
 }
 
 func TestMinikubeIntegration(t *testing.T) {
+
 	//create temp directory "/tmp/integrationtest"
 	tempDir, err := commonutil.CreateTempDir("integrationtest")
 	require.NoError(t, err)
@@ -50,19 +52,25 @@ func TestMinikubeIntegration(t *testing.T) {
 		KindDockerIp:      commonutil.GetDockerIp(),
 	}
 
-	//cleanup
-	defer func() {
-		err = kindutil.DeleteKindCluster(kindCfg)
-		assert.NoError(t, err, "Failed to stop Kind cluster")
-		commonutil.ResetKubeconfig(originalKubeconfig)
-		err = commonutil.RemoveTempDir("integrationtest")
-		assert.NoError(t, err, "failed to remove temporary directory")
-	}()
+	defer postTestTeardown(t, kindCfg, tempDir, originalKubeconfig)
 
 	preTestSetup(t, kindCfg)
 	for _, options := range testOptions {
 		runHelmChartTest(t, kindCfg, options)
 	}
+	// var wg sync.WaitGroup // Use a WaitGroup to wait for all goroutines to complete
+	// for _, options := range testOptions {
+	// 	options := options // Capture range variable
+	// 	wg.Add(1)
+	// 	go func(options TestOptions) {
+	// 		defer wg.Done()
+	// 		t.Run(fmt.Sprintf("Testing Helm chart: %s", options.HelmChartPath), func(t *testing.T) {
+	// 			t.Parallel()
+	// 			runHelmChartTest(t, kindCfg, options)
+	// 		})
+	// 	}(options)
+	// }
+	// wg.Wait()
 }
 
 func preTestSetup(t *testing.T, kindCfg kindutil.Config) {
@@ -74,6 +82,14 @@ func preTestSetup(t *testing.T, kindCfg kindutil.Config) {
 	kubectlOptions := k8s.NewKubectlOptions("", kindCfg.KubeConfigPath, "")
 	k8s.WaitUntilAllNodesReady(t, kubectlOptions, 5, 5*time.Second) //maxRetries=5 & sleepBetweenRetries=5sec
 	installPrerequisiteCRDs(t, kubectlOptions)                      // Install Prerequisite CRD's
+}
+
+func postTestTeardown(t *testing.T, kindCfg kindutil.Config, tempDir string, originalKubeconfig string) {
+	err := kindutil.DeleteKindCluster(kindCfg)
+	assert.NoError(t, err, "Failed to stop Kind cluster")
+	commonutil.ResetKubeconfig(originalKubeconfig)
+	err = commonutil.RemoveTempDir(tempDir)
+	assert.NoError(t, err, "failed to remove temporary directory")
 }
 
 func runHelmChartTest(t *testing.T, kindCfg kindutil.Config, testOptions TestOptions) {

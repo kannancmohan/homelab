@@ -27,9 +27,7 @@ func CreateTempDir(prefix string) (string, error) {
 	return tempDir, nil
 }
 
-func RemoveTempDir(prefix string) error {
-	tempDirParent := os.TempDir()
-	tempDir := filepath.Join(tempDirParent, prefix)
+func RemoveTempDir(tempDir string) error {
 	err := os.RemoveAll(tempDir)
 	if err != nil {
 		return err

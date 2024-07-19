@@ -6,8 +6,8 @@ import (
 	"github.com/gruntwork-io/terratest/modules/k8s"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"homelab/k8s/cluster_apps/platform/tests/utils/commonutil"
-	"homelab/k8s/cluster_apps/platform/tests/utils/integration/kindutil"
+	"homelab/k8s/tests/utils/commonutil"
+	"homelab/k8s/tests/utils/integration/kindutil"
 	"io/ioutil"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"net/http"
@@ -20,7 +20,7 @@ import (
 
 var testOptions = []TestOptions{
 	{
-		HelmChartPath: "../../../cert-manager",
+		HelmChartPath: "../../../cluster_apps/platform/cert-manager",
 		Namespace:     "cert-manager",
 		OverrideHelmValues: map[string]string{
 			"global.leaderElection.namespace": "cert-manager",
@@ -29,13 +29,13 @@ var testOptions = []TestOptions{
 		ExpectedServiceName: "test-release-cert-manager",
 	},
 	{
-		HelmChartPath:       "../../../ingress-traefik",
+		HelmChartPath:       "../../../cluster_apps/platform/ingress-traefik",
 		Namespace:           "traefik",
 		ExpectedPodCount:    1,
 		ExpectedServiceName: "test-release-traefik",
 	},
 	{
-		HelmChartPath: "../../../grafana",
+		HelmChartPath: "../../../cluster_apps/platform/grafana",
 		Namespace:     "grafana",
 		OverrideHelmValues: map[string]string{
 			"grafana.testFramework.enabled": "false",
@@ -45,7 +45,7 @@ var testOptions = []TestOptions{
 	},
 }
 
-func TestMinikubeIntegration(t *testing.T) {
+func TestKindIntegration(t *testing.T) {
 
 	tempDir, err := commonutil.CreateTempDir("integrationtest") //create temp directory "/tmp/integrationtest"
 	require.NoError(t, err)

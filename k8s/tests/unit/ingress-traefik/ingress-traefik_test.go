@@ -1,7 +1,7 @@
 package unit
 
 import (
-	"homelab/k8s/cluster_apps/platform/tests/utils/unit"
+	"homelab/k8s/tests/utils/unit"
 	"path/filepath"
 	"testing"
 
@@ -12,7 +12,7 @@ import (
 func TestGoldenDefaultsTemplate(t *testing.T) {
 	t.Parallel()
 
-	chartPath, err := filepath.Abs("../../../ingress-traefik")
+	chartPath, err := filepath.Abs("../../../cluster_apps/platform/ingress-traefik")
 	require.NoError(t, err)
 	//templateNames := []string{"service", "serviceaccount", "deployment", "ingress"}
 	templateNames := []string{"traefik-service-monitor"}

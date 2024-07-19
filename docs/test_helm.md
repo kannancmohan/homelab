@@ -32,14 +32,19 @@ The idea is to validate the generated helm template against a predefined golden 
 
 Execute the test
 ```
-go test -v ./k8s/cluster_apps/platform/tests/unit/...
+go test -v ./k8s/tests/unit/...
 ```
 
 ## Helm Integration test
 
 Execute the test
 ```
-go test -v ./k8s/cluster_apps/platform/tests/integration/...
+go test -v ./k8s/tests/integration/...
+```
+
+## Format go test files
+```
+go fmt ./k8s/tests/...
 ```
 
 

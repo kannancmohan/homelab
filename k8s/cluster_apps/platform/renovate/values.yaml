@@ -8,7 +8,6 @@ renovate:
   renovate:
     config: |
       {
-        "platform": "github",
         "repositories": ["kannancmohan/homelab"],
         "baseBranches": ["main"],
         "printConfig": false,

@@ -4,3 +4,5 @@
 2. Generate a new token with the necessary scopes (https://github.com/settings/tokens)
     select scope as "repo"
 3. Add the new token to renovate-credential
+
+## Add renovate.json to your project 

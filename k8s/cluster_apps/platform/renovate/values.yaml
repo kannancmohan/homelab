@@ -1,0 +1,21 @@
+## Official configuration - https://docs.renovatebot.com/self-hosted-configuration/
+## Helm chart values -https://github.com/renovatebot/helm-charts/blob/main/charts/renovate/values.yaml
+renovate:
+  enabled: true
+  cronjob:
+    schedule: "0 5 * * *" # every day at 1AM
+    timeZone: 'Europe/Berlin'
+  renovate:
+    config: |
+      {
+        "platform": "github",
+        "repositories": ["kannancmohan/homelab"],
+        "baseBranches": ["main"],
+        "printConfig": false,
+        "dependencyDashboard": true,
+        "dependencyDashboardTitle": "Renovate Dashboard",
+        "pre-commit": {
+          "enabled": true
+        }
+      }
+  existingSecret: renovate-credential

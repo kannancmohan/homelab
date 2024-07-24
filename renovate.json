@@ -26,15 +26,7 @@
             "(^|/)service\\.ya?ml$",
             "(^|/)configmap\\.ya?ml$",
             "(^|/)secret\\.ya?ml$"
-        ],
-        "ignorePaths": ["templates/"]
-    },
-    "packageRules": [
-        {
-          "matchManagers": ["helm-values"],
-          "matchPaths": ["**/k8s/**/values.yaml"],
-          "groupName": "Helm Values Updates"
-        }
-    ]
+        ]
+    }
   }
   

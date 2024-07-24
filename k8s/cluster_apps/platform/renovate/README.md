@@ -6,3 +6,12 @@
 3. Add the new token to renovate-credential
 
 ## Add renovate.json to your project 
+Eg:
+```
+{
+    "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+    "extends": [
+      "config:base"
+    ]
+}    
+```

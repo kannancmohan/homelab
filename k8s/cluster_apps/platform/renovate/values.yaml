@@ -2,9 +2,9 @@
 ## Helm chart values -https://github.com/renovatebot/helm-charts/blob/main/charts/renovate/values.yaml
 renovate:
   enabled: true
-  # cronjob:
-  #   schedule: "0 5 * * *" # every day at 1AM
-  #   timeZone: 'Europe/Berlin'
+  cronjob:
+    schedule: "0 6 * * *" # every day at 1AM
+    timeZone: 'Europe/Berlin'
   renovate:
     config: |
       {

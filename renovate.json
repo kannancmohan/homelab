@@ -29,7 +29,7 @@
         ]
     },
     "terraform": {
-        "fileMatch": ["(^|/)\\.tf$"],
+        "fileMatch": ["\\.tf$"],
         "pinDigests": false
     }
   }

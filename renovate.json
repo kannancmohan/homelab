@@ -12,8 +12,10 @@
         "kubernetes"
     ],
     "helmv3": {
-        "fileMatch": ["(^|/)Chart\\.ya?ml$"],
-        "commitMessageTopic": "helm chart {{depName}} tp {{newVersion}}"
+        "fileMatch": ["(^|/)Chart\\.ya?ml$"]
+    },
+    "helm-values": {
+        "fileMatch": ["(^|/)values\\.ya?ml$"]
     },
     "dockerfile": {
         "fileMatch": ["(^|/)Dockerfile$"]
@@ -26,6 +28,13 @@
             "(^|/)secret\\.ya?ml$"
         ],
         "ignorePaths": ["templates/"]
-    }
+    },
+    "packageRules": [
+        {
+          "matchManagers": ["helm-values"],
+          "matchPaths": ["**/k8s/**/values.yaml"],
+          "groupName": "Helm Values Updates"
+        }
+    ]
   }
   

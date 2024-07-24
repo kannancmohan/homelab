@@ -5,4 +5,4 @@ dependencies:
   - name: loki-distributed
     repository: https://grafana.github.io/helm-charts
     condition: loki-distributed.enabled
-    version: 0.79.0
+    version: 0.79.1

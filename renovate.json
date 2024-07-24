@@ -27,6 +27,10 @@
             "(^|/)configmap\\.ya?ml$",
             "(^|/)secret\\.ya?ml$"
         ]
+    },
+    "terraform": {
+        "fileMatch": ["(^|/)\\.tf$"],
+        "pinDigests": false
     }
   }
   

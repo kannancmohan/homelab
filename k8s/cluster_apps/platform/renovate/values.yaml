@@ -9,12 +9,8 @@ renovate:
     config: |
       {
         "repositories": ["kannancmohan/homelab"],
-        "baseBranches": ["main"],
         "printConfig": false,
         "dependencyDashboard": true,
-        "dependencyDashboardTitle": "Renovate Dashboard",
-        "pre-commit": {
-          "enabled": true
-        }
+        "dependencyDashboardTitle": "Renovate Dashboard"
       }
   existingSecret: renovate-credential

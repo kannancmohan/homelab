@@ -33,6 +33,8 @@
     "terraform": {
         "fileMatch": ["\\.tf$"],
         "pinDigests": false
-    }
+    },
+    "timezone": "Europe/Berlin",
+    "schedule": ["Runs at 11:30 AM"]
   }
   

@@ -3,7 +3,7 @@
 renovate:
   enabled: true
   cronjob:
-    schedule: "0 6 * * *" # every day at 1AM
+    schedule: "0 13:10 * * *" # every day at 1:10pm
     timeZone: 'Europe/Berlin'
   renovate:
     config: |

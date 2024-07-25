@@ -16,6 +16,7 @@ A project that utilizes IaC and GitOps practices for provisioning and configurin
 ├── scripts/            # contains different shell scripts 
 │   └── templates       # contains copier templates
 ├── README.md
+├── renovate.json       # renovate configuration file
 └── shell.nix           # nix configuration for starting nix shell with necessary project dependencies
 ```
 
@@ -202,6 +203,11 @@ Trivy is used for security scanning and Grafana to visualize it
         <td><a href="https://github.com/aquasecurity/trivy">Trivy</a></td>
         <td>Trivy continuously scans Kubernetes cluster for security issues</td>
         <td>Installed as part of <a href="https://artifacthub.io/packages/helm/trivy-operator/trivy-operator">trivy-operator</a></td>
+    </tr>
+    <tr>
+        <td><a href="https://github.com/renovatebot/renovate">Renovate</a></td>
+        <td>Renovate automatically updates third-party dependencies declared in Git repository via pull requests</td>
+        <td>Installed as part of <a href="https://artifacthub.io/packages/helm/renovate/renovate">renovate</a></td>
     </tr>
     <tr>
         <td><a href="https://grafana.com/">Grafana</a></td>

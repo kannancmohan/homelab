@@ -50,8 +50,6 @@ cd /k8s/tests
 go fmt ./...
 ```
 
-
 ## Terratest test file naming convention
 * Name your test files with a _test.go suffix
 * Test function names should start with Test followed by the name of the function being tested.
-

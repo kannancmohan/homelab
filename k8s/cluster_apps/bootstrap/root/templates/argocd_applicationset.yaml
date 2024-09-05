@@ -42,11 +42,11 @@ spec:
                 organization: '{{ $.Values.gitops.gitOrgName }}' # The GitHub organization to scan.
                 allBranches: false # If false, scan only the default branch
               cloneProtocol: https
-              filters: 
-              - pathsExist:
-                  - infra/k8s/helm
-                repositoryMatch: ^app2-development
-                branchMatch: helm
+              filters:
+                - pathsExist:
+                    - infra/k8s/helm
+                  repositoryMatch: ^app2-development
+                  branchMatch: helm
       selector:
           matchExpressions:
             - key: values.appEnabled

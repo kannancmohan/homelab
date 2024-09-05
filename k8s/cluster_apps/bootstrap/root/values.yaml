@@ -1,5 +1,5 @@
 gitops:
-  gitOrgName: kannancmohan
+  gitOrgName: kannancmohanorg #ensure you have a organization created. for github use https://github.com/account/organizations/new
   repo: https://github.com/kannancmohan/homelab
   revision: main
 

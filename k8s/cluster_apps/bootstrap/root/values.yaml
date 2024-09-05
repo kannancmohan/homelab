@@ -20,3 +20,4 @@ argoApplicationSet:
     repoRevision: helm
     path: infra/k8s
     appProject: apps
+    skipGlobalValues: 'true'

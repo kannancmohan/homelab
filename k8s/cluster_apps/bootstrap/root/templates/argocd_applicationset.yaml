@@ -14,8 +14,8 @@ spec:
           - values.repoPath
         generators:
           - git: # Used for retrieving apps specified at path in a git-repo-project
-              repoURL: '{{ $.Values.gitops.repo }}'
-              revision: '{{ $.Values.gitops.revision }}'
+              repoURL: '{{ $appSet.repo }}'
+              revision: '{{ $appSet.repoRevision }}'
               directories:
                 - path: '{{ $appSet.path }}/*'
               values:
@@ -25,8 +25,8 @@ spec:
                 appNameSpace: '{{ `{{ path.basename }}` }}'
                 syncWave: "0"
           - git: # Used for retrieving apps if config.json exists in specified path in a git-repo-project
-              repoURL: '{{ $.Values.gitops.repo }}'
-              revision: '{{ $.Values.gitops.revision }}'
+              repoURL: '{{ $appSet.repo }}'
+              revision: '{{ $appSet.repoRevision }}'
               files:
                 - path: '{{ $appSet.path }}/**/config.json'
               values:
@@ -55,9 +55,9 @@ spec:
         helm:
           valueFiles:
             - $values/k8s/cluster_apps/apps-global-values.yaml
-        repoURL: {{ $.Values.gitops.repo }}
+        repoURL: {{ $appSet.repo }}
         path: '{{ `{{ path }}` }}'
-        targetRevision: {{ $.Values.gitops.revision }}
+        targetRevision: {{ $appSet.repoRevision }}
       syncPolicy:
         automated:
           prune: true

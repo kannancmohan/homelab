@@ -1,7 +1,3 @@
-gitops:
-  repo: https://github.com/kannancmohan/homelab
-  revision: main
-
 # argocd AppProject
 argoProjects:
   - name: platform
@@ -10,8 +6,12 @@ argoProjects:
 # argocd ApplicationSet
 argoApplicationSet:
   - name: bootstrap
+    repo: https://github.com/kannancmohan/homelab
+    repoRevision: main
     path: k8s/cluster_apps/bootstrap
     appNamespace: argocd
   - name: platform
+    repo: https://github.com/kannancmohan/homelab
+    repoRevision: main
     path: k8s/cluster_apps/platform
     appProject: platform

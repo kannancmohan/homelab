@@ -39,7 +39,7 @@ spec:
                       syncWave: '{{ `{{ app.syncWave }}` }}'
           - scmProvider:
               github:
-                users: ['{{ $.Values.gitops.gitOrgName }}'] # The GitHub organization to scan.
+                organization: ['{{ $.Values.gitops.gitOrgName }}'] # The GitHub organization to scan.
                 allBranches: false # If false, scan only the default branch
               cloneProtocol: https
               filters: 

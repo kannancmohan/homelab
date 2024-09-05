@@ -37,9 +37,9 @@ spec:
                 syncWave: '{{ `{{ app.syncWave }}` }}'
           - git: # Used for retrieving all git-repo-projects from a given git organization url and that matches filter pattern
               repoURL: '{{ $.Values.gitops.org }}'
+              revision: '{{ $.Values.gitops.revision }}'
               directories:
                 - path: "app2-development*/infra/k8s/helm"  # Match repositories starting with "app2-development" and with the correct path
-              revision: helm #change this to main
               values:
                 repoPath: '{{ `{{ path }}` }}'
                 appEnabled: 'true'

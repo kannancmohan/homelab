@@ -39,7 +39,7 @@ spec:
               repoURL: '{{ $.Values.gitops.org }}'
               directories:
                 - path: "app2-development*/infra/k8s/helm"  # Match repositories starting with "app2-development" and with the correct path
-              reference: helm #change this to main
+              revision: helm #change this to main
               values:
                 repoPath: '{{ `{{ path }}` }}'
                 appEnabled: 'true'

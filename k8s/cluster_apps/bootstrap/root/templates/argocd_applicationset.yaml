@@ -41,6 +41,8 @@ spec:
               filters:
                 - path: "^app2-development.*"  # Match repositories that start with "app2-development"
               reference: helm #change this to main
+              values:
+                repoPath: '{{ `{{ path }}` }}'
       selector:
           matchExpressions:
             - key: values.appEnabled

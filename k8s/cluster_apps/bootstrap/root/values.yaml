@@ -18,5 +18,5 @@ argoApplicationSet:
   - name: app2-apps
     repo: https://github.com/kannancmohan/app2-development-prototype-microservice
     repoRevision: helm
-    path: infra/k8s/helm
+    path: infra/k8s
     appProject: apps

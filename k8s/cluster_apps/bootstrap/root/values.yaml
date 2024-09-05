@@ -1,5 +1,5 @@
 gitops:
-  org: https://github.com/kannancmohan
+  gitOrgName: kannancmohan
   repo: https://github.com/kannancmohan/homelab
   revision: main
 

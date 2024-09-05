@@ -9,43 +9,44 @@ spec:
   # goTemplate: true
   # goTemplateOptions: ["missingkey=error"]
   generators:
-    - merge:
-        mergeKeys:
-          - values.repoPath
+    - matrix:
         generators:
-          - git: # Used for retrieving apps specified at path in a git-repo-project
-              repoURL: '{{ $.Values.gitops.repo }}'
-              revision: '{{ $.Values.gitops.revision }}'
-              directories:
-                - path: '{{ $appSet.path }}/*'
-              values:
-                repoPath: '{{ `{{ path }}` }}'
-                appEnabled: 'true'
-                appName: '{{ `{{ path.basename }}` }}'
-                appNameSpace: '{{ `{{ path.basename }}` }}'
-                syncWave: "0"
-          - git: # Used for retrieving apps if config.json exists in specified path in a git-repo-project
-              repoURL: '{{ $.Values.gitops.repo }}'
-              revision: '{{ $.Values.gitops.revision }}'
-              files:
-                - path: '{{ $appSet.path }}/**/config.json'
-              values:
-                repoPath: '{{ `{{ path }}` }}'
-                appEnabled: '{{ `{{ app.enabled }}` }}'
-                appName: '{{ `{{ app.name }}` }}'
-                appNameSpace: '{{ `{{ app.nameSpace }}` }}'
-                syncWave: '{{ `{{ app.syncWave }}` }}'
-          - git: # Used for retrieving all git-repo-projects from a given git organization url and that matches filter pattern
-              repoURL: '{{ $.Values.gitops.org }}'
-              revision: '{{ $.Values.gitops.revision }}'
-              directories:
-                - path: "app2-development*/infra/k8s/helm"  # Match repositories starting with "app2-development" and with the correct path
-              values:
-                repoPath: '{{ `{{ path }}` }}'
-                appEnabled: 'true'
-                appName: '{{ `{{ path.basename }}` }}'
-                appNameSpace: '{{ `{{ path.basename }}` }}'
-                syncWave: "0"
+          - merge:
+              mergeKeys:
+                - values.repoPath
+              generators:
+                - git: # Used for retrieving apps specified at path in a git-repo-project
+                    repoURL: '{{ $.Values.gitops.repo }}'
+                    revision: '{{ $.Values.gitops.revision }}'
+                    directories:
+                      - path: '{{ $appSet.path }}/*'
+                    values:
+                      repoPath: '{{ `{{ path }}` }}'
+                      appEnabled: 'true'
+                      appName: '{{ `{{ path.basename }}` }}'
+                      appNameSpace: '{{ `{{ path.basename }}` }}'
+                      syncWave: "0"
+                - git: # Used for retrieving apps if config.json exists in specified path in a git-repo-project
+                    repoURL: '{{ $.Values.gitops.repo }}'
+                    revision: '{{ $.Values.gitops.revision }}'
+                    files:
+                      - path: '{{ $appSet.path }}/**/config.json'
+                    values:
+                      repoPath: '{{ `{{ path }}` }}'
+                      appEnabled: '{{ `{{ app.enabled }}` }}'
+                      appName: '{{ `{{ app.name }}` }}'
+                      appNameSpace: '{{ `{{ app.nameSpace }}` }}'
+                      syncWave: '{{ `{{ app.syncWave }}` }}'
+          - scmProvider:
+              github:
+                organization: '{{ $.Values.gitops.gitOrgName }}' # The GitHub organization to scan.
+                allBranches: false # If false, scan only the default branch
+              cloneProtocol: https
+              filters: 
+              - pathsExist:
+                  - infra/k8s/helm
+                repositoryMatch: ^app2-development
+                branchMatch: helm
       selector:
           matchExpressions:
             - key: values.appEnabled

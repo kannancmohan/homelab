@@ -17,7 +17,7 @@ argoApplicationSet:
     appProject: platform
   - name: app2-apps
     repo: https://github.com/kannancmohan/app2-development-prototype-microservice
-    repoRevision: helm
+    repoRevision: main
     path: infra/k8s
     appProject: apps
     skipGlobalValues: 'true'

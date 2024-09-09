@@ -1,0 +1,8 @@
+{
+    "app": {
+        "enabled": "true",
+        "name": "tempo",
+        "nameSpace": "tempo",
+        "syncWave": "0"
+    }
+}

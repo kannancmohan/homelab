@@ -1,0 +1,18 @@
+## Official configuration - https://grafana.com/docs/tempo/latest/configuration/
+## Helm chart values - https://github.com/grafana/helm-charts/blob/main/charts/tempo/values.yaml
+tempo:
+  enabled: true
+  # fullnameOverride: tempo
+  tempo:
+    retention: 168h
+    # resources:
+    #   requests:
+    #     cpu:  1
+    #     memory: 2Gi
+    #   limits:
+    #     cpu: 1
+    #     memory: 2Gi
+  persistence:
+    enabled: true
+  serviceMonitor:
+    enabled: true

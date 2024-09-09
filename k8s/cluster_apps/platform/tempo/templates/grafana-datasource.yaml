@@ -1,0 +1,25 @@
+{{- $gatewayServiceName := "tempo" }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-grafana-datasource
+  namespace: {{ .Release.Namespace }}
+  labels:
+    # helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    {{- if .Chart.AppVersion }}
+    app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
+    {{- end }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    # TODO set the correct values for  name and instance
+    app.kubernetes.io/name: {{ .Release.Name }}
+    app.kubernetes.io/instance: {{ .Release.Namespace }}
+    grafana_datasource: "1"
+data:
+  datasource.yaml: |-
+    apiVersion: 1
+    datasources:
+    - name: Tempo
+      type: tempo
+      access: proxy
+      url: http://{{$gatewayServiceName}}.{{ .Release.Namespace }}.svc.{{ index .Values "tempo" "global" "clusterDomain" }}
+      isDefault: false

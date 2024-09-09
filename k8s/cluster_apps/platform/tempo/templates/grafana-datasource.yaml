@@ -22,5 +22,5 @@ data:
     - name: Tempo
       type: tempo
       access: proxy
-      url: http://{{$gatewayServiceName}}.{{ .Release.Namespace }}.svc.{{$clusterDomain}}
+      url: http://{{$gatewayServiceName}}.{{ .Release.Namespace }}.svc.{{$clusterDomain}}:{{ index .Values "tempo" "tempo" "server" "http_listen_port" }}
       isDefault: false

@@ -13,6 +13,6 @@ tempo:
     #     cpu: 1
     #     memory: 2Gi
   persistence:
-    enabled: true
+    enabled: false
   serviceMonitor:
     enabled: true

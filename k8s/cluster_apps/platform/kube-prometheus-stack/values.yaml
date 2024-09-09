@@ -24,19 +24,19 @@ kube-prometheus-stack:
 
   ## Provide custom recording or alerting rules to be deployed into the cluster.
   ## Optionally you can define the same using PrometheusRule resource definition
-  additionalPrometheusRulesMap:
-    - name: custom-alert-rules
-      groups:
-        - name: KubePodRestart
-          rules:
-            - alert: KubePodRestart
-              expr: rate(kube_pod_container_status_restarts_total[1m]) * 60 > 1
-              for: 1m
-              labels:
-                severity: critical
-              annotations:
-                summary: "Pod container restarted more than once in 1 minute"
-                description: "Container {{ $labels.container }} in Pod {{$labels.namespace}}/{{$labels.pod}} restarted more than once in the 1 minute"
+  # additionalPrometheusRulesMap:
+  #   - name: custom-alert-rules
+  #     groups:
+  #       - name: KubePodRestart
+  #         rules:
+  #           - alert: KubePodRestart
+  #             expr: rate(kube_pod_container_status_restarts_total[1m]) * 60 > 1
+  #             for: 1m
+  #             labels:
+  #               severity: critical
+  #             annotations:
+  #               summary: "Pod container restarted more than once in 1 minute"
+  #               description: "Container {{ $labels.container }} in Pod {{$labels.namespace}}/{{$labels.pod}} restarted more than once in the 1 minute"
 
   alertmanager:
     alertmanagerSpec:

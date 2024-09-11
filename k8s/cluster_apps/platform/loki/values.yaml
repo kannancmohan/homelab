@@ -44,7 +44,7 @@ loki:
     #     cpu: 50m
     #     memory: 64Mi
   read:
-    # replicas: 0
+    replicas: 0
     # persistence:
     #   storageClass: local-path
     # resources:

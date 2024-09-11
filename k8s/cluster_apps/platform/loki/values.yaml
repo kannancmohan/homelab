@@ -23,6 +23,43 @@ loki:
       enabled: true
   test:
     enabled: false
+  write:
+    replicas: 0
+    persistence:
+      storageClass: local-path
+    resources:
+      limits:
+        cpu: 300m
+        memory: 1Gi
+      requests:
+        cpu: 50m
+        memory: 64Mi
+  read:
+    replicas: 0
+    persistence:
+      storageClass: local-path
+    resources:
+      limits:
+        cpu: 300m
+        memory: 1Gi
+      requests:
+        cpu: 50m
+        memory: 64Mi
+  singleBinary:
+    replicas: 1
+    extraArgs:
+      - --pattern-ingester.enabled=true
+    persistence:
+      storageClass: local-path
+    resources:
+      limits:
+        cpu: 300m
+        memory: 1Gi
+      requests:
+        cpu: 50m
+        memory: 64Mi
+  lokiCanary:
+    enabled: false
   gateway:
     enabled: false
     resources:

@@ -4,6 +4,8 @@ loki:
   enabled: true
   deploymentMode: SingleBinary
   loki:
+    commonConfig:
+      replication_factor: 1
     auth_enabled: false
     storage:
       type: filesystem

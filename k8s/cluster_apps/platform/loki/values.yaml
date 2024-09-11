@@ -3,9 +3,46 @@
 loki:
   enabled: true
   loki:
+    auth_enabled: false
     storage:
       type: filesystem
+    schemaConfig:
+      configs:
+        - from: 2024-04-01
+          store: tsdb
+          object_store: filesystem
+          schema: v13
+          index:
+            prefix: index_
+            period: 24h # Set the index rotation period (24 = 1 days)
   monitoring:
     serviceMonitor:
       enabled: true
-      
+  test:
+    enabled: false
+  gateway:
+    enabled: false
+    resources:
+      limits:
+        cpu: 300m
+        memory: 1Gi
+      requests:
+        cpu: 50m
+        memory: 64Mi
+  sidecar:
+    resources:
+      limits:
+        cpu: 300m
+        memory: 1Gi
+      requests:
+        cpu: 50m
+        memory: 64Mi
+  backend:
+    replicas: 0
+    resources:
+      limits:
+        cpu: 300m
+        memory: 1Gi
+      requests:
+        cpu: 50m
+        memory: 64Mi

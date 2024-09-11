@@ -1,0 +1,8 @@
+{
+    "app": {
+        "enabled": "true",
+        "name": "promtail",
+        "nameSpace": "promtail",
+        "syncWave": "0"
+    }
+}

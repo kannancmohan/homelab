@@ -2,6 +2,10 @@
 ## Helm chart values - https://github.com/grafana/loki/blob/main/production/helm/loki/values.yaml
 loki:
   enabled: true
+  loki:
+    storage:
+      type: filesystem
   monitoring:
     serviceMonitor:
       enabled: true
+      

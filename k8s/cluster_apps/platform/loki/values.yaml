@@ -27,6 +27,9 @@ loki:
   monitoring:
     serviceMonitor:
       enabled: true
+  chunksCache:
+    writebackSizeLimit: 10MB # default is 500MB, with limited memory keep this smaller
+    allocatedMemory: 1024
   test:
     enabled: false
   write:

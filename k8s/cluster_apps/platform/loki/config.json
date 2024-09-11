@@ -1,0 +1,8 @@
+{
+    "app": {
+        "enabled": "true",
+        "name": "loki",
+        "nameSpace": "loki",
+        "syncWave": "0"
+    }
+}

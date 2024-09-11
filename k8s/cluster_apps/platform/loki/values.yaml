@@ -4,9 +4,10 @@ loki:
   enabled: true
   deploymentMode: SingleBinary
   loki:
+    revisionHistoryLimit: 2
+    auth_enabled: false
     commonConfig:
       replication_factor: 1
-    auth_enabled: false
     storage:
       type: filesystem
     schemaConfig:
@@ -18,6 +19,11 @@ loki:
           index:
             prefix: index_
             period: 24h # Set the index rotation period (24 = 1 days)
+    structuredConfig:
+      query_range:
+        align_queries_with_step: true
+      memberlist:
+        bind_addr: []
   monitoring:
     serviceMonitor:
       enabled: true

@@ -70,14 +70,14 @@ loki:
   lokiCanary:
     enabled: false
   gateway:
-    enabled: false
-    # resources:
-    #   limits:
-    #     cpu: 300m
-    #     memory: 1Gi
-    #   requests:
-    #     cpu: 50m
-    #     memory: 64Mi
+    enabled: true
+    resources:
+      limits:
+        cpu: 300m
+        memory: 1Gi
+      requests:
+        cpu: 50m
+        memory: 64Mi
   sidecar:
     resources:
       limits:

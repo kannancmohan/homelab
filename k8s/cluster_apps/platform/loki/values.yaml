@@ -34,26 +34,26 @@ loki:
     enabled: false
   write:
     replicas: 0
-    persistence:
-      storageClass: local-path
-    resources:
-      limits:
-        cpu: 300m
-        memory: 1Gi
-      requests:
-        cpu: 50m
-        memory: 64Mi
+    # persistence:
+    #   storageClass: local-path
+    # resources:
+    #   limits:
+    #     cpu: 300m
+    #     memory: 1Gi
+    #   requests:
+    #     cpu: 50m
+    #     memory: 64Mi
   read:
-    replicas: 0
-    persistence:
-      storageClass: local-path
-    resources:
-      limits:
-        cpu: 300m
-        memory: 1Gi
-      requests:
-        cpu: 50m
-        memory: 64Mi
+    # replicas: 0
+    # persistence:
+    #   storageClass: local-path
+    # resources:
+    #   limits:
+    #     cpu: 300m
+    #     memory: 1Gi
+    #   requests:
+    #     cpu: 50m
+    #     memory: 64Mi
   singleBinary:
     replicas: 1
     extraArgs:
@@ -71,13 +71,13 @@ loki:
     enabled: false
   gateway:
     enabled: false
-    resources:
-      limits:
-        cpu: 300m
-        memory: 1Gi
-      requests:
-        cpu: 50m
-        memory: 64Mi
+    # resources:
+    #   limits:
+    #     cpu: 300m
+    #     memory: 1Gi
+    #   requests:
+    #     cpu: 50m
+    #     memory: 64Mi
   sidecar:
     resources:
       limits:
@@ -88,10 +88,10 @@ loki:
         memory: 64Mi
   backend:
     replicas: 0
-    resources:
-      limits:
-        cpu: 300m
-        memory: 1Gi
-      requests:
-        cpu: 50m
-        memory: 64Mi
+    # resources:
+    #   limits:
+    #     cpu: 300m
+    #     memory: 1Gi
+    #   requests:
+    #     cpu: 50m
+    #     memory: 64Mi

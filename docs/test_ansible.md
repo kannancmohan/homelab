@@ -1,4 +1,5 @@
 ## Ansible testing
+For testing installation of services in /proxmox
 
 ## Prerequisite
 * Docker 
@@ -22,6 +23,12 @@ eg: for testing proxmox/adguard
 ```
 cd proxmox/adguard
 molecule test
+```
+
+### For executing all tests
+```
+cd proxmox/
+run_molecule_tests.sh
 ```
 
 ### Tips

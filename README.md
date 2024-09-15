@@ -9,9 +9,9 @@ A project that utilizes IaC and GitOps practices for provisioning and configurin
 │   └── terraform       # common terraform modules
 ├── docs/               # documents
 ├── k8s/
-│   ├── cluster_apps    # contains apps to be deployed in k8s
+│   ├── cluster_apps    # apps to deploy in k8s
 │   ├── cluster_setup   # kubernetes cluster setup code
-│   └── tests           # contains copier templates    
+│   └── tests           # unit and integration test for k8s helm-chart based apps
 ├── proxmox/            # contains services deployed as containers in proxmox
 ├── scripts/            # contains different shell scripts 
 │   └── templates       # contains copier templates
@@ -188,6 +188,29 @@ Loki, Promtail and Grafana is used for log aggregation and  visualization
     </tr>
 </table>
 
+### Tracing
+Tempo is used for tracing and Grafana for visualization
+<table style='font-family:"Courier New", Courier, monospace; font-size:100%'>
+    <tr>
+        <th colspan="3">Tracing Tools</th>
+    </tr>
+    <tr>
+        <th>Name</th>
+        <th>Description</th>
+        <th>Installation</th>
+    </tr>
+    <tr>
+        <td><a href="https://github.com/grafana/tempo">Tempo</a></td>
+        <td>Tempo lets you search for traces, generate metrics from spans, and link your tracing data with logs</td>
+        <td>Installed as part of <a href="https://artifacthub.io/packages/helm/grafana/tempo">tempo</a></td>
+    </tr>
+    <tr>
+        <td><a href="https://grafana.com/">Grafana</a></td>
+        <td>Allows to query and visualize traces</td>
+        <td>Installed as part of <a href="https://artifacthub.io/packages/helm/grafana/grafana">Grafana helm chart</a></td>
+    </tr>
+</table>
+
 ### Vulnerability & Dependency scanner
 Trivy is used for security scanning and Grafana to visualize it
 <table style='font-family:"Courier New", Courier, monospace; font-size:100%'>
@@ -304,6 +327,9 @@ sh scripts/uninstall_k3s.sh
 ```
 sh scripts/destroy_k3s.sh 
 ```
+
+### Testing 
+check docs/test_ansible.md and test_helm_chart.md for details
 
 ### Step to generate new proxmox service using copier template(proxmox_container_service)
 Executing the following command will prompt for service details and generates new service in 'proxmox' folder 

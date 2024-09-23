@@ -15,9 +15,9 @@ argoApplicationSet:
     repoRevision: main
     path: k8s/cluster_apps/platform
     appProject: platform
-  - name: app2-apps
+apps:
+  - name: app2-development-prototype-microservice
     repo: https://github.com/kannancmohan/app2-development-prototype-microservice
-    repoRevision: observability-metrics
+    repoRevision: main
     path: infra/k8s
     appProject: apps
-    skipGlobalValues: 'true'

@@ -51,6 +51,10 @@ spec:
         namespace: '{{ default `{{values.appNameSpace}}` $appSet.appNamespace }}'
       project: '{{ default "default" $appSet.appProject }}'
       source:
+        helm:
+          parameters:
+            - name: global.external-secrets.enabled
+              value: "true"
         repoURL: {{ $appSet.repo }}
         path: '{{ `{{ path }}` }}'
         targetRevision: {{ $appSet.repoRevision }}

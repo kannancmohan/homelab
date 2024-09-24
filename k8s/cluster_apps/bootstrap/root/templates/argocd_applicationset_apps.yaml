@@ -5,7 +5,6 @@ metadata:
   name: apps
   namespace: {{ $.Release.Namespace }}
 spec:
-{{- range $index, $appSet := .Values.apps }}
   # goTemplate: true
   # goTemplateOptions: ["missingkey=error"]
   generators:
@@ -13,6 +12,7 @@ spec:
         mergeKeys:
           - values.repoPath
         generators:
+        {{- range $index, $appSet := .Values.apps }}
           - git: # Used for retrieving apps specified at path in a git-repo-project
               repoURL: '{{ $appSet.repo }}'
               revision: '{{ $appSet.repoRevision }}'
@@ -24,6 +24,7 @@ spec:
                 appName: '{{ `{{ path.basename }}` }}'
                 appNameSpace: '{{ `{{ path.basename }}` }}'
                 syncWave: "0"
+                appProject: '{{ $appSet.appProject }}'
           - git: # Used for retrieving apps if config.json exists in specified path in a git-repo-project
               repoURL: '{{ $appSet.repo }}'
               revision: '{{ $appSet.repoRevision }}'
@@ -35,6 +36,8 @@ spec:
                 appName: '{{ `{{ app.name }}` }}'
                 appNameSpace: '{{ `{{ app.nameSpace }}` }}'
                 syncWave: '{{ `{{ app.syncWave }}` }}'
+                appProject: '{{ $appSet.appProject }}'
+        {{- end }}
       selector:
           matchExpressions:
             - key: values.appEnabled
@@ -48,16 +51,16 @@ spec:
     spec:
       destination:
         name: in-cluster
-        namespace: '{{ default `{{values.appNameSpace}}` $appSet.appNamespace }}'
-      project: '{{ default "default" $appSet.appProject }}'
+        namespace: '{{ values.appNameSpace }}'
+      project: '{{ values.appProject }}'
       source:
         helm:
           parameters:
             - name: global.external-secrets.enabled
               value: "true"
-        repoURL: {{ $appSet.repo }}
+        repoURL: {{ `{{ repoURL }}` }}
         path: '{{ `{{ path }}` }}'
-        targetRevision: {{ $appSet.repoRevision }}
+        targetRevision: {{ `{{ revision }}` }}
       syncPolicy:
         automated:
           prune: true
@@ -77,4 +80,3 @@ spec:
     {{`metadata:
       labels:
         app.kubernetes.io/name: {{ values.appName }}`}}
-{{- end }}

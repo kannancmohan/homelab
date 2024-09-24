@@ -19,7 +19,7 @@ spec:
               directories:
                 - path: '{{ $appSet.path }}/*'
               values:
-                repoPath: '{{ .path.path }}'
+                repoPath: '{{ path }}'
                 appEnabled: 'true'
                 appName: '{{ .path.basename }}'
                 appNameSpace: '{{ .path.basename }}'
@@ -33,7 +33,7 @@ spec:
               files:
                 - path: '{{ $appSet.path }}/**/config.json'
               values:
-                repoPath: '{{ .path.path }}'
+                repoPath: '{{ path }}'
                 appEnabled: '{{ .app.enabled }}'
                 appName: '{{ .app.name }}'
                 appNameSpace: '{{ .app.nameSpace }}'

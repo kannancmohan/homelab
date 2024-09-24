@@ -24,7 +24,6 @@ spec:
                 appName: '{{ `{{ path.basename }}` }}'
                 appNameSpace: '{{ `{{ path.basename }}` }}'
                 syncWave: "0"
-                appProject: '{{ $appSet.appProject }}'
           - git: # Used for retrieving apps if config.json exists in specified path in a git-repo-project
               repoURL: '{{ $appSet.repo }}'
               revision: '{{ $appSet.repoRevision }}'
@@ -36,7 +35,6 @@ spec:
                 appName: '{{ `{{ app.name }}` }}'
                 appNameSpace: '{{ `{{ app.nameSpace }}` }}'
                 syncWave: '{{ `{{ app.syncWave }}` }}'
-                appProject: '{{ $appSet.appProject }}'
         {{- end }}
       selector:
           matchExpressions:
@@ -52,7 +50,7 @@ spec:
       destination:
         name: in-cluster
         namespace: '{{ values.appNameSpace }}'
-      project: '{{ values.appProject }}'
+      project: default
       source:
         helm:
           parameters:

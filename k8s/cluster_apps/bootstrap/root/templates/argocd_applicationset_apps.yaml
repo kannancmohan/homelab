@@ -50,7 +50,7 @@ spec:
       destination:
         name: in-cluster
         namespace: '{{ values.appNameSpace }}'
-      project: default
+      project: 'default'
       source:
         helm:
           parameters:

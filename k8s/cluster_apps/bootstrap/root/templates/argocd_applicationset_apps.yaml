@@ -12,8 +12,8 @@ spec:
         mergeKeys:
           - values.repoPath
         generators:
+          {{- range $index, $appSet := .Values.apps }}
           - git: # Used for retrieving apps specified at path in a git-repo-project
-              {{- range $index, $appSet := .Values.apps }}
               repoURL: '{{ $appSet.repo }}'
               revision: '{{ $appSet.repoRevision }}'
               directories:
@@ -27,9 +27,7 @@ spec:
                 appProject: '{{ $appSet.appProject }}'
                 repoURL: '{{ $appSet.repo }}'
                 repoRevision: '{{ $appSet.repoRevision }}'
-              {{- end }}
           - git: # Used for retrieving apps if config.json exists in specified path in a git-repo-project
-              {{- range $index, $appSet := .Values.apps }}
               repoURL: '{{ $appSet.repo }}'
               revision: '{{ $appSet.repoRevision }}'
               files:
@@ -43,7 +41,7 @@ spec:
                 appProject: '{{ $appSet.appProject }}'
                 repoURL: '{{ $appSet.repo }}'
                 repoRevision: '{{ $appSet.repoRevision }}'
-              {{- end }}
+          {{- end }}
       selector:
           matchExpressions:
             - key: values.appEnabled

@@ -49,22 +49,22 @@ spec:
               values: ['true']
   template:
     metadata:
-      name: '{{ values.appName }}'
+      name: '{{ `{{values.appName}}` }}'
       annotations:
-        argocd.argoproj.io/sync-wave: '{{ values.syncWave }}'
+        argocd.argoproj.io/sync-wave: '{{ `{{values.syncWave}}` }}'
     spec:
       destination:
         name: in-cluster
-        namespace: '{{ values.appNameSpace }}'
-      project: '{{ values.appProject }}'
+        namespace: '{{ `{{values.appNameSpace}}` }}'
+      project: '{{ `{{values.appProject}}` }}'
       source:
         helm:
           parameters:
             - name: global.external-secrets.enabled
               value: "true"
-        repoURL: '{{ values.repoURL }}'
-        path: '{{ values.repoPath }}'
-        targetRevision: '{{ values.repoRevision }}'
+        repoURL: '{{ `{{values.repoURL}}` }}'
+        path: '{{ `{{values.repoPath}}` }}'
+        targetRevision: '{{ `{{values.repoRevision}}` }}'
       syncPolicy:
         automated:
           prune: true

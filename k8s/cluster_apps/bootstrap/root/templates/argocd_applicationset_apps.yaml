@@ -1,4 +1,3 @@
-{{- range $index, $appSet := .Values.apps }}
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
@@ -6,6 +5,7 @@ metadata:
   name: apps
   namespace: {{ $.Release.Namespace }}
 spec:
+{{- range $index, $appSet := .Values.apps }}
   # goTemplate: true
   # goTemplateOptions: ["missingkey=error"]
   generators:

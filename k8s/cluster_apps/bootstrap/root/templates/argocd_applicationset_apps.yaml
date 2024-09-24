@@ -62,9 +62,9 @@ spec:
           parameters:
             - name: global.external-secrets.enabled
               value: "true"
-        repoURL: {{ `{{values.repoURL}}` }}
+        repoURL: '{{ `{{values.repoURL}}` }}'
         path: '{{ `{{ path }}` }}'
-        targetRevision: {{ `{{values.repoRevision}}` }}
+        targetRevision: '{{ `{{values.repoRevision}}` }}'
       syncPolicy:
         automated:
           prune: true

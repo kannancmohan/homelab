@@ -23,7 +23,7 @@ spec:
     spec:
       containers:
         - name: bitwarden-cli
-          image: ghcr.io/charlesthomas/bitwarden-cli:2024.8.1
+          image: ghcr.io/charlesthomas/bitwarden-cli:2024.9.0
           imagePullPolicy: IfNotPresent
           command:
             - /entrypoint.sh

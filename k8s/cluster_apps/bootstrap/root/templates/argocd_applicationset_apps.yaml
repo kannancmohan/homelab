@@ -19,10 +19,10 @@ spec:
               directories:
                 - path: '{{ $appSet.path }}/*'
               values:
-                repoPath: '{{ .path }}'
+                repoPath: '{{ path }}'
                 appEnabled: 'true'
-                appName: '{{ .path.basename }}'
-                appNameSpace: '{{ .path.basename }}'
+                appName: '{{ path.basename }}'
+                appNameSpace: '{{ path.basename }}'
                 syncWave: "0"
                 appProject: '{{ $appSet.appProject }}'
                 repoURL: '{{ $appSet.repo }}'
@@ -33,7 +33,7 @@ spec:
               files:
                 - path: '{{ $appSet.path }}/**/config.json'
               values:
-                repoPath: '{{ .path }}'
+                repoPath: '{{ path }}'
                 appEnabled: '{{ .app.enabled }}'
                 appName: '{{ .app.name }}'
                 appNameSpace: '{{ .app.nameSpace }}'

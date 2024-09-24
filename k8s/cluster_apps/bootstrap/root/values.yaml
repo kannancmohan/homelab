@@ -16,11 +16,11 @@ argoApplicationSet:
     path: k8s/cluster_apps/platform
     appProject: platform
 apps:
-  - name: app2-development-prototype-microservice
-    repo: https://github.com/kannancmohan/app2-development-prototype-microservice
-    repoRevision: main
-    path: infra/k8s
-    appProject: apps
+  # - name: app2-development-prototype-microservice
+  #   repo: https://github.com/kannancmohan/app2-development-prototype-microservice
+  #   repoRevision: main
+  #   path: infra/k8s
+  #   appProject: apps
   - name: app2-kafka-consumer
     repo: https://github.com/kannancmohan/app2-development-prototype-kafka
     repoRevision: main

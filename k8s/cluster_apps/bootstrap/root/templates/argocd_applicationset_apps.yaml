@@ -10,7 +10,8 @@ spec:
   generators:
     - merge:
         mergeKeys:
-          - values.repoPath
+          - values.repoURL
+          - path
         generators:
           {{- range $index, $appSet := .Values.apps }}
           - git: # Used for retrieving apps specified at path in a git-repo-project

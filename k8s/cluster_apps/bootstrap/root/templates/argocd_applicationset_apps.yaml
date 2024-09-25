@@ -11,23 +11,10 @@ spec:
     - merge:
         mergeKeys:
           - values.repoURL
+          - values.repoPath
           - path
         generators:
           {{- range $index, $appSet := .Values.apps }}
-          - git: # Used for retrieving apps specified at path in a git-repo-project
-              repoURL: '{{ $appSet.repo }}'
-              revision: '{{ $appSet.repoRevision }}'
-              directories:
-                - path: '{{ $appSet.path }}/*'
-              values:
-                repoPath: '{{ `{{ path }}` }}'
-                appEnabled: 'true'
-                appName: '{{ `{{ path.basename }}` }}'
-                appNameSpace: '{{ `{{ path.basename }}` }}'
-                syncWave: "0"
-                appProject: '{{ $appSet.appProject }}'
-                repoURL: '{{ $appSet.repo }}'
-                repoRevision: '{{ $appSet.repoRevision }}'
           - git: # Used for retrieving apps if config.json exists in specified path in a git-repo-project
               repoURL: '{{ $appSet.repo }}'
               revision: '{{ $appSet.repoRevision }}'

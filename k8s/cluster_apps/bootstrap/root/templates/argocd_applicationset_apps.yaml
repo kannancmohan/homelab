@@ -12,8 +12,19 @@ spec:
         mergeKeys:
           - values.repoURL
           - values.repoPath
-          - path
         generators:
+          - list:
+              elements:
+                {{- range $index, $appSet := .Values.apps }}
+                - values.repoPath: '{{ $appSet.path }}/helm'
+                  values.appEnabled: 'true'
+                  values.appName: '{{ $appSet.name }}'
+                  values.appNameSpace: '{{ $appSet.name }}'
+                  values.syncWave: "0"
+                  values.appProject: '{{ $appSet.appProject }}'
+                  values.repoURL: '{{ $appSet.repo }}'
+                  values.repoRevision: '{{ $appSet.repoRevision }}'
+                {{- end }}
           {{- range $index, $appSet := .Values.apps }}
           - git: # Used for retrieving apps if config.json exists in specified path in a git-repo-project
               repoURL: '{{ $appSet.repo }}'

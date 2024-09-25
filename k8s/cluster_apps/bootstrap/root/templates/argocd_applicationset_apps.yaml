@@ -16,7 +16,7 @@ spec:
           - list:
               elements:
                 {{- range $index, $appSet := .Values.apps }}
-                - values.repoPath: '{{ $appSet.path }}/helm'
+                - values.repoPath: '{{ $appSet.path }}'
                   values.appEnabled: 'true'
                   values.appName: '{{ $appSet.name }}'
                   values.appNameSpace: '{{ $appSet.name }}'

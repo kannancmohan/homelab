@@ -11,6 +11,7 @@ spec:
     - merge:
         mergeKeys:
           - values.repoURL
+          - path
           - values.repoPath
         generators:
           - list:
@@ -24,6 +25,7 @@ spec:
                   values.appProject: '{{ $appSet.appProject }}'
                   values.repoURL: '{{ $appSet.repo }}'
                   values.repoRevision: '{{ $appSet.repoRevision }}'
+                  path: '{{ $appSet.path }}'
                 {{- end }}
           {{- range $index, $appSet := .Values.apps }}
           - git: # Used for retrieving apps if config.json exists in specified path in a git-repo-project

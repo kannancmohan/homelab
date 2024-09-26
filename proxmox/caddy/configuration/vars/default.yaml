@@ -9,6 +9,7 @@ CADDY_IP: 192.168.0.22
 ADGUARD_IP_PORT: 192.168.0.21:80
 PORTAINER_IP_PORT: 192.168.0.30:9102
 VAULT_IP_PORT: 192.168.0.23:8000
+KAFKA_IP_PORT: 192.168.0.30:9093
 LOG_FILE: /etc/caddy/access.log
 ACME_EMAIL: kannanmohanklm@gmail.com
 DUCKDNS_API_TOKEN: "{{ lookup('env','TF_VAR_duckdns_token') }}"

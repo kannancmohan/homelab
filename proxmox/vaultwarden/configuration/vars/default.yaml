@@ -6,3 +6,4 @@ vaultwarden_signups_allowed: true
 vaultwarden_signups_verify: false #Require email verification on signups
 vaultwarden_org_creation_users: kannanmohanklm@gmail.com
 vaultwarden_smtp_from_email_id: kannanmohanklm@gmail.com
+vaultwarden_docker_image: vaultwarden/server:1.32.1

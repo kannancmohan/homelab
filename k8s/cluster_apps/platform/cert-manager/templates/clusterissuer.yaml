@@ -42,7 +42,10 @@ metadata:
   namespace: {{ .Release.Namespace }}
 spec:
   isCA: true
-  commonName: self-signed-tls-cert
+  commonName: "*.dev.local" # deprecated
+  dnsNames: # Add DNS names or IPs as SANs
+    - "*.dev.local"
+    - "dev.local"
   secretName: self-signed-tls-cert # certificate are stored as secret in k8s
   duration: 43800h # 5y
   issuerRef:
@@ -50,13 +53,16 @@ spec:
     kind: Issuer
     group: cert-manager.io
   privateKey:
-    algorithm: ECDSA
-    size: 256
+    algorithm: RSA
+    encoding: PKCS8
+    size: 2048
   subject:
     organizations:
-      - ACME Inc.
+      - MyCompany
     organizationalUnits:
-      - Widgets
+      - Test
+    countries:
+      - "US"
 
 ---
 # Create an Issuer that uses the above generated CA certificate to issue certs
